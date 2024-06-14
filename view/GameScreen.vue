@@ -18,11 +18,13 @@
     <div class="column2">
       <GameMessage :message="message" :show-more="game.messages.length > 1"/>
       <div v-if="showMap" class="map">
-        <!-- <GameCoordinate
-          v-for="coordinate in gameCoordinates"
-          :key="coordinate.x + '-' + coordinate.y"
-          :coordinate="coordinate"
-        /> -->
+        <template v-if="showCoordinates">
+          <GameCoordinate
+            v-for="coordinate in gameCoordinates"
+            :key="coordinate.x + '-' + coordinate.y"
+            :coordinate="coordinate"
+          />
+        </template>
         <GameLocation
           v-for="location in visibleLocations"
           :key="location.x + '-' + location.y"
@@ -33,7 +35,7 @@
   </div>
 </template>
 <script>
-// import Coordinate from './Coordinate.vue'
+import Coordinate from './Coordinate.vue'
 import Location from './Location.vue'
 import Message from './Message.vue'
 const LOCATION = {
@@ -45,27 +47,28 @@ export default {
   components: {
     GameLocation: Location,
     GameMessage: Message,
-    // GameCoordinate: Coordinate,
+    GameCoordinate: Coordinate,
   },
   props: {
-    game: { type: Object, required: true }
+    game: { type: Object, required: true },
+    showCoordinates: { type: Boolean, default: false }
   },
   data() {
-    // const gameCoordinates = []
-    // for (let i = 0; i < game.width; i++) {
-    //   gameCoordinates.push({
-    //     x: i,
-    //     y: -1,
-    //     label: i
-    //   })
-    // }
-    // for (let i = 0; i < game.height; i++) {
-    //   gameCoordinates.push({
-    //     x: -1,
-    //     y: i,
-    //     label: i
-    //   })
-    // }
+    const gameCoordinates = []
+    for (let i = 0; i < this.game.width; i++) {
+      gameCoordinates.push({
+        x: i,
+        y: -1,
+        label: i
+      })
+    }
+    for (let i = 0; i < this.game.height; i++) {
+      gameCoordinates.push({
+        x: -1,
+        y: i,
+        label: i
+      })
+    }
 
     return {
       alphabet: 'abcdefghijklmnopqrstuvwxyz',
@@ -73,7 +76,7 @@ export default {
       dropping: false,
       quaffing: false,
       wearingArmor: false,
-      // gameCoordinates
+      gameCoordinates
     }
   },
   computed: {
@@ -249,6 +252,7 @@ export default {
           this.game.goDownStairs()
           break
         case ' ':
+          event.preventDefault()
           this.game.clearCurrentMessage()
           break
         case 'H':
@@ -310,6 +314,9 @@ export default {
           break
         case 'W':
           this.wearingArmorPrompt()
+          break
+        case '.':
+          this.game.rest()
           break
       }
     }
