@@ -34,7 +34,8 @@ export default {
           )
         )
     },
-        locationClasses(location) {
+    locationClasses() {
+      const location = this.location
       const classes = {}
       if (location.item?.type === 'staircase' && !location.character) {
         classes.flashing = true
