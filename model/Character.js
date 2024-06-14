@@ -109,9 +109,7 @@ class Character extends GameObject {
     })
   }
   getDamageRoll() {
-    const dmg = this.weapon.damage
-    const parts = dmg.split('d')
-    return roll(parts[0], parts[1])
+    return roll(this.weapon.damage)
   }
   raiseLevel() {
     this.xp = this.nextLevelXp
@@ -136,6 +134,11 @@ class Character extends GameObject {
         this.counts[key]--
       }
     })
+    this.takeDamage(-1)
+  }
+  takeDamage(x) {
+    console.log('take damage', Math.min(this.hits.maximum, this.hits.current - x))
+    this.hits.current = Math.min(this.hits.maximum, this.hits.current - x)
   }
   restoreStrength() {
     this.strength.current = this.strengh.maximum

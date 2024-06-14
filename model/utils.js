@@ -47,6 +47,11 @@ export const isDiagonalMove = (a, b) => {
 }
 
 export const roll = (times, sides) => {
+  if (typeof times === 'string') {
+    const parts = times.split('d')
+    times = parts[0]
+    sides = parts[1]
+  }
   let sum = 0
   for (let i = 0; i < times; i++) {
     sum += randomInt(1, sides)

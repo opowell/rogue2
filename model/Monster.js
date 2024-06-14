@@ -1,5 +1,6 @@
 import GameObject from './GameObject.js'
-import { isDiagonalMove, roll, spread } from './utils.js'
+import { isDiagonalMove, randomElement, roll, spread } from './utils.js'
+
 const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
@@ -34,6 +35,9 @@ class Monster extends GameObject {
     })
   }
   step() {
+    if (this.dead) {
+      return
+    }
     const playerLoc = this.game.player.location
     const curLoc = this.location
     const dx = Math.sign(playerLoc.x - curLoc.x)
@@ -53,14 +57,24 @@ class Monster extends GameObject {
   }
   moveTo(to) {
     const from = this.location
+    if (to.character) {
+      const damage = this.getDamageRoll()
+      to.character.takeDamage(damage)
+      this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage')
+      return
+    }
     if (!to.canCharacterMoveTo) return
     from.character = null
     this.location = to
     to.character = this
   }
   takeDamage(x) {
-    console.log('hit', this, x)
     this.hits.current -= x
+  }
+  getDamageRoll() {
+    const dmg = this.monsterType.damage
+    const types = dmg.split('/')
+    return roll(randomElement(types))
   }
 }
 export default Monster
