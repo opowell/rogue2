@@ -540,6 +540,9 @@ class Game extends StatefulObject {
       const damage = this.player.getDamageRoll()
       to.character.takeDamage(damage)
       this.addMessage('You hit the ' + to.character.monsterType.name + ' for ' + damage + ' damage')
+      if (to.character.dead) {
+        this.addMessage('You have defeated the ' + to.character.monsterType.name)
+      }
       this.step()
       return
     }
