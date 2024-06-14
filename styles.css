@@ -1,0 +1,31 @@
+body {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: black;
+  padding: 1rem;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
+.apps-container {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  background-color: #888;
+  width: 100%;
+}
+.apps {
+  display: flex;
+  padding: 1rem;
+  grid-gap: 1rem;
+  color: #444;
+  width: 100%;
+  flex-wrap: wrap;
+}
