@@ -3,7 +3,7 @@
     :style="locationStyle"
     class="location"
     :class="locationClasses"
-    v-html="locationContent"
+    v-html="content"
   />
 </template>
 <script>
@@ -42,7 +42,7 @@ export default {
       }
       return classes
     },
-    locationContent() {
+    content() {
       const location = this.location
       if (!this.isVisible) {
         return ''
@@ -101,7 +101,7 @@ export default {
           return ''
       }
     },
-    getBackgroundColor() {
+    bgColor() {
       const location = this.location
       if (!this.isVisible) {
         return 'black'
@@ -124,9 +124,12 @@ export default {
       }
       return ''
     },
-    getColor() {
+    color() {
       const location = this.location
       if (location.character?.monsterType) {
+        if (location.type === 'hallway') {
+          return 'black'
+        }
         return '#aaaaaa'
       }
       if (location.character) {
@@ -157,8 +160,8 @@ export default {
     locationStyle() {
       const location = this.location
       return {
-        color: this.getColor,
-        'background-color': this.getBackgroundColor,
+        color: this.color,
+        'background-color': this.bgColor,
         top: location.y * LOCATION.HEIGHT + 'px',
         left: location.x * LOCATION.WIDTH + 'px',
       }

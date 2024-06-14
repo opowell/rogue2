@@ -1,7 +1,4 @@
-import { TYPES as ARMOR_TYPES, getArmor } from './ArmorFactory.js'
-import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
-import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
 import { isDiagonalMove, roll, spread } from './utils.js'
 const { computed, watch } = Vue
 
@@ -27,24 +24,43 @@ class Monster extends GameObject {
       },
       experience: 0,
     })
+    this.dead = computed(() => {
+      return this.hits.current < 1
+    })
+    watch(this.dead, (newVal) => {
+      if (newVal) {
+        this.game.removeMonster(this)
+      }
+    })
   }
   step() {
     const playerLoc = this.game.player.location
     const curLoc = this.location
     const dx = Math.sign(playerLoc.x - curLoc.x)
     const dy = Math.sign(playerLoc.y - curLoc.y)
-    this.moveTo(this.game.getLocation(curLoc.x + dx, curLoc.y + dy))
+    const from = this.location
+    let to = this.game.getLocation(curLoc.x + dx, curLoc.y + dy)
+    if (isDiagonalMove(from, to) && this.game.hasWallBetween(from, to)) {
+      const loc1 = this.game.getLocation(curLoc.x + dx, curLoc.y)
+      const loc2 = this.game.getLocation(curLoc.x, curLoc.y + dy)
+      if (loc1.canCharacterMoveTo) {
+        to = loc1
+      } else {
+        to = loc2
+      }
+    }
+    this.moveTo(to)
   }
   moveTo(to) {
     const from = this.location
-    console.log('moveTo', to.x, to.y, to, to.canCharacterMoveTo, isDiagonalMove(from, to), this.game.hasWallBetween(from, to))
     if (!to.canCharacterMoveTo) return
-    if (isDiagonalMove(from, to) && this.game.hasWallBetween(from, to)) {
-      return
-    }
-    console.log('moving')
     from.character = null
+    this.location = to
     to.character = this
+  }
+  takeDamage(x) {
+    console.log('hit', this, x)
+    this.hits.current -= x
   }
 }
 export default Monster

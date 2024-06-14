@@ -7,10 +7,11 @@ import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
 import { getItem } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
+const { toRaw } = Vue
+
 function isWall(location) {
-  if (!location || !location.type) {
-    console.log('ERROR, no location', location)
-    return false
+  if (!location.type) {
+    return true
   }
   return location.type.includes('Wall')
 }
@@ -248,6 +249,9 @@ class Game extends StatefulObject {
   hastePlayer() {
     this.player.haste()
     this.addMessage('You feel yourself moving much faster')
+  }
+  rest() {
+    this.step()
   }
   restorePlayerStrength() {
     this.player.restoreStrength()
@@ -520,7 +524,25 @@ class Game extends StatefulObject {
     if (location.y === this.height - 1) return
     this.movePlayer(location, this.locations[location.x+1][location.y+1])
   }
+  removeMonster(monster) {
+    const index = this.characters.findIndex(m => {
+      return toRaw(m) === monster
+    })
+    if (index < 0) {
+      console.log('what, not found?!')
+    } else {
+      this.characters.splice(index, 1)
+    }
+    monster.location.character = null
+  }
   movePlayer(from, to) {
+    if (to.character) {
+      const damage = this.player.getDamageRoll()
+      to.character.takeDamage(damage)
+      this.addMessage('You hit the ' + to.character.monsterType.name + ' for ' + damage + ' damage')
+      this.step()
+      return
+    }
     if (!canMoveTo(to)) return
     if (isDiagonalMove(from, to) && this.hasWallBetween(from, to)) {
       return
@@ -568,10 +590,8 @@ class Game extends StatefulObject {
     return movedOntoItem
   }
   step() {
-    console.log('step')
     this.player.takeTurn()
     this.characters.forEach(character => {
-      console.log('step', character)
       character.step()
     })
   }

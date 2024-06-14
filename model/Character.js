@@ -108,6 +108,11 @@ class Character extends GameObject {
       this.hits.maximum += change
     })
   }
+  getDamageRoll() {
+    const dmg = this.weapon.damage
+    const parts = dmg.split('d')
+    return roll(parts[0], parts[1])
+  }
   raiseLevel() {
     this.xp = this.nextLevelXp
   }

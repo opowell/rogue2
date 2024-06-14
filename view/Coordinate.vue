@@ -40,6 +40,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: v-bind(locationHeight);
+  font-size: 12px;
+  color: red;
 }
 </style>
