@@ -33,6 +33,8 @@ class Character extends GameObject {
       weapon: null,
       armor: null,
       canSee: true,
+      restCounter: 0,
+      resting: true
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -134,11 +136,19 @@ class Character extends GameObject {
         this.counts[key]--
       }
     })
-    this.takeDamage(-1)
+    if (this.resting) {
+      this.restCounter++
+    }
+    if (this.restCounter > 4) {
+      this.takeDamage(-1)
+      this.restCounter = 0
+    }
+    this.resting = true
   }
   takeDamage(x) {
-    console.log('take damage', Math.min(this.hits.maximum, this.hits.current - x))
     this.hits.current = Math.min(this.hits.maximum, this.hits.current - x)
+    this.restCounter = 0
+    this.resting = false 
   }
   restoreStrength() {
     this.strength.current = this.strengh.maximum
