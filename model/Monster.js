@@ -59,7 +59,7 @@ class Monster extends GameObject {
     const from = this.location
     if (to.character) {
       const damage = this.getDamageRoll()
-      to.character.takeDamage(damage)
+      to.character.takeDamage(damage, 'killed by a ' + this.monsterType.name)
       this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage')
       return
     }

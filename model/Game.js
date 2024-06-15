@@ -7,7 +7,7 @@ import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
 import { getItem } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
-const { toRaw } = Vue
+const { computed, toRaw } = Vue
 
 function isWall(location) {
   if (!location.type) {
@@ -34,12 +34,24 @@ class Game extends StatefulObject {
       objects: [],
       items: [],
       characters: [],
-      messages: ['Welcome to the Dungeons of Doom']
+      messages: [],
+      playerName: null,
+      player: null,
+      width,
+      height
     })
-    this.width = width
-    this.height = height
-    this.createLocations()
     this.player = new Character(this)
+    this.createLocations()
+    this.startNewLevel()
+    this.playerDead = computed(() => {
+      return this.player.hits.current < 1
+    })
+  }
+  restart() {
+    this.level = 1
+    this.messages = []
+    this.player = new Character(this)
+    this.createLocations()
     this.startNewLevel()
   }
   startNewLevel() {
@@ -50,6 +62,9 @@ class Game extends StatefulObject {
     this.addRooms()
     this.createPlayer()
     this.createStaircase()
+  }
+  greetPlayer() {
+    this.addMessage('Welcome, ' + this.playerName + ', to the Dungeons of Doom!')
   }
   increasePlayerStrength() {
     this.player.increaseStrength()

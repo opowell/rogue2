@@ -1,6 +1,9 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
-    <template v-if="gameStarted">
+    <template v-if="gameFinished">
+      <DeathScreen :message="deathMessage" />
+    </template>
+    <template v-else-if="gameStarted">
       <div class="column1">
         <div v-if="player" class="section">
           <div class="section-title">Player</div>
@@ -35,7 +38,7 @@
       </div>
     </template>
     <template v-else>
-      <GameWelcome v-model="playerName" @start-game="startGame" />
+      <GameWelcome @start-game="startGame" />
     </template>
   </div>
 </template>
@@ -44,6 +47,7 @@ import Welcome from './Welcome.vue'
 import Coordinate from './Coordinate.vue'
 import Location from './Location.vue'
 import Message from './Message.vue'
+import DeathScreen from './DeathScreen.vue'
 const LOCATION = {
   WIDTH: 16,
   HEIGHT: 28
@@ -55,6 +59,7 @@ export default {
     GameMessage: Message,
     GameCoordinate: Coordinate,
     GameWelcome: Welcome,
+    DeathScreen,
   },
   props: {
     game: { type: Object, required: true },
@@ -85,10 +90,13 @@ export default {
       wearingArmor: false,
       gameCoordinates,
       gameStarted: false,
-      playerName: null
+      gameFinished: false
     }
   },
   computed: {
+    deathMessage() {
+      return this.game.playerName + ' ' + this.game.player.latestDamageCause + ' on level ' + this.game.level
+    },
     player() {
       return this.game?.player
     },
@@ -155,8 +163,22 @@ export default {
       return this.game.height * LOCATION.HEIGHT + 'px'
     }
   },
+  watch: {
+    'game.playerDead'(val) {
+      if (val) {
+        this.gameFinished = true
+        this.gameStarted = false
+        setTimeout(() => {
+          this.gameFinished = false
+        }, 5000)
+      }
+    }
+  },
   methods: {
-    startGame() {
+    startGame(name) {
+      this.game.restart()
+      this.game.playerName = name
+      this.game.greetPlayer()
       this.gameStarted = true
       this.$refs.screen.focus()
     },

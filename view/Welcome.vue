@@ -23,7 +23,9 @@ export default {
   methods: {
     handleKeydown(e) {
       if (e.code === 'Enter') {
-        this.$emit('startGame')
+        e.preventDefault()
+        e.stopPropagation()
+        this.$emit('startGame', this.name)
       }
     }
   }
