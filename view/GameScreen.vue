@@ -1,40 +1,46 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
-    <div class="column1">
-      <div v-if="player" class="section">
-        <div class="section-title">Player</div>
-        <div v-for="item in characterItems" class="section-row" :key="item.label">
-          <div class="section-row-label">{{ item.label }}</div>
-          <div class="section-row-value">{{ item.value }}</div>
+    <template v-if="gameStarted">
+      <div class="column1">
+        <div v-if="player" class="section">
+          <div class="section-title">Player</div>
+          <div v-for="item in characterItems" class="section-row" :key="item.label">
+            <div class="section-row-label">{{ item.label }}</div>
+            <div class="section-row-value">{{ item.value }}</div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">Inventory</div>
+          <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
+            <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
+          </div>
         </div>
       </div>
-      <div class="section">
-        <div class="section-title">Inventory</div>
-        <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
-          <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="column2">
-      <GameMessage :message="message" :show-more="game.messages.length > 1"/>
-      <div v-if="showMap" class="map">
-        <template v-if="showCoordinates">
-          <GameCoordinate
-            v-for="coordinate in gameCoordinates"
-            :key="coordinate.x + '-' + coordinate.y"
-            :coordinate="coordinate"
+      <div class="column2">
+        <GameMessage :message="message" :show-more="game.messages.length > 1"/>
+        <div v-if="showMap" class="map">
+          <template v-if="showCoordinates">
+            <GameCoordinate
+              v-for="coordinate in gameCoordinates"
+              :key="coordinate.x + '-' + coordinate.y"
+              :coordinate="coordinate"
+            />
+          </template>
+          <GameLocation
+            v-for="location in visibleLocations"
+            :key="location.x + '-' + location.y"
+            :location="location"
           />
-        </template>
-        <GameLocation
-          v-for="location in visibleLocations"
-          :key="location.x + '-' + location.y"
-          :location="location"
-        />
+        </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <GameWelcome v-model="playerName" @start-game="startGame" />
+    </template>
   </div>
 </template>
 <script>
+import Welcome from './Welcome.vue'
 import Coordinate from './Coordinate.vue'
 import Location from './Location.vue'
 import Message from './Message.vue'
@@ -48,10 +54,11 @@ export default {
     GameLocation: Location,
     GameMessage: Message,
     GameCoordinate: Coordinate,
+    GameWelcome: Welcome,
   },
   props: {
     game: { type: Object, required: true },
-    showCoordinates: { type: Boolean, default: false }
+    showCoordinates: { type: Boolean, default: false },
   },
   data() {
     const gameCoordinates = []
@@ -76,7 +83,9 @@ export default {
       dropping: false,
       quaffing: false,
       wearingArmor: false,
-      gameCoordinates
+      gameCoordinates,
+      gameStarted: false,
+      playerName: null
     }
   },
   computed: {
@@ -146,10 +155,11 @@ export default {
       return this.game.height * LOCATION.HEIGHT + 'px'
     }
   },
-  mounted() {
-    this.$refs.screen.focus()
-  },
   methods: {
+    startGame() {
+      this.gameStarted = true
+      this.$refs.screen.focus()
+    },
     dropPrompt() {
       if (!this.game.player.canDrop) {
         return
