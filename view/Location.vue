@@ -23,59 +23,47 @@ export default {
     }
   },
   computed: {
-    isVisible() {
-      const location = this.location
-      return location.visible ||
-        (
-          location.mapped &&
-          (
-            location.room?.lit ||
-            location.item?.type === 'staircase'
-          )
-        )
-    },
     locationClasses() {
       const location = this.location
       const classes = {}
-      if (location.item?.type === 'staircase' && !location.character) {
+      if (location.showContent && location.item?.type === 'staircase' && !location.character) {
         classes.flashing = true
       }
       return classes
     },
     content() {
       const location = this.location
-      if (!this.isVisible) {
+      if (!this.location.show) {
         return ''
       }
-      if (location.character?.monsterType) {
-        return location.character.monsterType.label
-      }
-      if (location.character) {
-        return '&#x263A;'
-      }
-      if (location.mapped && location.item?.type === 'staircase') {
-        return '&#x2630;'
-      }
-      if (location.item && location.visible) {
-        switch (location.item.type) {
-          case 'food':
-            return '&#x2663'
-          case 'stick':
-            return '&#x03C4;'
-          case 'scroll':
-            return '&#x266A;'
-          case 'potion':
-            return '&#x0021;'
-          case 'weapon':
-            return '&#x2191;'
-          case 'ring':
-            return '&#x25CB;'
-          case 'gold':
-            return '&#x263C;'
-          case 'armor':
-            return '&#x25D8;'
-          case 'staircase':
-            return '&#x2630;'
+      if (location.showContent) {
+        if (location.character?.monsterType) {
+          return location.character.monsterType.label
+        }
+        if (location.character) {
+          return '&#x263A;'
+        }
+        if (location.item) {
+          switch (location.item.type) {
+            case 'food':
+              return '&#x2663'
+            case 'stick':
+              return '&#x03C4;'
+            case 'scroll':
+              return '&#x266A;'
+            case 'potion':
+              return '&#x0021;'
+            case 'weapon':
+              return '&#x2191;'
+            case 'ring':
+              return '&#x25CB;'
+            case 'gold':
+              return '&#x263C;'
+            case 'armor':
+              return '&#x25D8;'
+            case 'staircase':
+              return '&#x2630;'
+          }
         }
       }
       switch (location.type) {
@@ -103,19 +91,21 @@ export default {
     },
     bgColor() {
       const location = this.location
-      if (!this.isVisible) {
+      if (!this.location.show) {
         return 'black'
       }
-      if (location.character) {
-        if (location.type === 'hallway') {
-          return '#b3b3b3'
+      if (this.location.showContent) {
+        if (location.character) {
+          if (location.type === 'hallway') {
+            return '#b3b3b3'
+          }
+          return 'black'
         }
-        return 'black'
-      }
-      if (location.item) {
-        switch (location.item.type) {
-          case 'staircase': {
-            return 'lightgreen'
+        if (location.item) {
+          switch (location.item.type) {
+            case 'staircase': {
+              return 'lightgreen'
+            }
           }
         }
       }
@@ -126,31 +116,33 @@ export default {
     },
     color() {
       const location = this.location
-      if (location.character?.monsterType) {
-        if (location.type === 'hallway') {
-          return 'black'
-        }
-        return '#aaaaaa'
-      }
       if (location.character) {
+        if (location.character?.monsterType) {
+          if (location.type === 'hallway') {
+            return 'black'
+          }
+          return '#aaaaaa'
+        }
         return 'yellow'
       }
-      if (location.visible && location.item) {
-        switch (location.item.type) {
-          case 'potion':
-            return location.item.potionType.color
-          case 'ring':
-          case 'weapon':
-          case 'stick':
-          case 'armor':
-          case 'scroll':
-            return '#5555ff'
-          case 'gold':
-            return '#ffff05'
-          case 'food':
-            return '#ba0000'
-          case 'staircase':
-            return 'black'
+      if (location.show && location.showContent) {
+        if (location.item) {
+          switch (location.item.type) {
+            case 'potion':
+              return location.item.potionType.color
+            case 'ring':
+            case 'weapon':
+            case 'stick':
+            case 'armor':
+            case 'scroll':
+              return '#5555ff'
+            case 'gold':
+              return '#ffff05'
+            case 'food':
+              return '#ba0000'
+            case 'staircase':
+              return 'black'
+          }
         }
       }
       if (location.type === 'floor') return '#00ff34'

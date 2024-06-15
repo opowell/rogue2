@@ -163,8 +163,12 @@ export default {
       return this.game.height * LOCATION.HEIGHT + 'px'
     }
   },
+  showDeathScreenTrigger() {
+    console.log(this.game.playerDead, this.game.messages.length)
+    return this.game.playerDead.value && this.game.messages.length < 2
+  },
   watch: {
-    'game.playerDead'(val) {
+    showDeathScreenTrigger(val) {
       if (val) {
         this.gameFinished = true
         this.gameStarted = false
@@ -184,7 +188,9 @@ export default {
       this.game.playerName = name
       this.game.greetPlayer()
       this.gameStarted = true
-      this.$refs.screen.focus()
+      this.$nextTick(() => {
+        this.$refs.screen.focus()
+      })
     },
     dropPrompt() {
       if (!this.game.player.canDrop) {

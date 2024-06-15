@@ -117,23 +117,136 @@ const DEFINITIONS = {
     armor: 8,
     damage: '1d2'
   },
+  M: {
+    label: '&#x004D',
+    name: 'medusa',
+    mean: true,
+    exp: 200,
+    level: 8,
+    armor: 2,
+    damage: '3d4/3d4/2d5'
+  },
+  N: {
+    label: '&#x004E',
+    name: 'nymph',
+    carry: 100,
+    exp: 37,
+    level: 3,
+    armor: 9,
+    damage: '0d0'
+  },
+  O: {
+    label: '&#x004F',
+    name: 'orc',
+    greedy: true,
+    exp: 5,
+    level: 1,
+    armor: 6,
+    damage: '1d8'
+  },
+  P: {
+    label: '&#x0050',
+    name: 'phantom',
+    invisible: true,
+    exp: 120,
+    level: 8,
+    armor: 3,
+    damage: '4d4'
+  },
+  Q: {
+    label: '&#x0051',
+    name: 'quagga',
+    carry: 30,
+    mean: true,
+    exp: 32,
+    level: 3,
+    armor: 2,
+    damage: '1d2/1d2/1d4'
+  },
+  R: {
+    label: '&#x0052',
+    name: 'rattlesnake',
+    mean: true,
+    exp: 9,
+    level: 2,
+    armor: 3,
+    damage: '1d6'
+  },
+  S: {
+    label: '&#x0053',
+    name: 'snake',
+    mean: true,
+    exp: 2,
+    level: 2,
+    armor: 5,
+    damage: '1d3'
+  },
+  T: {
+    label: '&#x0054',
+    name: 'troll',
+    carry: 50,
+    regenerate: true,
+    mean: true,
+    exp: 120,
+    level: 6,
+    armor: 4,
+    damage: '1d8/1d8/2d6'
+  },
+  U: {
+    label: '&#x0055',
+    name: 'ur-vile',
+    mean: true,
+    exp: 190,
+    level: 7,
+    armor: -2,
+    damage: '1d3/1d3/1d3/4d6'
+  },
+  V: {
+    label: '&#x0056',
+    name: 'vampire',
+    carry: 20,
+    regenerate: true,
+    mean: true,
+    exp: 350,
+    level: 8,
+    armor: 1,
+    damage: '1d10'
+  },
+  W: {
+    label: '&#x0057',
+    name: 'wraith',
+    exp: 55,
+    level: 5,
+    armor: 4,
+    damage: '1d6'
+  },
+  X: {
+    label: '&#x0058',
+    name: 'xeroc',
+    carry: 30,
+    exp: 100,
+    level: 7,
+    armor: 7,
+    damage: '3d4'
+  },
+  Y: {
+    label: '&#x0059',
+    name: 'yeti',
+    exp: 50,
+    level: 4,
+    armor: 6,
+    damage: '1d6/1d6'
+  },
+  Z: {
+    label: '&#x005A',
+    name: 'zombie',
+    mean: true,
+    exp: 6,
+    level: 2,
+    armor: 8,
+    damage: '1d8'
+  },
 }
-//  	/* Name		 CARRY	FLAG    str, exp, lvl, amr, hpt, dmg */
-// 409 	{ "medusa",	 40,	ISMEAN,	{ XX,200,   8,   2, ___, "3d4/3d4/2d5" } },
-// 410 	{ "nymph",	 100,	0,	{ XX, 37,   3,   9, ___, "0d0" } },
-// 411 	{ "orc",	 15,	ISGREED,{ XX,  5,   1,   6, ___, "1d8" } },
-// 412 	{ "phantom",	 0,ISINVIS,{ XX,120,   8,   3, ___, "4d4" } },
-// 413 	{ "quagga",	 30,	ISMEAN,	{ XX, 32,   3,   2, ___, "1d2/1d2/1d4" } },
-// 414 	{ "rattlesnake", 0,	ISMEAN,	{ XX,  9,   2,   3, ___, "1d6" } },
-// 415 	{ "slime",	 	 0,	ISMEAN,	{ XX,  1,   2,   8, ___, "1d3" } },
-// 416 	{ "troll",	 50,	ISREGEN|ISMEAN,{ XX, 120, 6, 4, ___, "1d8/1d8/2d6" } },
-// 417 	{ "ur-vile",	 0,	ISMEAN,	{ XX,190,   7,  -2, ___, "1d3/1d3/1d3/4d6" } },
-// 418 	{ "vampire",	 20,	ISREGEN|ISMEAN,{ XX,350,   8,   1, ___, "1d10" } },
-// 419 	{ "wraith",	 0,	0,	{ XX, 55,   5,   4, ___, "1d6" } },
-// 420 	{ "xeroc",30,	0,	{ XX,100,   7,   7, ___, "3d4" } },
-// 421 	{ "yeti",	 30,	0,	{ XX, 50,   4,   6, ___, "1d6/1d6" } },
-// 422 	{ "zombie",	 0,	ISMEAN,	{ XX,  6,   2,   8, ___, "1d8" } }
-
 export const getLevelMonster = (game) => {
   const list = LEVEL_ORDER
   let d = null

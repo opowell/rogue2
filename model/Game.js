@@ -332,6 +332,8 @@ class Game extends StatefulObject {
     for (let i = x - 1; i < x + 2; i++) {
       for (let j = y - 1; j < y + 2; j++) {
         this.locations[i][j].visible = true
+        this.locations[i][j].show = true
+        this.locations[i][j].showContent = true
       }
     }
     if (location.room?.lit) {
@@ -339,6 +341,8 @@ class Game extends StatefulObject {
         r.visible = true
         r.mapped = true
         r.seen = true
+        r.show = true
+        r.showContent = true
       })
     }
   }
@@ -571,8 +575,10 @@ class Game extends StatefulObject {
       for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
         const location = this.locations[i][j]
         if (location.isFloor) {
-          if (!location.item || to.room !== from.room) {
+          if (to.room !== from.room) {
             location.visible = location.room.lit
+            location.show = location.room.lit
+            location.showContent = location.item?.type === 'staircase'
           }
         }
       }
@@ -583,9 +589,11 @@ class Game extends StatefulObject {
       for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
         const observedLocation = this.locations[i][j]
         if ((!from.isHallway || !observedLocation.isWall) && (!to.isHallway || Math.abs(i - x) + Math.abs(j - y) < 2)) {
-          this.locations[i][j].seen = true
-          this.locations[i][j].mapped = true
-          this.locations[i][j].visible = true
+          observedLocation.seen = true
+          observedLocation.mapped = true
+          observedLocation.visible = true
+          observedLocation.show = true
+          observedLocation.showContent = true
         }
       }
     }
@@ -594,13 +602,18 @@ class Game extends StatefulObject {
     const movedOntoItem = this.player.moveTo(to)
     if (from.room !== to.room) {
       if (from.room) {
-        from.room.locations.filter(location => location.isFloor).forEach(location => location.visible = false)
+        from.room.locations.filter(location => location.isFloor).forEach(location => {
+          location.show = from.room.lit || location.item?.type === 'staircase'
+          location.showContent = location.item?.type === 'staircase'
+        })
       }
       if (to.room && to.room.lit) {
         to.room.locations.forEach(location => {
           location.seen = true
           location.visible = true
           location.mapped = true
+          location.show = true
+          location.showContent = true
         })
       }
     }

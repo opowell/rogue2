@@ -9,12 +9,13 @@ class Monster extends GameObject {
   constructor(monsterType, game) {
     super()
     this.type = 'monster'
+    const hits = roll(monsterType.level, 8)
     this.addState({
       game,
       monsterType,
       hits: {
-        current: 12,
-        maximum: 12
+        current: hits,
+        maximum: hits
       },
       counts: {
         seeInvisible: 0,
