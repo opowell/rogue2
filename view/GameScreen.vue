@@ -1,7 +1,7 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
     <template v-if="gameFinished">
-      <DeathScreen :message="deathMessage" />
+      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" />
     </template>
     <template v-else-if="gameStarted">
       <div class="column1">
@@ -168,13 +168,17 @@ export default {
       if (val) {
         this.gameFinished = true
         this.gameStarted = false
-        setTimeout(() => {
-          this.gameFinished = false
-        }, 5000)
+        this.$nextTick(() => {
+          console.log(this, this.$refs, this.$refs.deathScreen)
+          this.$refs.deathScreen.focus()
+        })
       }
     }
   },
   methods: {
+    restart() {
+      this.gameFinished = false
+    },
     startGame(name) {
       this.game.restart()
       this.game.playerName = name
