@@ -331,16 +331,12 @@ class Game extends StatefulObject {
     const y = location.y
     for (let i = x - 1; i < x + 2; i++) {
       for (let j = y - 1; j < y + 2; j++) {
-        this.locations[i][j].visible = true
         this.locations[i][j].show = true
         this.locations[i][j].showContent = true
       }
     }
     if (location.room?.lit) {
       location.room.locations.forEach(r => {
-        r.visible = true
-        r.mapped = true
-        r.seen = true
         r.show = true
         r.showContent = true
       })
@@ -576,7 +572,6 @@ class Game extends StatefulObject {
         const location = this.locations[i][j]
         if (location.isFloor || location.isDoor) {
           if (to.room !== from.room) {
-            location.visible = location.room.lit
             location.show = location.room.lit
             location.showContent = location.item?.type === 'staircase'
           }
@@ -585,23 +580,6 @@ class Game extends StatefulObject {
         }
       }
     }
-    x = to.x
-    y = to.y
-    for (let i = Math.max(x - 1, 0); i < Math.min(x + 2, this.width); i++) {
-      for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
-        const observedLocation = this.locations[i][j]
-        if ((!from.isHallway || !observedLocation.isWall) && (!to.isHallway || Math.abs(i - x) + Math.abs(j - y) < 2)) {
-          observedLocation.seen = true
-          observedLocation.mapped = true
-          observedLocation.visible = true
-          observedLocation.show = true
-          observedLocation.showContent = true
-        }
-      }
-    }
-    from.character = null
-    to.character = this.player
-    const movedOntoItem = this.player.moveTo(to)
     if (from.room !== to.room) {
       if (from.room) {
         from.room.locations.filter(location => location.isFloor || location.isDoor).forEach(location => {
@@ -609,11 +587,29 @@ class Game extends StatefulObject {
           location.showContent = location.item?.type === 'staircase'
         })
       }
+    }
+    x = to.x
+    y = to.y
+    for (let i = Math.max(x - 1, 0); i < Math.min(x + 2, this.width); i++) {
+      for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
+        const observedLocation = this.locations[i][j]
+        if (to.isHallway && observedLocation.isWall) {
+          console.log('not revealing', observedLocation.x, observedLocation.y)
+          continue
+        }
+        if (to.isHallway && Math.abs(i - x) + Math.abs(j - y) >= 2) {
+          continue
+        }
+        observedLocation.show = true
+        observedLocation.showContent = true
+      }
+    }
+    from.character = null
+    to.character = this.player
+    const movedOntoItem = this.player.moveTo(to)
+    if (from.room !== to.room) {
       if (to.room && to.room.lit) {
         to.room.locations.forEach(location => {
-          location.seen = true
-          location.visible = true
-          location.mapped = true
           location.show = true
           location.showContent = true
         })

@@ -7,12 +7,9 @@ class Location extends StatefulObject{
       x,
       y,
       objects: [],
-      visible: false,
-      seen: false,
       type: null,
       item: null,
       character: null,
-      mapped: false,
       room: null,
       show: false, // whether or not to show location on map
       showContent: false // whether or not to show content = item or character
@@ -56,12 +53,9 @@ class Location extends StatefulObject{
   }
   reset() {
     this.objects = []
-    this.visible = false
-    this.seen = false
     this.type = null
     this.item = null
     this.character = null
-    this.mapped = false
     this.room = null
     this.show = false
     this.showContent = false
