@@ -72,7 +72,7 @@ class Character extends GameObject {
       if (xp < 10) {
         return 1
       }
-      return Math.ceil(Math.log2(xp/10)) + 1
+      return Math.ceil(Math.log2((xp+1)/10)) + 1
     })
     this.nextLevelXp = computed(() => {
       return Math.pow(2, this.level - 1) * 10
@@ -109,6 +109,9 @@ class Character extends GameObject {
       const change = modifier*roll(diff, 10)
       this.hits.current += change
       this.hits.maximum += change
+      if (newVal > oldVal) {
+        this.game.addMessage('Welcome to level ' + newVal)
+      }
     })
   }
   getDamageRoll() {

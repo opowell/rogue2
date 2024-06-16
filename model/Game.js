@@ -557,6 +557,7 @@ class Game extends StatefulObject {
       this.addMessage('You hit the ' + to.character.monsterType.name + ' for ' + damage + ' damage')
       if (to.character.dead) {
         this.addMessage('You have defeated the ' + to.character.monsterType.name)
+        this.player.experience += to.character.monsterType.exp
       }
       this.step()
       return
@@ -572,8 +573,11 @@ class Game extends StatefulObject {
         const location = this.locations[i][j]
         if (location.isFloor || location.isDoor) {
           if (to.room !== location.room) {
-            location.show = location.room.lit
+            location.show = location.room.lit || location.isDoor
             location.showContent = false
+          } else {
+            location.show = location.room.lit || location.isDoor
+            location.showContent = location.room.lit
           }
         } else {
           location.showContent = false
@@ -581,10 +585,9 @@ class Game extends StatefulObject {
       }
     }
     if (from.room !== to.room) {
-      console.log('new room')
       if (from.room) {
         from.room.locations.filter(location => location.isFloor || location.isDoor).forEach(location => {
-          location.show = from.room.lit
+          location.show = from.room.lit || location.isDoor
           location.showContent = false
         })
       }
