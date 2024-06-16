@@ -574,12 +574,14 @@ class Game extends StatefulObject {
     for (let i = Math.max(x - 1, 0); i < Math.min(x + 2, this.width); i++) {
       for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
         const location = this.locations[i][j]
-        if (location.isFloor) {
+        if (location.isFloor || location.isDoor) {
           if (to.room !== from.room) {
             location.visible = location.room.lit
             location.show = location.room.lit
             location.showContent = location.item?.type === 'staircase'
           }
+        } else {
+          location.showContent = location.item?.type === 'staircase'
         }
       }
     }
@@ -602,7 +604,7 @@ class Game extends StatefulObject {
     const movedOntoItem = this.player.moveTo(to)
     if (from.room !== to.room) {
       if (from.room) {
-        from.room.locations.filter(location => location.isFloor).forEach(location => {
+        from.room.locations.filter(location => location.isFloor || location.isDoor).forEach(location => {
           location.show = from.room.lit || location.item?.type === 'staircase'
           location.showContent = location.item?.type === 'staircase'
         })

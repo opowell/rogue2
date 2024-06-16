@@ -116,16 +116,16 @@ export default {
     },
     color() {
       const location = this.location
-      if (location.character) {
-        if (location.character?.monsterType) {
-          if (location.type === 'hallway') {
-            return 'black'
-          }
-          return '#aaaaaa'
-        }
-        return 'yellow'
-      }
       if (location.show && location.showContent) {
+        if (location.character) {
+          if (location.character?.monsterType) {
+            if (location.type === 'hallway') {
+              return 'black'
+            }
+            return '#aaaaaa'
+          }
+          return 'yellow'
+        }
         if (location.item) {
           switch (location.item.type) {
             case 'potion':
