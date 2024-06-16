@@ -258,7 +258,7 @@ class Character extends GameObject {
     if (this.location.room && this.location.room.lit) {
       this.location.room.locations.forEach(location => {
         if (location.type === 'door') {
-          out.visible[location.x + '-' + location.y] = 'door'
+          out.visible[location.x + '-' + location.y] = location.character
         }
       })
     }
@@ -291,8 +291,8 @@ class Character extends GameObject {
   currentVisibilityMatches(oldItems) {
     const currentItems = this.getCurrentVisibleItems()
     const allVisibleKeys = {}
-    Object.keys(currentItems.visible).forEach(key => allVisibleKeys[key] = true)
-    Object.keys(oldItems.visible).forEach(key => allVisibleKeys[key] = true)
+    Object.keys(currentItems.visible).forEach(key => allVisibleKeys[key] = currentItems.visible[key])
+    Object.keys(oldItems.visible).forEach(key => allVisibleKeys[key] = oldItems.visible[key])
     const hasNewVisibility = Object.keys(allVisibleKeys).some(key => {
       if (currentItems.visible[key] && currentItems.visible[key] !== oldItems.visible[key]) {
         return true

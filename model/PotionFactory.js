@@ -2,7 +2,7 @@ import Potion from "./Potion.js"
 import { randomElement, randomInt, spread } from "./utils.js"
 
 const colors = [
-  "amber",
+  // "amber",
   "aquamarine",
   // "black",
   "blue",
@@ -22,10 +22,10 @@ const colors = [
   "red",
   "silver",
   "tan",
-  "tangerine",
+  // "tangerine",
   // "topaz",
   "turquoise",
-  "vermilion",
+  // "vermilion",
   "violet",
   "white",
   "yellow"

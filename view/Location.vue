@@ -29,11 +29,14 @@ export default {
       if (location.showContent && location.item?.type === 'staircase' && !location.character) {
         classes.flashing = true
       }
+      if (location.show && !location.showContent && location.item?.type === 'staircase') {
+        classes.flashing = true
+      }
       return classes
     },
     content() {
       const location = this.location
-      if (!this.location.show) {
+      if (!location.show) {
         return ''
       }
       if (location.showContent) {
@@ -66,6 +69,9 @@ export default {
           }
         }
       }
+      if (location.item?.type === 'staircase') {
+        return '&#x2630;'
+      }
       switch (location.type) {
         case 'hallway':
           return ''
@@ -91,58 +97,59 @@ export default {
     },
     bgColor() {
       const location = this.location
-      if (!this.location.show) {
+      if (!location.show) {
         return 'black'
       }
-      if (this.location.showContent) {
+      if (location.showContent) {
         if (location.character) {
           if (location.type === 'hallway') {
             return '#b3b3b3'
           }
           return 'black'
         }
-        if (location.item) {
-          switch (location.item.type) {
-            case 'staircase': {
-              return 'lightgreen'
-            }
-          }
-        }
       }
       if (location.type === 'hallway') {
         return 'grey'
+      }
+      if (location.item?.type === 'staircase') {
+        return 'lightgreen'
       }
       return ''
     },
     color() {
       const location = this.location
-      if (location.show && location.showContent) {
-        if (location.character) {
-          if (location.character?.monsterType) {
-            if (location.type === 'hallway') {
-              return 'black'
+      if (location.show) {
+        if (location.showContent) {
+          if (location.character) {
+            if (location.character?.monsterType) {
+              if (location.type === 'hallway') {
+                return 'black'
+              }
+              return '#aaaaaa'
             }
-            return '#aaaaaa'
+            return 'yellow'
           }
-          return 'yellow'
+          if (location.item) {
+            switch (location.item.type) {
+              case 'potion':
+                return location.item.potionType.color
+              case 'ring':
+              case 'weapon':
+              case 'stick':
+              case 'armor':
+              case 'scroll':
+                return '#5555ff'
+              case 'gold':
+                return '#ffff05'
+              case 'food':
+                return '#ba0000'
+              case 'staircase':
+                return 'black'
+            }
+          }
         }
-        if (location.item) {
-          switch (location.item.type) {
-            case 'potion':
-              return location.item.potionType.color
-            case 'ring':
-            case 'weapon':
-            case 'stick':
-            case 'armor':
-            case 'scroll':
-              return '#5555ff'
-            case 'gold':
-              return '#ffff05'
-            case 'food':
-              return '#ba0000'
-            case 'staircase':
-              return 'black'
-          }
+        if (location.item?.type === 'staircase') {
+          return 'black'
         }
       }
       if (location.type === 'floor') return '#00ff34'

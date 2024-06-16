@@ -571,20 +571,21 @@ class Game extends StatefulObject {
       for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
         const location = this.locations[i][j]
         if (location.isFloor || location.isDoor) {
-          if (to.room !== from.room) {
+          if (to.room !== location.room) {
             location.show = location.room.lit
-            location.showContent = location.item?.type === 'staircase'
+            location.showContent = false
           }
         } else {
-          location.showContent = location.item?.type === 'staircase'
+          location.showContent = false
         }
       }
     }
     if (from.room !== to.room) {
+      console.log('new room')
       if (from.room) {
         from.room.locations.filter(location => location.isFloor || location.isDoor).forEach(location => {
-          location.show = from.room.lit || location.item?.type === 'staircase'
-          location.showContent = location.item?.type === 'staircase'
+          location.show = from.room.lit
+          location.showContent = false
         })
       }
     }
@@ -594,10 +595,9 @@ class Game extends StatefulObject {
       for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, this.height); j++) {
         const observedLocation = this.locations[i][j]
         if (to.isHallway && observedLocation.isWall) {
-          console.log('not revealing', observedLocation.x, observedLocation.y)
           continue
         }
-        if (to.isHallway && Math.abs(i - x) + Math.abs(j - y) >= 2) {
+        if (to.isHallway && Math.abs(i - x) + Math.abs(j - y) >= 2 && !observedLocation.isHallway) {
           continue
         }
         observedLocation.show = true
