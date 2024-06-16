@@ -7,7 +7,7 @@ import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
 import { getItem } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
-const { computed, toRaw } = Vue
+const { computed, toRaw, watch } = Vue
 
 function isWall(location) {
   if (!location.type) {
@@ -38,13 +38,18 @@ class Game extends StatefulObject {
       playerName: null,
       player: null,
       width,
-      height
+      height,
+      maxLevel: 1,
+      seenAmulet: false
     })
     this.player = new Character(this)
     this.createLocations()
     this.startNewLevel()
     this.playerDead = computed(() => {
       return this.player.hits.current < 1
+    })
+    watch(this.level, (val) => {
+      this.maxLevel = Math.max(val, this.maxLevel)
     })
   }
   restart() {
@@ -206,7 +211,7 @@ class Game extends StatefulObject {
     w = w - 1
     h = h - 1
     const room = new Room(x, y, w, h)
-    room.lit = Math.random() > 0.05
+    room.lit = randomInt(10) > this.level - 1
     this.locations[x][y].type = 'downRightWall'
     this.locations[x + w][y].type = 'downLeftWall'
     this.locations[x][y + h].type = 'upRightWall'
@@ -230,10 +235,18 @@ class Game extends StatefulObject {
       this.locations[x][i].type = 'verticalWall'
       this.locations[x+w][i].type = 'verticalWall'
     }
+    let addedGold = false
+    if (Math.random() > 0.5 && !this.seenAmulet && this.level >= this.maxLevel) {
+      const amount = randomInt(50 + 10 * this.level) + 2
+      this.createGold(x + 3, y + 2, amount)
+      addedGold = true
+    }
     this.spawnRandomItem(x+1, y+1)
     this.spawnRandomItem(x+2, y+1)
     this.spawnRandomItem(x + 1, y + 2)
-    this.spawnMonster(x+2, y+2)
+    if (randomInt(100) < (addedGold ? 80 : 25)) {
+      this.spawnMonster(x+2, y+2)
+    }
     return room
   }
   spawnMonster(x, y) {
@@ -549,6 +562,11 @@ class Game extends StatefulObject {
       this.characters.splice(index, 1)
     }
     monster.location.character = null
+    if (monster.items.length > 0) {
+      if (monster.location.canPlaceItem) {
+        monster.location.item = monster.items[0]
+      }
+    }
   }
   movePlayer(from, to) {
     if (to.character) {
@@ -573,22 +591,22 @@ class Game extends StatefulObject {
         const location = this.locations[i][j]
         if (location.isFloor || location.isDoor) {
           if (to.room !== location.room) {
-            location.show = location.room.lit || location.isDoor
-            location.showContent = false
+            location.show = location.show && (location.room.lit || location.isDoor || location.item?.type === 'staircase')
+            location.showContent = location.item?.type === 'staircase'
           } else {
-            location.show = location.room.lit || location.isDoor
-            location.showContent = location.room.lit
+            location.show = location.show && (location.room.lit || location.isDoor || location.item?.type === 'staircase')
+            location.showContent = location.room.lit || location.item?.type === 'staircase'
           }
         } else {
-          location.showContent = false
+          location.showContent = location.item?.type === 'staircase'
         }
       }
     }
     if (from.room !== to.room) {
       if (from.room) {
         from.room.locations.filter(location => location.isFloor || location.isDoor).forEach(location => {
-          location.show = from.room.lit || location.isDoor
-          location.showContent = false
+          location.show = location.show && (from.room.lit || location.isDoor || location.item?.type === 'staircase')
+          location.showContent = location.item?.type === 'staircase'
         })
       }
     }

@@ -253,9 +253,9 @@ export const getLevelMonster = (game) => {
   while (d === null || list[d] === ' ') {
 		d = game.level + randomInt(4) + randomInt(5) - 5
 		if (d < 0)
-      d = randomInt(4)
+      d = randomInt(3)
 		if (d > 25)
-      d = randomInt(4) + 21
+      d = randomInt(3) + 21
   }
   const monsterType = DEFINITIONS[list[d]]
   return new Monster(monsterType, game)
