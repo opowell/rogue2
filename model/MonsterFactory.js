@@ -247,7 +247,10 @@ const DEFINITIONS = {
     damage: '1d8'
   },
 }
-export const getLevelMonster = (game) => {
+export const getLevelMonster = (game, level) => {
+  if (!level) {
+    level = game.level
+  }
   const list = LEVEL_ORDER
   let d = null
   while (d === null || list[d] === ' ') {

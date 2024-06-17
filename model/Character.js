@@ -113,6 +113,9 @@ class Character extends GameObject {
         this.game.addMessage('Welcome to level ' + newVal)
       }
     })
+    watch(() => this.location?.x + '-' + this.location?.y, () => {
+      this.location.marked = true
+    })
   }
   getDamageRoll() {
     return roll(this.weapon.damage)

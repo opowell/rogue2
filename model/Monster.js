@@ -25,7 +25,8 @@ class Monster extends GameObject {
         confuse: 0
       },
       experience: 0,
-      items: []
+      items: [],
+      mean: monsterType.mean
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem()

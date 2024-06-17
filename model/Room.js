@@ -1,4 +1,5 @@
 import StatefulObject from "./StatefulObject.js"
+import { randomElement } from "./utils.js"
 
 class Room extends StatefulObject {
   constructor(x, y, width, height) {
@@ -14,6 +15,16 @@ class Room extends StatefulObject {
       upDoor: null,
       downDoor: null
     })
+  }
+  getFreeItemLocation() {
+    return randomElement(this.locations.filter(loc => loc.canPlaceItem))
+  }
+  spawnRandomItem(game) {
+    const location = this.getFreeItemLocation()
+    if (!location) {
+      return false
+    }
+    game.spawnRandomItem(location.x, location.y)
   }
   setRightDoor(location) {
     this.rightDoor = location

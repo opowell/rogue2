@@ -73,8 +73,12 @@ export default {
         return '&#x2630;'
       }
       switch (location.type) {
-        case 'hallway':
+        case 'hallway': {
+          if (location.marked) {
+            return '&#8231;'
+          }
           return ''
+        }
         case 'floor':
           return '&#8231;'
         case 'upLeftWall':
@@ -152,7 +156,15 @@ export default {
           return 'black'
         }
       }
-      if (location.type === 'floor') return '#00ff34'
+      if (location.type === 'floor') {
+        if (location.marked) {
+          return 'darkgrey'
+        }
+        return '#00ff34'
+      }
+      if (location.type === 'hallway' && location.marked) {
+        return 'darkgrey'
+      }
       if (location.type !== 'floor') return '#b74f00'
       return
     },

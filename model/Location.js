@@ -12,7 +12,8 @@ class Location extends StatefulObject{
       character: null,
       room: null,
       show: false, // whether or not to show location on map
-      showContent: false // whether or not to show content = item or character
+      showContent: false, // whether or not to show content = item or character
+      marked: false
     })
     this.isFloor = computed(() => {
       return this.type === 'floor'
@@ -59,6 +60,7 @@ class Location extends StatefulObject{
     this.room = null
     this.show = false
     this.showContent = false
+    this.marked = false
   }
 }
 export default Location

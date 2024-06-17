@@ -7,14 +7,20 @@ import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
 import { getItem } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
-const { computed, toRaw, watch } = Vue
+import Amulet from './Amulet.js'
+const { computed, nextTick, toRaw, watch } = Vue
 
+const AMULET_LEVEL = 25
 function isWall(location) {
   if (!location.type) {
     return true
   }
   return location.type.includes('Wall')
 }
+const TREAS_ROOM = 20	/* one chance in TREAS_ROOM for a treasure room */
+const MAXTREAS = 10	/* maximum number of treasures in a treasure room */
+const MINTREAS = 2	/* minimum number of treasures in a treasure room */
+const MAX_ITEMS_PER_LEVEL = 9
 
 function canMoveTo(location) {
   if (!location.type) return false
@@ -23,7 +29,7 @@ function canMoveTo(location) {
 }
 
 const NUM_ROOM_COLS = 3
-const NUM_ROOM_ROWS = 2
+const NUM_ROOM_ROWS = 3
 
 class Game extends StatefulObject {
   constructor(width, height) {
@@ -48,7 +54,7 @@ class Game extends StatefulObject {
     this.playerDead = computed(() => {
       return this.player.hits.current < 1
     })
-    watch(this.level, (val) => {
+    watch(() => this.level, (val) => {
       this.maxLevel = Math.max(val, this.maxLevel)
     })
   }
@@ -139,6 +145,51 @@ class Game extends StatefulObject {
     }
     this.addDoors()
     this.addHallways()
+    this.addItems()
+  }
+  getFreeItemFloorLocation() {
+    return randomElement(this.locations.flat().filter(loc => loc.canPlaceItem && loc.isFloor))
+  }
+  addItems() {
+    let i = 0
+    if (this.level >= AMULET_LEVEL) {
+      const amulet = new Amulet()
+      this.placeItem(amulet)
+      i++
+    }
+    for (let j = i; j < MAX_ITEMS_PER_LEVEL; j++) {
+      if (Math.random() < 0.35) {
+        const location = this.getFreeItemFloorLocation()
+        if (location) {
+          this.spawnRandomItem(location.x, location.y)
+        }
+      }
+    }
+    if (randomInt(TREAS_ROOM - 1) === 0) {
+      const room = randomElement(this.rooms.flat())
+      let locations = room.getFreeItemLocation()
+      const spots = Math.min(locations.length, MAXTREAS - MINTREAS)
+      const numTreasure = randomInt(spots - 1) + MINTREAS
+      for (let i = 0; i < numTreasure; i++) {
+        room.spawnRandomItem(this)
+      }
+      let numMonsters = randomInt(spots - 1) + MINTREAS
+      if (numMonsters < numTreasure + 2) {
+        numMonsters = numTreasure + 2
+      }
+      locations = room.locations.flat().filter(loc => loc.canPlaceMonster)
+      if (numMonsters > locations.length - 1) {
+        numMonsters = locations.length - 1
+      }
+      for (let i = 0; i < numMonsters; i++) {
+        const location = randomElement(room.locations.flat().filter(loc => loc.canPlaceMonster))
+        if (!location) {
+          continue
+        }
+        const monster = this.spawnMonster(location.x, location.y, this.level + 1)
+        monster.mean = true
+      }
+    }
   }
   addHallways() {
     for (let i = 0; i < NUM_ROOM_COLS; i++) {
@@ -238,21 +289,22 @@ class Game extends StatefulObject {
     let addedGold = false
     if (Math.random() > 0.5 && !this.seenAmulet && this.level >= this.maxLevel) {
       const amount = randomInt(50 + 10 * this.level) + 2
-      this.createGold(x + 3, y + 2, amount)
-      addedGold = true
+      const location = room.getFreeItemLocation()
+      if (location) {
+        this.createGold(location.x, location.y, amount)
+        addedGold = true
+      }
     }
-    this.spawnRandomItem(x+1, y+1)
-    this.spawnRandomItem(x+2, y+1)
-    this.spawnRandomItem(x + 1, y + 2)
     if (randomInt(100) < (addedGold ? 80 : 25)) {
       this.spawnMonster(x+2, y+2)
     }
     return room
   }
-  spawnMonster(x, y) {
-    const monster = getLevelMonster(this)
+  spawnMonster(x, y, level) {
+    const monster = getLevelMonster(this, level)
     this.characters.push(monster)
     this.placeMonster(monster, x, y)
+    return monster
   }
   spawnRandomItem(x, y) {
     const item = getItem()
@@ -307,7 +359,13 @@ class Game extends StatefulObject {
     return this.placeItem(object, x, y)
   }
   placeItem(object, x, y) {
-    const location = this.locations[x][y]
+    let location
+    if (!x && !y) {
+      const room = randomElement(this.rooms)
+      location = randomElement(room.locations.filter(loc => loc.canPlaceItem))
+    } else {
+      location = this.locations[x][y]
+    }
     if (location.canPlaceItem === false || location.canPlaceItem.value === false) {
       return object
     }
@@ -318,6 +376,7 @@ class Game extends StatefulObject {
   placeMonster(monster, x, y) {
     const location = this.locations[x][y]
     if (location.canPlaceMonster === false || location.canPlaceMonster.value === false) {
+      console.log('WARNING, could not place MONSTER', monster, location, x, y)
       return monster
     }
     location.character = monster
@@ -500,7 +559,9 @@ class Game extends StatefulObject {
     if (newVisibility) {
       return
     }
-    this.runExcept(destination.moveDir.opp)
+    nextTick(() => {
+      this.runExcept(destination.moveDir.opp)
+    })
   }
   goDownStairs() {
     const location = this.player.location
