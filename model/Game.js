@@ -7,6 +7,7 @@ import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
 import { getItem } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
+import { getTrap } from './TrapFactory.js'
 import Amulet from './Amulet.js'
 const { computed, nextTick, toRaw, watch } = Vue
 
@@ -21,6 +22,7 @@ const TREAS_ROOM = 20	/* one chance in TREAS_ROOM for a treasure room */
 const MAXTREAS = 10	/* maximum number of treasures in a treasure room */
 const MINTREAS = 2	/* minimum number of treasures in a treasure room */
 const MAX_ITEMS_PER_LEVEL = 9
+const MAX_TRAPS = 10
 
 function canMoveTo(location) {
   if (!location.type) return false
@@ -73,6 +75,28 @@ class Game extends StatefulObject {
     this.addRooms()
     this.createPlayer()
     this.createStaircase()
+    this.addTraps()
+  }
+  addTraps() {
+    const level = this.level
+    if (Math.random() >= 100*level / 10) {
+      return
+    }
+    let numTraps = randomInt(Math.floor(level / 4))
+		numTraps = 30*Math.min(numTraps, MAX_TRAPS)
+    let i = 0
+    while (i >= 0) {
+      const room = this.getRandomRoom()
+      const location = room.getFreeItemLocation()
+      if (!location) {
+        continue
+      }
+      location.item = getTrap()
+      i--
+    }
+  }
+  getRandomRoom() {
+    return randomElement(this.rooms.flat())
   }
   greetPlayer() {
     this.addMessage('Welcome, ' + this.playerName + ', to the Dungeons of Doom!')

@@ -1,7 +1,7 @@
 <template>
   <div class="message">
     <span>{{ message }}</span>
-    <span v-if="showMore" class="showMore"> MORE&nbsp;</span>
+    <span v-if="showMore" class="showMore">&nbsp;MORE&nbsp;</span>
   </div>
 </template>
 <script>

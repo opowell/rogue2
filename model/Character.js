@@ -2,7 +2,7 @@ import { TYPES as ARMOR_TYPES, getArmor } from './ArmorFactory.js'
 import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
 import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
-import { roll, spread } from './utils.js'
+import { randomInt, roll, spread } from './utils.js'
 const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
@@ -228,7 +228,11 @@ class Character extends GameObject {
     if (!item) {
       return false
     }
-    if (item.type !== 'staircase') {
+    if (item.type === 'trap') {
+      item.discovered = true
+      this.takeDamage(randomInt(1, 2), 'a trap')
+      this.game.addMessage('You stepped on a trap')
+    } else if (item.type !== 'staircase') {
       if (item.type === 'gold') {
         this.gold += item.amount
         this.game.addMessage('You picked up ' + item.amount + ' pieces of gold.')

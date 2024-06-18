@@ -66,6 +66,12 @@ export default {
               return '&#x25D8;'
             case 'staircase':
               return '&#x2630;'
+            case 'trap': {
+              if (!location.item.discovered) {
+                return '&#8231;'
+              }
+              return '&#x2666;'
+            }
           }
         }
       }
@@ -149,6 +155,11 @@ export default {
                 return '#ba0000'
               case 'staircase':
                 return 'black'
+              case 'trap': {
+                if (location.item.discovered) {
+                  return '#ba00b0'
+                }
+              }
             }
           }
         }
