@@ -79,20 +79,20 @@ class Game extends StatefulObject {
   }
   addTraps() {
     const level = this.level
-    if (Math.random() >= 100*level / 10) {
+    if (Math.random() >= level / 10) {
       return
     }
     let numTraps = randomInt(Math.floor(level / 4))
-		numTraps = 30*Math.min(numTraps, MAX_TRAPS)
+		numTraps = Math.min(numTraps, MAX_TRAPS)
     let i = 0
-    while (i >= 0) {
+    while (i < numTraps) {
       const room = this.getRandomRoom()
       const location = room.getFreeItemLocation()
       if (!location) {
         continue
       }
       location.item = getTrap()
-      i--
+      i++
     }
   }
   getRandomRoom() {

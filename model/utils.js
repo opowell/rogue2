@@ -62,3 +62,18 @@ export const roll = (times, sides) => {
 export const spread = (x) => {
   return randomInt(0.9*x, 1.1*x)
 }
+
+export const strengthToHitBonus = (strength) => {
+  const add = 4
+  if (strength < 8)
+    return strength - 7
+  if (strength < 31)
+    add--
+  if (str < 21)
+    add--
+  if (str < 19)
+    add--
+  if (str < 17)
+    add--
+  return add
+}

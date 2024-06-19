@@ -1,5 +1,5 @@
 import GameObject from './GameObject.js'
-import { isDiagonalMove, randomElement, randomInt, roll, spread } from './utils.js'
+import { isDiagonalMove, randomElement, randomInt, roll, spread, strengthToHitBonus } from './utils.js'
 
 const { computed, watch } = Vue
 
@@ -26,7 +26,8 @@ class Monster extends GameObject {
       },
       experience: 0,
       items: [],
-      mean: monsterType.mean
+      mean: monsterType.mean,
+      level: monsterType.level
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem()
@@ -65,6 +66,7 @@ class Monster extends GameObject {
   moveTo(to) {
     const from = this.location
     if (to.character && !to.character.monsterType) {
+      const swing = this.swing()
       const damage = this.getDamageRoll()
       to.character.takeDamage(damage, 'killed by a ' + this.monsterType.name)
       this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage')
@@ -77,6 +79,18 @@ class Monster extends GameObject {
   }
   takeDamage(x) {
     this.hits.current -= x
+  }
+  swing() {
+    const attackerLevel = this.level
+    const defenderArmor = 5
+    const wplus = 
+    int at_lvl, op_arm, wplus;
+    {
+        register int res = rnd(20);
+        register int need = (20 - at_lvl) - op_arm;
+
+        return (res + wplus >= need);
+    }
   }
   getDamageRoll() {
     const dmg = this.monsterType.damage

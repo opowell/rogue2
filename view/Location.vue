@@ -37,6 +37,9 @@ export default {
     content() {
       const location = this.location
       if (!location.show) {
+        if (location.marked) {
+          return '&#8231;'
+        }
         return ''
       }
       if (location.showContent) {

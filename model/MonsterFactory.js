@@ -1,7 +1,7 @@
 import Monster from "./Monster.js"
 import { randomElement, randomInt } from "./utils.js"
 
-const LEVEL_ORDER = "K BHISOR LCA NYTWFP GMXVJD"
+const LEVEL_ORDER = "KEBHISOR LCA NYTWFP GMXVJD"
 const WAND_ORDER = "KEBHISORZ CAQ YTW PUGM VJ "
 
 const DEFINITIONS = {
@@ -254,7 +254,7 @@ export const getLevelMonster = (game, level) => {
   const list = LEVEL_ORDER
   let d = null
   while (d === null || list[d] === ' ') {
-		d = game.level + randomInt(4) + randomInt(5) - 5
+		d = game.level + randomInt(3) + randomInt(4) - 5
 		if (d < 0)
       d = randomInt(3)
 		if (d > 25)
