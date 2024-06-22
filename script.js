@@ -28,7 +28,7 @@ window.rogue.init = () => {
     },
     setup() {
       const WIDTH = 60
-      const HEIGHT = 30
+      const HEIGHT = 29
 
       const game = ref(new Game(WIDTH, HEIGHT))
       const out = {

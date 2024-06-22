@@ -63,6 +63,75 @@ export const spread = (x) => {
   return randomInt(0.9*x, 1.1*x)
 }
 
+const VORPALIZE_HIT_BONUS = 4
+const VORPALIZE_DAMAGE_BONUS = 4
+const IMMOBILE_HIT_BONUS = 4
+
+const swing = (attackerLevel, defArmor, weaponPlus) => {
+  const res = randomInt(19)
+  const need = 20 - attackerLevel - defArmor
+  return res + weaponPlus >= need
+}
+
+/*
+ * roll_em: Roll several attacks
+ */
+export const attack = (attacker, defender, weapon, throwing = false) => {
+  let didHit = false
+  let hPlus = 0
+  let dPlus = 0
+  let weaponDamage = 0
+  if (weapon) {
+    // cp = att->s_dmg;
+    hPlus = weapon.hitBonus
+    dPlus = weapon.damageBonus
+    if (weapon.vorpalizeType === defender.monsterType) {
+      hPlus += VORPALIZE_HIT_BONUS 
+      dPlus += VORPALIZE_DAMAGE_BONUS
+    }
+    if (throwing) {
+      weaponDamage = weapon.throw
+      if (attacker.weapon.weaponType === weapon.weaponType.shooter) {
+        hPlus += attacker.weapon.hitBonus
+        dPlus += attacker.weapon.damageBonus
+      }
+    } else {
+      weaponDamage = weapon.damage
+    }
+  } else {
+    weaponDamage = attacker.damage
+  }
+  if (!throwing) {
+    hPlus += attacker.meleeHitBonus
+    dPlus += attacker.meleeDamageBonus    
+  }
+	// // Drain a staff of striking
+	// if (weap->o_type == STICK && weap->o_which == WS_HIT
+	// 	&& --weap->o_charges < 0)
+	// {
+	//     cp = weap->o_damage = "0d0";
+	//     weap->o_hplus = weap->o_dplus = 0;
+	//     weap->o_charges = 0;
+	// }
+  if (defender.isImmobile) {
+    hPlus += IMMOBILE_HIT_BONUS
+  }
+  const defenderArmor = defender.toHitArmorLevel
+  const swings = weaponDamage.split('/')
+  let damage = 0
+  swings.forEach(swingDef => {
+    if (swing(attacker.level, defenderArmor, attacker.strengthToHitBonus)) {
+      didHit = true
+      const pRoll = roll(swingDef)
+      damage += dPlus + pRoll + attacker.strengthDamageBonus
+    }
+  })
+  if (defender.game.player === defender && defender.game.level === 1) {
+    damage = Math.floor((damage + 1) / 2)
+  }
+  return didHit
+}
+
 export const strengthToHitBonus = (strength) => {
   const add = 4
   if (strength < 8)

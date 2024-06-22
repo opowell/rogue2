@@ -7,11 +7,14 @@ const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
 
+export const TYPE = 'character'
+
 class Character extends GameObject {
   constructor(game) {
     super()
     this.addState({
       game,
+      type: TYPE,
       items: [],
       strength:  {
         current: 16,
@@ -63,6 +66,12 @@ class Character extends GameObject {
 
     this.numItems = computed(() => {
       return this.items.reduce((acc, value) => acc + value.inventoryCount, 0)
+    })
+    this.meleeHitBonus = computed(() => {
+      return 0
+    })
+    this.meleeDamageBonus = computed(() => {
+      return 0
     })
     this.canSee = computed(() => {
       return this.counts.blind === 0

@@ -8,10 +8,10 @@ const SEE_DURATION = spread(300)
 class Monster extends GameObject {
   constructor(monsterType, game) {
     super()
-    this.type = 'monster'
     const hits = roll(monsterType.level, 8)
     this.addState({
       game,
+      type: 'monster',
       monsterType,
       hits: {
         current: hits,
@@ -27,7 +27,11 @@ class Monster extends GameObject {
       experience: 0,
       items: [],
       mean: monsterType.mean,
-      level: monsterType.level
+      level: monsterType.level,
+      strength: {
+        current: monsterType.strength,
+        maximum: monsterType.strength
+      }
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem()
@@ -35,6 +39,31 @@ class Monster extends GameObject {
     }
     this.dead = computed(() => {
       return this.hits.current < 1
+    })
+    this.isImmobile = computed(() => {
+      return this.counts.hold > 0
+    })
+    this.toHitArmorLevel = computed(() => {
+      return 5
+    })
+    this.strengthDamageBonus = computed(() => {
+      const str = this.strength.current
+      let add = 6
+      if (str < 8)
+	      return str - 7
+      if (str < 31)
+	      add--
+      if (str < 22)
+	      add--
+      if (str < 20)
+	      add--
+      if (str < 18)
+	      add--
+      if (str < 17)
+	      add--
+      if (str < 16)
+	      add--
+      return add
     })
     watch(this.dead, (newVal) => {
       if (newVal) {
@@ -79,18 +108,6 @@ class Monster extends GameObject {
   }
   takeDamage(x) {
     this.hits.current -= x
-  }
-  swing() {
-    const attackerLevel = this.level
-    const defenderArmor = 5
-    const wplus = 
-    int at_lvl, op_arm, wplus;
-    {
-        register int res = rnd(20);
-        register int need = (20 - at_lvl) - op_arm;
-
-        return (res + wplus >= need);
-    }
   }
   getDamageRoll() {
     const dmg = this.monsterType.damage

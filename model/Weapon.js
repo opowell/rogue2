@@ -7,7 +7,8 @@ class Weapon extends Item {
       hitBonus: 0,
       damageBonus: 0,
       identified: false,
-      damage: type.damage
+      damage: type.damage,
+      vorpalizeType: null
     })
     this.type = 'weapon'
   }

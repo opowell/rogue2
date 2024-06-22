@@ -127,8 +127,8 @@ class Game extends StatefulObject {
     return this.locations[x][y]
   }
   addRooms() {
-    const widthPerRoomCol = Math.floor(this.width / NUM_ROOM_COLS)
-    const heightPerRoomRow = Math.floor(this.height / NUM_ROOM_ROWS)
+    const widthPerRoomCol = Math.floor((this.width - NUM_ROOM_COLS)/ NUM_ROOM_COLS)
+    const heightPerRoomRow = Math.floor((this.height - NUM_ROOM_ROWS)/ NUM_ROOM_ROWS)
     this.rooms = []
     const minWidth = 4
     const minHeight = 4
