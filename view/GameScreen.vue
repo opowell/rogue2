@@ -94,6 +94,10 @@ export default {
     }
   },
   computed: {
+    showDeathScreenTrigger() {
+      console.log(this.game.playerDead, this.game.messages.length)
+      return this.game.playerDead.value && this.game.messages.length < 2
+    },
     deathMessage() {
       return this.game.playerName + ' ' + this.game.player.latestDamageCause + ' on level ' + this.game.level
     },
@@ -162,10 +166,6 @@ export default {
     screenHeight() {
       return this.game.height * LOCATION.HEIGHT + 'px'
     }
-  },
-  showDeathScreenTrigger() {
-    console.log(this.game.playerDead, this.game.messages.length)
-    return this.game.playerDead.value && this.game.messages.length < 2
   },
   watch: {
     showDeathScreenTrigger(val) {
