@@ -113,7 +113,7 @@ export default {
           value: player.hits.current + '(' + player.hits.maximum + ')'
         },
         {
-          label: 'Strength',
+          label: 'Str',
           value: player.strength.current + '(' + player.strength.maximum + ')'
         },
         {
