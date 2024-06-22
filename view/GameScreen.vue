@@ -3,6 +3,14 @@
     <template v-if="gameFinished">
       <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" />
     </template>
+    <template v-if="showInventory">
+      <div class="section">
+        <div class="section-title">Inventory</div>
+        <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
+          <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
+        </div>
+      </div>
+    </template>
     <template v-else-if="gameStarted">
       <div class="column1">
         <div v-if="player" class="section">
@@ -10,12 +18,6 @@
           <div v-for="item in characterItems" class="section-row" :key="item.label">
             <div class="section-row-label">{{ item.label }}</div>
             <div class="section-row-value">{{ item.value }}</div>
-          </div>
-        </div>
-        <div class="section">
-          <div class="section-title">Inventory</div>
-          <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
-            <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
           </div>
         </div>
       </div>
@@ -90,7 +92,8 @@ export default {
       wearingArmor: false,
       gameCoordinates,
       gameStarted: false,
-      gameFinished: false
+      gameFinished: false,
+      showInventory: false
     }
   },
   computed: {
@@ -286,7 +289,14 @@ export default {
       if (this.game.messages.length === 1) {
         this.game.clearCurrentMessage()
       }
+      if (this.showInventory) {
+        this.showInventory = false
+        return
+      }
       switch (event.key) {
+        case 'i':
+          this.showInventory = true
+          break
         case 'q':
           this.quaffPrompt()
           break
