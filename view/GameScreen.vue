@@ -1,15 +1,13 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
-    <template v-if="gameFinished">
+    <template v-if="showOptions">
+      <OptionsScreen />
+    </template>
+    <template v-else-if="gameFinished">
       <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" />
     </template>
-    <template v-if="showInventory">
-      <div class="section">
-        <div class="section-title">Inventory</div>
-        <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
-          <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
-        </div>
-      </div>
+    <template v-else-if="showInventory">
+      <InventoryScreen :game="game" />
     </template>
     <template v-else-if="gameStarted">
       <div class="column1">
@@ -20,6 +18,7 @@
             <div class="section-row-value">{{ item.value }}</div>
           </div>
         </div>
+        <InventoryComponent :game="game" />
       </div>
       <div class="column2">
         <GameMessage :message="message" :show-more="game.messages.length > 1"/>
@@ -42,16 +41,19 @@
       </div>
     </template>
     <template v-else>
-      <GameWelcome @start-game="startGame" />
+      <WelcomeScreen @start-game="startGame" />
     </template>
   </div>
 </template>
 <script>
-import Welcome from './Welcome.vue'
+import WelcomeScreen from './screens/Welcome.vue'
+import InventoryComponent from './components/Inventory.vue'
+import InventoryScreen from './screens/Inventory.vue'
 import Coordinate from './Coordinate.vue'
 import Location from './Location.vue'
 import Message from './Message.vue'
-import DeathScreen from './DeathScreen.vue'
+import DeathScreen from './screens/Death.vue'
+import OptionsScreen from './screens/Options.vue'
 
 const fontRatio = 8/14
 
@@ -61,8 +63,11 @@ export default {
     GameLocation: Location,
     GameMessage: Message,
     GameCoordinate: Coordinate,
-    GameWelcome: Welcome,
+    WelcomeScreen,
+    InventoryScreen,
     DeathScreen,
+    OptionsScreen,
+    InventoryComponent
   },
   props: {
     game: { type: Object, required: true },
@@ -289,6 +294,9 @@ export default {
       }
     },
     handleKeydown(event) {
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return
+      }
       if (this.wearingArmor) {
         this.handleWearingArmorKeyDown(event)
         return
@@ -316,6 +324,9 @@ export default {
         return
       }
       switch (event.key) {
+        case 'o':
+          this.showOptions = true
+          break
         case 'i':
           this.showInventory = true
           break
