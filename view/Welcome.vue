@@ -22,6 +22,7 @@ export default {
   },
   methods: {
     handleKeydown(e) {
+      e.stopPropagation()
       if (e.code === 'Enter') {
         e.preventDefault()
         e.stopPropagation()
