@@ -320,7 +320,10 @@ class Game extends StatefulObject {
       }
     }
     if (randomInt(100) < (addedGold ? 80 : 25)) {
-      this.spawnMonster(x+2, y+2)
+      const location = randomElement(room.locations.flat().filter(loc => loc.canPlaceMonster))
+      if (location) {
+        this.spawnMonster(location.x, location.y)
+      }
     }
     return room
   }
