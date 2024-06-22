@@ -7,20 +7,12 @@
   />
 </template>
 <script>
-const LOCATION = {
-  WIDTH: 16,
-  HEIGHT: 28
-}
 export default {
   name: 'GameLocation',
   props: {
-    location: { type: Object, required: true }
-  },
-  data() {
-    return {
-      locationWidth: LOCATION.WIDTH + 'px',
-      locationHeight: LOCATION.HEIGHT + 'px'
-    }
+    location: { type: Object, required: true },
+    width: { type: Number, required: true },
+    height: { type: Number, required : true }
   },
   computed: {
     locationClasses() {
@@ -187,8 +179,8 @@ export default {
       return {
         color: this.color,
         'background-color': this.bgColor,
-        top: location.y * LOCATION.HEIGHT + 'px',
-        left: location.x * LOCATION.WIDTH + 'px',
+        top: location.y * this.height + 'px',
+        left: location.x * this.width + 'px',
       }
     }
   },
@@ -196,13 +188,10 @@ export default {
 </script>
 <style scoped>
 .location {
-  width: v-bind(locationWidth);
-  height: v-bind(locationHeight);
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
 }
 @keyframes example {
   0%   {color: transparent;}

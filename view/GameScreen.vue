@@ -35,6 +35,8 @@
             v-for="location in visibleLocations"
             :key="location.x + '-' + location.y"
             :location="location"
+            :width="locationWidth"
+            :height="locationHeight"
           />
         </div>
       </div>
@@ -50,10 +52,9 @@ import Coordinate from './Coordinate.vue'
 import Location from './Location.vue'
 import Message from './Message.vue'
 import DeathScreen from './DeathScreen.vue'
-const LOCATION = {
-  WIDTH: 16,
-  HEIGHT: 28
-}
+
+const fontRatio = 8/14
+
 export default {
   name: 'GameScreen',
   components: {
@@ -93,10 +94,16 @@ export default {
       gameCoordinates,
       gameStarted: false,
       gameFinished: false,
-      showInventory: false
+      showInventory: false,
+      locationWidth: 0,
+      locationHeight: 0,
+      showOptions: false
     }
   },
   computed: {
+    fontSize() {
+      return this.locationHeight + 'px'
+    },
     showDeathScreenTrigger() {
       console.log(this.game.playerDead, this.game.messages.length)
       return this.game.playerDead.value && this.game.messages.length < 2
@@ -163,12 +170,6 @@ export default {
       //     )
       // })
     },
-    screenWidth() {
-      return this.game.width * LOCATION.WIDTH + 'px'
-    },
-    screenHeight() {
-      return this.game.height * LOCATION.HEIGHT + 'px'
-    }
   },
   watch: {
     showDeathScreenTrigger(val) {
@@ -182,7 +183,28 @@ export default {
       }
     }
   },
+  mounted() {
+    this.setFontSize()
+    const resizeObserver = new ResizeObserver(() => {
+      this.setFontSize()
+    })
+    resizeObserver.observe(this.$refs.screen)
+  },
   methods: {
+    setFontSize() {
+      let width = window.innerWidth / 80
+      let height = window.innerHeight / 28
+      const ratio = width/height
+      if (ratio < fontRatio) {
+        width = Math.floor(width)
+        height = width / fontRatio
+      } else {
+        height = Math.floor(height)
+        width = height * fontRatio
+      }
+      this.locationWidth = width
+      this.locationHeight = height
+    },
     restart() {
       this.gameFinished = false
     },
@@ -375,6 +397,13 @@ export default {
   }
 }
 </script>
+<style>
+.location {
+  width: v-bind(locationWidth);
+  height: v-bind(locationHeight);
+  font-size: v-bind(fontSize);
+}
+</style>
 <style scoped>
 .section-title {
   color: #555;
@@ -410,19 +439,21 @@ export default {
   flex: 1 1 auto;
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 @font-face {
   font-family: "IBMVGA8";
   /* src: url("WebPlus_IBM_VGA_9x16.woff") format('woff'); */
   /* src: url("WebPlus_IBM_VGA_9x14.woff") format('woff'); */
   /* src: url("WebPlus_IBM_VGA_8x14.woff") format('woff'); */
-  /* src: url("Web437_IBM_VGA_8x14.woff") format('woff'); */
+  src: url("Web437_IBM_VGA_8x14.woff") format('woff');
   /* src: url("Web437_IBM_VGA_9x14.woff") format('woff'); */
-  src: url("Web437_IBM_VGA_9x16.woff") format('woff');
+  /* src: url("Web437_IBM_VGA_9x16.woff") format('woff'); */
 }
 .map {
-  width: v-bind(screenWidth);
-  height: v-bind(screenHeight);
+  width: 100%;
+  height: 100%;
   position: relative;
+  overflow: hidden;
 }
 </style>

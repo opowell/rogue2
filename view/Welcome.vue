@@ -47,6 +47,5 @@ input:focus, input:active {
 }
 .title {
   color: lightgray;
-  height: 1.5rem;
 }
 </style>
