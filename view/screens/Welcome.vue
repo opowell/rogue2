@@ -34,7 +34,6 @@ export default {
 </script>
 <style scoped>
 input {
-  font-size: 1.2rem;
   font-family: IBMVGA8;
   background-color: transparent;
   border: none;

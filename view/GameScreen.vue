@@ -21,13 +21,15 @@
         <InventoryComponent :game="game" />
       </div>
       <div class="column2">
-        <GameMessage :message="message" :show-more="game.messages.length > 1"/>
+        <GameMessage :message="message" :show-more="game.messages.length > 1" :height="locationHeight" class="message"/>
         <div v-if="showMap" class="map">
           <template v-if="showCoordinates">
             <GameCoordinate
               v-for="coordinate in gameCoordinates"
               :key="coordinate.x + '-' + coordinate.y"
               :coordinate="coordinate"
+              :width="locationWidth"
+              :height="locationHeight"
             />
           </template>
           <GameLocation
@@ -175,6 +177,9 @@ export default {
       //     )
       // })
     },
+    mapWidth() {
+      return this.locationWidth * 80 + 'px'
+    }
   },
   watch: {
     showDeathScreenTrigger(val) {
@@ -412,7 +417,6 @@ export default {
 .location {
   width: v-bind(locationWidth);
   height: v-bind(locationHeight);
-  font-size: v-bind(fontSize);
 }
 </style>
 <style scoped>
@@ -430,20 +434,20 @@ export default {
   flex: 0 0 auto;
 }
 .column1 {
-  flex: 0 0 210px;
+  flex: 1 1 auto;
   gap: 1rem;
   display: flex;
   flex-direction: column;
 }
 .column2 {
-  flex: 1 1 auto;
+  flex: 0 0 v-bind(mapWidth);
   display: flex;
   flex-direction: column;
 }
 .game-screen {
-  font-size: 1.2rem;
   background-color: black;
   font-family: IBMVGA8;
+  font-size: v-bind(fontSize);
   display: flex;
   gap: 2rem;
   padding: 1rem;
@@ -466,5 +470,8 @@ export default {
   height: 100%;
   position: relative;
   overflow: hidden;
+}
+.message {
+  flex: 0 0 auto;
 }
 </style>

@@ -7,26 +7,18 @@
   </div>
 </template>
 <script>
-const LOCATION = {
-  WIDTH: 16,
-  HEIGHT: 28
-}
 export default {
   name: 'GameCoordinate',
   props: {
-    coordinate: { type: Object, required: true }
-  },
-  data() {
-    return {
-      locationWidth: LOCATION.WIDTH + 'px',
-      locationHeight: LOCATION.HEIGHT + 'px'
-    }
+    coordinate: { type: Object, required: true },
+    width: { type: Number, required: true },
+    height: { type: Number, required : true }
   },
   computed: {
     locationStyle() {
       return {
-        top: this.coordinate.y * LOCATION.HEIGHT + 'px',
-        left: this.coordinate.x * LOCATION.WIDTH + 'px',
+        top: this.coordinate.y * this.height + 'px',
+        left: this.coordinate.x * this.width + 'px',
       }
     }
   },
@@ -34,13 +26,10 @@ export default {
 </script>
 <style scoped>
 .location {
-  width: v-bind(locationWidth);
-  height: v-bind(locationHeight);
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   color: red;
 }
 </style>
