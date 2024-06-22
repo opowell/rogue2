@@ -1,5 +1,5 @@
 import GameObject from './GameObject.js'
-import { isDiagonalMove, randomElement, randomInt, roll, spread, strengthToHitBonus } from './utils.js'
+import { isDiagonalMove, randomElement, randomInt, roll, spread, attack } from './utils.js'
 
 const { computed, watch } = Vue
 
@@ -96,10 +96,12 @@ class Monster extends GameObject {
   moveTo(to) {
     const from = this.location
     if (to.character && !to.character.monsterType) {
-      const swing = this.swing()
-      const damage = this.getDamageRoll()
-      to.character.takeDamage(damage, 'killed by a ' + this.monsterType.name)
-      this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage')
+      const didHit = attack(this, to.character)
+      if (didHit) {
+        this.game.addMessage('The ' + this.monsterType.name + ' hit you.')
+      } else {
+        this.game.addMessage('The ' + this.monsterType.name + ' missed you.')
+      }
       return
     }
     if (!to.canCharacterMoveTo) return
