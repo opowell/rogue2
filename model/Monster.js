@@ -4,14 +4,15 @@ import { isDiagonalMove, randomElement, randomInt, roll, spread, strengthToHitBo
 const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
+export const TYPE = 'monster'
 
 class Monster extends GameObject {
   constructor(monsterType, game) {
     super()
     const hits = roll(monsterType.level, 8)
+    this.type = TYPE
     this.addState({
       game,
-      type: 'monster',
       monsterType,
       hits: {
         current: hits,

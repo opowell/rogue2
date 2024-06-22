@@ -12,9 +12,9 @@ export const TYPE = 'character'
 class Character extends GameObject {
   constructor(game) {
     super()
+    this.type = TYPE
     this.addState({
       game,
-      type: TYPE,
       items: [],
       strength:  {
         current: 16,
