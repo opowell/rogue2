@@ -44,6 +44,9 @@ class Character extends GameObject {
     const ration = getFood(FOOD_TYPES.RATION)
     this.items.push(ration)
 
+    this.toHitArmorLevel = computed(() => {
+      return this.armorLevel.value
+    })
     const mace = spawnMace()
     mace.enchantHit()
     mace.enchantDamage()

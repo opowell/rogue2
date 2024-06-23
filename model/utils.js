@@ -99,7 +99,9 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
       weaponDamage = weapon.damage
     }
   } else {
-    weaponDamage = attacker.damage
+    if (attacker.monsterType) {
+      weaponDamage = attacker.monsterType.damage
+    }
   }
   if (!throwing) {
     hPlus += attacker.meleeHitBonus
@@ -116,13 +118,14 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
   if (defender.isImmobile) {
     hPlus += IMMOBILE_HIT_BONUS
   }
-  const defenderArmor = defender.toHitArmorLevel
   const swings = weaponDamage.split('/')
   let damage = 0
   swings.forEach(swingDef => {
-    if (swing(attacker.level, defenderArmor, attacker.strengthToHitBonus)) {
+    const hit = swing(attacker.level, defender.toHitArmorLevel, attacker.strengthToHitBonus)
+    if (hit) {
       didHit = true
       const pRoll = roll(swingDef)
+      console.log('hit', dPlus, pRoll, attacker.strengthDamageBonus)
       damage += dPlus + pRoll + attacker.strengthDamageBonus
     }
   })
@@ -141,11 +144,11 @@ export const strengthToHitBonus = (strength) => {
     return strength - 7
   if (strength < 31)
     add--
-  if (str < 21)
+  if (strength < 21)
     add--
-  if (str < 19)
+  if (strength < 19)
     add--
-  if (str < 17)
+  if (strength < 17)
     add--
   return add
 }

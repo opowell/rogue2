@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <span>ROGUE: The Adventure Game</span>
-    <div>Rogue's Name? <input ref="input" type="text" tabindex="0" v-model="name" @keydown="handleKeydown" /></div>
+    <div>Rogue's Name? <input ref="input" type="text" tabindex="0" spellcheck="false" v-model="name" @keydown="handleKeydown" /></div>
   </div>
 </template>
 <script>

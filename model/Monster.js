@@ -1,5 +1,5 @@
 import GameObject from './GameObject.js'
-import { isDiagonalMove, randomElement, randomInt, roll, spread, attack } from './utils.js'
+import { isDiagonalMove, randomElement, randomInt, roll, spread, attack, strengthToHitBonus } from './utils.js'
 
 const { computed, watch } = Vue
 
@@ -32,12 +32,17 @@ class Monster extends GameObject {
       strength: {
         current: monsterType.strength,
         maximum: monsterType.strength
-      }
+      },
+      meleeDamageBonus: 0,
+      meleeHitBonus: 0
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem()
       this.items.push(item)
     }
+    this.strengthToHitBonus = computed(() => {
+      return strengthToHitBonus(this.strength.current)
+    })
     this.dead = computed(() => {
       return this.hits.current < 1
     })

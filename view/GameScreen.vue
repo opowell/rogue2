@@ -112,7 +112,6 @@ export default {
       return this.locationHeight + 'px'
     },
     showDeathScreenTrigger() {
-      console.log(this.game.playerDead, this.game.messages.length)
       return this.game.playerDead.value && this.game.messages.length < 2
     },
     deathMessage() {
@@ -417,6 +416,9 @@ export default {
 .location {
   width: v-bind(locationWidth);
   height: v-bind(locationHeight);
+}
+input {
+  font-size: v-bind(locationHeight);
 }
 </style>
 <style scoped>
