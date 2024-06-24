@@ -10,7 +10,7 @@
       <InventoryScreen :game="game" />
     </template>
     <template v-else-if="gameStarted">
-      <div class="column1">
+      <div v-if="showLeftPanel" class="column1">
         <div v-if="player" class="section">
           <div class="section-title">Player</div>
           <div v-for="item in characterItems" class="section-row" :key="item.label">
@@ -40,6 +40,12 @@
             :height="locationHeight"
           />
         </div>
+        <div v-if="!showLeftPanel" class="bottom-panel">
+          <div v-for="item in characterItems" class="section-bottom-row" :key="item.label">
+            <div class="section-bottom-row-label">{{ item.label }}:</div>
+            <div class="section-bottom-row-value">{{ item.value }}</div>
+          </div>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -58,6 +64,9 @@ import DeathScreen from './screens/Death.vue'
 import OptionsScreen from './screens/Options.vue'
 
 const fontRatio = 8/14
+const MIN_LEFT_PANEL_WIDTH = 12
+const BOTTOM_PANEL_HEIGHT = 2
+const TOP_PANEL_HEIGHT = 1
 
 export default {
   name: 'GameScreen',
@@ -177,7 +186,11 @@ export default {
       // })
     },
     mapWidth() {
-      return this.locationWidth * 80 + 'px'
+      return this.locationWidth * this.game.width + 'px'
+    },
+    showLeftPanel() {
+      const windowCols = Math.floor(window.innerWidth / this.locationWidth)
+      return windowCols > this.game.width + MIN_LEFT_PANEL_WIDTH
     }
   },
   watch: {
@@ -201,8 +214,8 @@ export default {
   },
   methods: {
     setFontSize() {
-      let width = window.innerWidth / 80
-      let height = window.innerHeight / 28
+      let width = window.innerWidth / this.game.width
+      let height = window.innerHeight / (this.game.height + BOTTOM_PANEL_HEIGHT + TOP_PANEL_HEIGHT)
       const ratio = width/height
       if (ratio < fontRatio) {
         width = Math.floor(width)
@@ -430,6 +443,14 @@ input {
   display: flex;
   color: lightgray;
 }
+.bottom-panel {
+  display: flex;
+  grid-gap: 2rem;
+  color: #ffff05;
+}
+.section-bottom-row {
+  display: flex;
+}
 .section-row-label {
   flex: 1 1 auto;
 }
@@ -458,6 +479,7 @@ input {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  justify-content: center;
 }
 @font-face {
   font-family: "IBMVGA8";

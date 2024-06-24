@@ -218,6 +218,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: v-bind(bgColor);
 }
 @keyframes pulse-flashing {
   0%   {color: transparent;}

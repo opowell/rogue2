@@ -131,42 +131,26 @@ class Game extends StatefulObject {
     return this.locations[x][y]
   }
   addRooms() {
-    const widthPerRoomCol = Math.floor((this.width - NUM_ROOM_COLS)/ NUM_ROOM_COLS)
-    const heightPerRoomRow = Math.floor((this.height - NUM_ROOM_ROWS)/ NUM_ROOM_ROWS)
+    const numVerticalHallways = NUM_ROOM_ROWS - 1
+    const numHorizontalHallways = NUM_ROOM_COLS - 1
+    const widthPerRoomCol = Math.floor((this.width - numHorizontalHallways)/ NUM_ROOM_COLS)
+    const heightPerRoomRow = Math.floor((this.height - numVerticalHallways)/ NUM_ROOM_ROWS)
     this.rooms = []
     const minWidth = 4
     const minHeight = 4
     for (let i = 0; i < NUM_ROOM_COLS; i++) {
       this.rooms.push([])
-      const minX = i * widthPerRoomCol
-      const maxX = minX + widthPerRoomCol - 1 - (i < 2 ? 1 : 0)
+      const minX = i * widthPerRoomCol + i
+      const maxX = minX + widthPerRoomCol - 1
       for (let j = 0; j < NUM_ROOM_ROWS; j++) {
-        const minY = j * heightPerRoomRow
-        const maxY = minY + heightPerRoomRow - 1 - (j < 2 ? 1 : 0)
-        let x = randomInt(minX, maxX)
-        let y = randomInt(minY, maxY)
-        let goRight = Math.random() > 0.5
-        let goDown = Math.random() > 0.5
-        if (maxX - x < minWidth) {
-          goRight = false
-        }
-        if (x - minX < minWidth) {
-          goRight = true
-        }
-        if (maxY - y < minHeight) {
-          goDown = false
-        }
-        if (y - minY < minHeight) {
-          goDown = true
-        }
-        let width = randomInt(minWidth, goRight ? maxX - x : x - minX)
-        let height = randomInt(minHeight, goDown ? maxY - y : y - minY)
-        if (!goRight) {
-          x = x - width
-        }
-        if (!goDown) {
-          y = y - height
-        }
+        const minY = j * heightPerRoomRow + j
+        const maxY = minY + heightPerRoomRow - 1
+        const width = randomInt(minWidth, widthPerRoomCol)
+        const height = randomInt(minHeight, heightPerRoomRow)
+        const x = randomInt(minX, maxX - (width - 1))
+        const y = randomInt(minY, maxY - (height - 1))
+        console.log(minX, maxX, x, minWidth, widthPerRoomCol, width)
+        console.log(minY, maxY, y, minHeight, heightPerRoomRow, height)
         const room = this.addRoom(x, y, width, height)
         this.rooms[i].push(room)
       }
@@ -227,7 +211,7 @@ class Game extends StatefulObject {
           const rightRoom = this.rooms[i + 1][j]
           const y1 = room.rightDoor.y
           const y2 = rightRoom.leftDoor.y
-          const x1 = room.x + room.width + 1
+          const x1 = room.x + room.width
           const x2 = rightRoom.x - 1
           const xhat = randomInt(x1 + 1, x2 - 1)
           for (let x = x1; x <= x2; x++) {
@@ -248,9 +232,10 @@ class Game extends StatefulObject {
   addVerticalHallway(A, B) {
     const x1 = A.downDoor.x
     const x2 = B.upDoor.x
-    const y1 = A.y + A.height + 1
+    const y1 = A.y + A.height
     const y2 = B.y - 1
-    const yhat = randomInt(y1 + 1, y2 - 1)
+    const yhat = randomInt(y1, y2)
+    console.log('add vertical hallway', x1, x2, y1, y2, A, B, yhat)
     for (let y = y1; y <= y2; y++) {
       const x = y < yhat ? x1 : x2
       this.locations[x][y].type = 'hallway'
@@ -268,51 +253,51 @@ class Game extends StatefulObject {
         const up = j > 0
         const down = j < NUM_ROOM_ROWS - 1
         if (left) {
-          const y = room.y + randomInt(room.height - 2) + 1
+          const y = room.y + 1 + randomInt(room.height - 3)
           room.setLeftDoor(this.locations[room.x][y])
         }
         if (right) {
-          const y = room.y + randomInt(room.height - 2) + 1
-          room.setRightDoor(this.locations[room.x + room.width][y])
+          const y = room.y + 1 + randomInt(room.height - 3)
+          room.setRightDoor(this.locations[room.x + room.width - 1][y])
         }
         if (up) {
-          const x = room.x + randomInt(room.width - 2) + 1
+          const x = room.x + 1 + randomInt(room.width - 3)
           room.setUpDoor(this.locations[x][room.y])
         }
         if (down) {
-          const x = room.x + randomInt(room.width - 2) + 1
-          room.setDownDoor(this.locations[x][room.y + room.height])
+          const x = room.x + 1 + randomInt(room.width - 3)
+          room.setDownDoor(this.locations[x][room.y + room.height - 1])
         }
+        console.log('add doors', room)
       }
     }
   }
   addRoom(x, y, w, h) {
-    w = w - 1
-    h = h - 1
+    console.log(x, y, w, h)
     const room = new Room(x, y, w, h)
-    room.lit = randomInt(10) > this.level - 1
+    room.lit = randomInt(100) > this.level - 1
     this.locations[x][y].type = 'downRightWall'
-    this.locations[x + w][y].type = 'downLeftWall'
-    this.locations[x][y + h].type = 'upRightWall'
-    this.locations[x + w][y + h].type = 'upLeftWall'
-    for (let i = x + 1; i < x + w; i++) {
+    this.locations[x + w - 1][y].type = 'downLeftWall'
+    this.locations[x][y + h - 1].type = 'upRightWall'
+    this.locations[x + w - 1][y + h - 1].type = 'upLeftWall'
+    for (let i = x + 1; i <= x + w - 2; i++) {
       this.locations[i][y].type = 'horizontalWall'
-      this.locations[i][y+h].type = 'horizontalWall'
+      this.locations[i][y+h-1].type = 'horizontalWall'
     }
-    for (let i = x; i <= x + w; i++) {
-      for (let j = y; j <= y + h; j++) {
+    for (let i = x; i <= x + w - 1; i++) {
+      for (let j = y; j <= y + h - 1; j++) {
         this.locations[i][j].room = room
         room.locations.push(this.locations[i][j])
       }
     }
-    for (let i = x+1; i < x + w; i++) {
-      for (let j = y+1; j < y + h; j++) {
+    for (let i = x+1; i <= x + w - 2; i++) {
+      for (let j = y+1; j <= y + h - 2; j++) {
         this.locations[i][j].type = 'floor'
       }
     }
-    for (let i = y + 1; i < y + h; i++) {
+    for (let i = y + 1; i <= y + h - 2; i++) {
       this.locations[x][i].type = 'verticalWall'
-      this.locations[x+w][i].type = 'verticalWall'
+      this.locations[x+w-1][i].type = 'verticalWall'
     }
     let addedGold = false
     if (Math.random() > 0.5 && !this.seenAmulet && this.level >= this.maxLevel) {
@@ -686,8 +671,8 @@ class Game extends StatefulObject {
             location.show = location.show && (location.room.lit || location.isDoor || location.item?.type === 'staircase')
             location.showContent = location.item?.type === 'staircase'
           } else {
-            location.show = location.show && (location.room.lit || location.isDoor || location.item?.type === 'staircase')
-            location.showContent = location.room.lit || location.item?.type === 'staircase'
+            location.show = location.show && (location.room?.lit || location.isDoor || location.item?.type === 'staircase')
+            location.showContent = location.room?.lit || location.item?.type === 'staircase'
           }
         } else {
           location.showContent = location.item?.type === 'staircase'

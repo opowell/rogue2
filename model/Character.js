@@ -21,8 +21,8 @@ class Character extends GameObject {
         maximum: 16
       },
       hits: {
-        current: 120,
-        maximum: 120
+        current: 12,
+        maximum: 12
       },
       counts: {
         seeInvisible: 0,

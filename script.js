@@ -27,8 +27,8 @@ window.rogue.init = () => {
       'GameScreen': Vue.defineAsyncComponent( () => loadModule('./view/GameScreen.vue', options) )
     },
     setup() {
-      const WIDTH = 60
-      const HEIGHT = 29
+      const WIDTH = 78
+      const HEIGHT = 23
 
       const game = ref(new Game(WIDTH, HEIGHT))
       const out = {

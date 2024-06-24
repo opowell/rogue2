@@ -9,7 +9,7 @@ export const TYPE = 'monster'
 class Monster extends GameObject {
   constructor(monsterType, game) {
     super()
-    const hits = roll(monsterType.level, 8)*10
+    const hits = roll(monsterType.level, 8)
     this.type = TYPE
     this.addState({
       game,

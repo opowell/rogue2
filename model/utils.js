@@ -125,7 +125,6 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
     if (hit) {
       didHit = true
       const pRoll = roll(swingDef)
-      console.log('hit', dPlus, pRoll, attacker.strengthDamageBonus)
       damage += dPlus + pRoll + attacker.strengthDamageBonus
     }
   })
