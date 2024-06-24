@@ -7,6 +7,8 @@
   />
 </template>
 <script>
+const NO_CHARACTER = -1
+
 export default {
   name: 'GameLocation',
   props: {
@@ -14,7 +16,24 @@ export default {
     width: { type: Number, required: true },
     height: { type: Number, required : true }
   },
+  data() {
+    return {
+      showHealing: false,
+      showHurting: false,
+      noTransition: true,
+      showTransition: false,
+    }
+  },
   computed: {
+    character() {
+      return this.location.character
+    },
+    charTookDamage() {
+      if (!this.character) {
+        return false
+      }
+      return this.character.tookDamageRecently
+    },
     locationClasses() {
       const location = this.location
       const classes = {}
@@ -24,6 +43,7 @@ export default {
       if (location.show && !location.showContent && location.item?.type === 'staircase') {
         classes.flashing = true
       }
+      classes.hurting = this.charTookDamage
       return classes
     },
     content() {
@@ -176,32 +196,46 @@ export default {
     },
     locationStyle() {
       const location = this.location
-      return {
+      const style = {
         color: this.color,
-        'background-color': this.bgColor,
         top: location.y * this.height + 'px',
         left: location.x * this.width + 'px',
       }
+      if (!this.charTookDamage) {
+        style['background-color'] = this.bgColor
+      }
+      return style
     }
   },
 }
 </script>
 <style scoped>
+.hurting {
+  animation: pulse-hurting 0.5s;
+}
 .location {
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-@keyframes example {
+@keyframes pulse-flashing {
   0%   {color: transparent;}
   49%  {color:transparent;}
   50% {color:black;}
   100% {color:black;}
 }
 .flashing {
-  animation-name: example;
+  animation-name: pulse-flashing;
   animation-duration: 1s;
   animation-iteration-count: infinite;
+}
+@keyframes pulse-hurting {
+  0% {
+    background-color: red;
+  }
+  100% {
+    background-color: v-bind(bgColor);
+  }
 }
 </style>

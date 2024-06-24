@@ -301,6 +301,7 @@ export default {
       if (event.altKey || event.ctrlKey || event.metaKey) {
         return
       }
+      this.game.prepareTurn()
       if (this.wearingArmor) {
         this.handleWearingArmorKeyDown(event)
         return

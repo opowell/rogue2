@@ -77,6 +77,10 @@ class Game extends StatefulObject {
     this.createStaircase()
     this.addTraps()
   }
+  prepareTurn() {
+    this.characters.forEach(character => character.prepareTurn())
+    this.player.prepareTurn()
+  }
   addTraps() {
     const level = this.level
     if (Math.random() >= level / 10) {

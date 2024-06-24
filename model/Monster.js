@@ -9,7 +9,7 @@ export const TYPE = 'monster'
 class Monster extends GameObject {
   constructor(monsterType, game) {
     super()
-    const hits = roll(monsterType.level, 8)
+    const hits = roll(monsterType.level, 8)*10
     this.type = TYPE
     this.addState({
       game,
@@ -34,7 +34,8 @@ class Monster extends GameObject {
         maximum: monsterType.strength
       },
       meleeDamageBonus: 0,
-      meleeHitBonus: 0
+      meleeHitBonus: 0,
+      tookDamageRecently: false
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem()
@@ -98,6 +99,9 @@ class Monster extends GameObject {
     }
     this.moveTo(to)
   }
+  prepareTurn() {
+    this.tookDamageRecently = false
+  }
   moveTo(to) {
     const from = this.location
     if (to.character && !to.character.monsterType) {
@@ -116,6 +120,9 @@ class Monster extends GameObject {
   }
   takeDamage(x) {
     this.hits.current -= x
+    if (x > 0) {
+      this.tookDamageRecently = true
+    }
   }
   getDamageRoll() {
     const dmg = this.monsterType.damage

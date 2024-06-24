@@ -21,8 +21,8 @@ class Character extends GameObject {
         maximum: 16
       },
       hits: {
-        current: 12,
-        maximum: 12
+        current: 120,
+        maximum: 120
       },
       counts: {
         seeInvisible: 0,
@@ -38,7 +38,8 @@ class Character extends GameObject {
       canSee: true,
       restCounter: 0,
       resting: true,
-      latestDamageCause: 'died of natural causes'
+      latestDamageCause: 'died of natural causes',
+      tookDamageRecently: false
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -163,12 +164,19 @@ class Character extends GameObject {
       this.restCounter = 0
     }
     this.resting = true
+    this.tookDamageRecently = false
+  }
+  prepareTurn() {
+    this.tookDamageRecently = false
   }
   takeDamage(x, cause) {
     this.hits.current = Math.min(this.hits.maximum, this.hits.current - x)
     this.restCounter = 0
     this.resting = false
     this.latestDamageCause = cause
+    if (x > 0) {
+      this.tookDamageRecently = true
+    }
   }
   restoreStrength() {
     this.strength.current = this.strengh.maximum
