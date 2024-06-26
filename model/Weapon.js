@@ -1,16 +1,30 @@
 import Item from "./Item.js"
+import { randomInt } from "./utils.js"
 
 class Weapon extends Item {
-  constructor(type) {
+  constructor(type, groupId) {
     super({
       weaponType: type.name,
       hitBonus: 0,
       damageBonus: 0,
       identified: false,
       damage: type.damage,
-      vorpalizeType: null
+      vorpalizeType: null,
+      cursed: false,
+      quantity: 1,
+      groupId
     })
     this.type = 'weapon'
+    const r = Math.random()
+    if (r < 0.1) {
+      this.hitBonus = -randomInt(1, 3)
+      this.cursed = true
+    } else if (r < 0.15) {
+      this.hitBonus = randomInt(1, 3)
+    }
+    if (type.isMany) {
+      this.quantity = randomInt(8, 15)
+    }
   }
   get inventoryCount() {
     return 1

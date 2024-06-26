@@ -4,7 +4,7 @@
       <OptionsScreen />
     </template>
     <template v-else-if="gameFinished">
-      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" />
+      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" :scores="scores" />
     </template>
     <template v-else-if="showInventory">
       <InventoryScreen :game="game" />
@@ -43,13 +43,13 @@
         <div v-if="!showLeftPanel" class="bottom-panel">
           <div v-for="item in characterItems" class="section-bottom-row" :key="item.label">
             <div class="section-bottom-row-label">{{ item.label }}:</div>
-            <div class="section-bottom-row-value">{{ item.value }}</div>
+            <div class="section-bottom-row-value" v-html="item.value" />
           </div>
         </div>
       </div>
     </template>
     <template v-else>
-      <WelcomeScreen @start-game="startGame" />
+      <WelcomeScreen @start-game="startGame" :scores="scores" />
     </template>
   </div>
 </template>
@@ -113,7 +113,8 @@ export default {
       showInventory: false,
       locationWidth: 0,
       locationHeight: 0,
-      showOptions: false
+      showOptions: false,
+      scores: []
     }
   },
   computed: {
@@ -121,7 +122,7 @@ export default {
       return this.locationHeight + 'px'
     },
     showDeathScreenTrigger() {
-      return this.game.playerDead.value && this.game.messages.length < 2
+      return this.game.playerDead && this.game.messages.length < 2
     },
     deathMessage() {
       return this.game.playerName + ' ' + this.game.player.latestDamageCause + ' on level ' + this.game.level
@@ -132,6 +133,11 @@ export default {
     characterItems() {
       const player = this.player
       if (!player) return []
+      let hitsValue = player.hits.current + '(' + player.hits.maximum + ')'
+      if (!this.showLeftPanel) {
+        const curHits = String(player.hits.current).padStart(2, 'x').replaceAll('x', '&nbsp;')
+        hitsValue = curHits + '(' + player.hits.maximum + ')'
+      }
       return [
         {
           label: 'Level',
@@ -139,7 +145,7 @@ export default {
         },
         {
           label: 'Hits',
-          value: player.hits.current + '(' + player.hits.maximum + ')'
+          value: hitsValue
         },
         {
           label: 'Str',
@@ -147,7 +153,7 @@ export default {
         },
         {
           label: 'Gold',
-          value: player.gold
+          value: String(player.gold).padStart(3, 'x').replaceAll('x', '&nbsp;')
         },
         {
           label: 'Damage',
@@ -199,9 +205,17 @@ export default {
         this.gameFinished = true
         this.gameStarted = false
         this.$nextTick(() => {
-          console.log(this, this.$refs, this.$refs.deathScreen)
           this.$refs.deathScreen.focus()
         })
+        this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
+        this.scores.push({
+          name: this.game.playerName,
+          gold: this.game.player.gold,
+          causeOfDeath: this.game.player.latestDamageCause,
+          level: this.game.level
+        })
+        this.scores = this.scores.sort((a, b) => b.gold - a.gold)
+        window.localStorage.setItem('scores', JSON.stringify(this.scores))
       }
     }
   },
@@ -211,6 +225,8 @@ export default {
       this.setFontSize()
     })
     resizeObserver.observe(this.$refs.screen)
+    this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
+    this.scores = this.scores.sort((a, b) => b.gold - a.gold)
   },
   methods: {
     setFontSize() {

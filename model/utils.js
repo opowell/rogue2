@@ -132,9 +132,18 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
     damage = Math.floor((damage + 1) / 2)
   }
   if (didHit) {
-    defender.takeDamage(damage, 'killed by a ' + attacker.monsterType.name)
+    const aAn = getVowelWord('a', 'an', attacker.monsterType.name)
+    defender.takeDamage(damage, 'killed by ' + aAn + ' ' + attacker.monsterType.name)
   }
-  return didHit
+  return { didHit, damage }
+}
+
+const VOWELS = 'aeiou'
+const getVowelWord = (A, B, word) => {
+  if (VOWELS.includes(word[0])) {
+    return B
+  }
+  return A
 }
 
 export const strengthToHitBonus = (strength) => {

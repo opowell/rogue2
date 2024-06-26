@@ -65,11 +65,13 @@ const DEFINITIONS = {
 DEFINITIONS.ARROW.shooter = DEFINITIONS.SHORT_BOW
 DEFINITIONS.CROSSBOW_BOLT.shooter = DEFINITIONS.CROSSBOW
 
+let groupCount = 0
+
 export const getWeapon = (weaponType) => {
   if (!weaponType) {
     weaponType = randomElement(DEFINITIONS)
   }
-  return new Weapon(weaponType)
+  return new Weapon(weaponType, groupCount++)
 }
 
 export const spawnMace = () => {

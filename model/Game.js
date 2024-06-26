@@ -23,6 +23,7 @@ const MAXTREAS = 10	/* maximum number of treasures in a treasure room */
 const MINTREAS = 2	/* minimum number of treasures in a treasure room */
 const MAX_ITEMS_PER_LEVEL = 9
 const MAX_TRAPS = 10
+const WANDER_TIME = 70
 
 function canMoveTo(location) {
   if (!location.type) return false
@@ -48,7 +49,9 @@ class Game extends StatefulObject {
       width,
       height,
       maxLevel: 1,
-      seenAmulet: false
+      seenAmulet: false,
+      levelsWithoutFood: 0,
+      wandererCount: 0,
     })
     this.player = new Character(this)
     this.createLocations()
@@ -59,6 +62,14 @@ class Game extends StatefulObject {
     watch(() => this.level, (val) => {
       this.maxLevel = Math.max(val, this.maxLevel)
     })
+    watch(() => this.wandererCount, (val) => {
+      if (val >= WANDER_TIME + randomInt(3, 5) && randomInt(5) === 5) {
+        const room = randomElement(this.rooms.flat().filter(room => room !== this.player.location.room))
+        const location = room.getFreeCharacterLocation()
+        const enemy = this.spawnMonster(location.x, location.y, this.level)
+        this.wandererCount = 0
+      }
+    })
   }
   restart() {
     this.level = 1
@@ -68,9 +79,11 @@ class Game extends StatefulObject {
     this.startNewLevel()
   }
   startNewLevel() {
+    this.wandererCount = 0
     this.objects = []
     this.items = []
     this.characters = []
+    this.levelsWithoutFood++
     this.clearLocations()
     this.addRooms()
     this.createPlayer()
@@ -149,8 +162,6 @@ class Game extends StatefulObject {
         const height = randomInt(minHeight, heightPerRoomRow)
         const x = randomInt(minX, maxX - (width - 1))
         const y = randomInt(minY, maxY - (height - 1))
-        console.log(minX, maxX, x, minWidth, widthPerRoomCol, width)
-        console.log(minY, maxY, y, minHeight, heightPerRoomRow, height)
         const room = this.addRoom(x, y, width, height)
         this.rooms[i].push(room)
       }
@@ -235,7 +246,6 @@ class Game extends StatefulObject {
     const y1 = A.y + A.height
     const y2 = B.y - 1
     const yhat = randomInt(y1, y2)
-    console.log('add vertical hallway', x1, x2, y1, y2, A, B, yhat)
     for (let y = y1; y <= y2; y++) {
       const x = y < yhat ? x1 : x2
       this.locations[x][y].type = 'hallway'
@@ -268,12 +278,10 @@ class Game extends StatefulObject {
           const x = room.x + 1 + randomInt(room.width - 3)
           room.setDownDoor(this.locations[x][room.y + room.height - 1])
         }
-        console.log('add doors', room)
       }
     }
   }
   addRoom(x, y, w, h) {
-    console.log(x, y, w, h)
     const room = new Room(x, y, w, h)
     room.lit = randomInt(100) > this.level - 1
     this.locations[x][y].type = 'downRightWall'
@@ -323,7 +331,7 @@ class Game extends StatefulObject {
     return monster
   }
   spawnRandomItem(x, y) {
-    const item = getItem()
+    const item = getItem(this)
     this.placeItem(item, x, y)
   }
   hasWallBetween(a, b) {
@@ -575,6 +583,9 @@ class Game extends StatefulObject {
     if (newVisibility) {
       return
     }
+    if (this.messages.length > 0) {
+      return
+    }
     nextTick(() => {
       this.runExcept(destination.moveDir.opp)
     })
@@ -649,7 +660,7 @@ class Game extends StatefulObject {
     if (to.character) {
       const damage = this.player.getDamageRoll()
       to.character.takeDamage(damage)
-      this.addMessage('You hit the ' + to.character.monsterType.name + ' for ' + damage + ' damage')
+      this.addMessage('You hit the ' + to.character.monsterType.name)
       if (to.character.dead) {
         this.addMessage('You have defeated the ' + to.character.monsterType.name)
         this.player.experience += to.character.monsterType.exp
@@ -721,6 +732,7 @@ class Game extends StatefulObject {
     this.characters.forEach(character => {
       character.step()
     })
+    this.wandererCount++
   }
 }
 export default Game

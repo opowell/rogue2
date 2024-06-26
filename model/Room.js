@@ -19,6 +19,9 @@ class Room extends StatefulObject {
   getFreeItemLocation() {
     return randomElement(this.locations.filter(loc => loc.canPlaceItem))
   }
+  getFreeCharacterLocation() {
+    return randomElement(this.locations.filter(loc => loc.canPlaceMonster))
+  }
   spawnRandomItem(game) {
     const location = this.getFreeItemLocation()
     if (!location) {

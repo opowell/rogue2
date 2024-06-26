@@ -38,7 +38,7 @@ class Monster extends GameObject {
       tookDamageRecently: false
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
-      const item = getItem()
+      const item = getItem(this.game)
       this.items.push(item)
     }
     this.strengthToHitBonus = computed(() => {
@@ -105,9 +105,9 @@ class Monster extends GameObject {
   moveTo(to) {
     const from = this.location
     if (to.character && !to.character.monsterType) {
-      const didHit = attack(this, to.character)
+      const { didHit, damage } = attack(this, to.character)
       if (didHit) {
-        this.game.addMessage('The ' + this.monsterType.name + ' hit you.')
+        this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage.')
       } else {
         this.game.addMessage('The ' + this.monsterType.name + ' missed you.')
       }

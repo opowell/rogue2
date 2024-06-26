@@ -38,7 +38,13 @@ const TYPES = {
   }
 }
 
-export const getItem = () => {
-  const type = randomElement(TYPES, def => def.prob)
+export const getItem = (game) => {
+  let type
+  if (game.levelsWithoutFood > 3) {
+    type = TYPES.FOOD
+    game.levelsWithoutFood = 0
+  } else {
+    type = randomElement(TYPES, def => def.prob)
+  }
   return type.factory()
 }
