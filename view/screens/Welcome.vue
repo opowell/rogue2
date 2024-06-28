@@ -3,13 +3,13 @@
     <span class="title-text">ROGUE: The Adventure Game</span>
     <div class="prompt">Rogue's Name?</div>
     <input ref="input" type="text" tabindex="0" spellcheck="false" v-model="name" @keydown="handleKeydown" />
-    <ScoresComponent :scores="scores" />
+    <ScoresComponent v-if="scores.length > 0" :scores="scores" />
   </div>
 </template>
 <script>
 import ScoresComponent from '../components/Scores.vue'
 export default {
-    name: 'Welcome',
+  name: 'Welcome',
   components: {
     ScoresComponent
   },

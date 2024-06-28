@@ -1,8 +1,8 @@
 <template>
   <div class="section">
     <div class="section-title">Inventory</div>
-    <div class="section-row" v-for="(item, index) in game.player.items" :key="index">
-      <div class="section-row-label">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
+    <div class="section-row" v-for="(item, index) in items" :key="index">
+      <div class="section-row-label" :class="{ fade: item.fade }">{{ alphabet[index] + ') ' + (item.label || item.type) }}</div>
     </div>
   </div>
 </template>
@@ -11,7 +11,7 @@
 export default {
   name: 'InventoryComponent',
   props: {
-    game: { type: Object, required: true },
+    items: { type: Array, required: true },
   },
   data() {
     return {
@@ -33,5 +33,8 @@ export default {
 }
 .section-row-value {
   flex: 0 0 auto;
+}
+.fade {
+  color: gray;
 }
 </style>

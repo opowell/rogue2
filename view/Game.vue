@@ -1,66 +1,24 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
-    <template v-if="showOptions">
+    <template v-if="!mounted" />
+    <template v-else-if="showOptions">
       <OptionsScreen />
     </template>
     <template v-else-if="gameFinished">
       <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" :scores="scores" />
     </template>
     <template v-else-if="showInventory">
-      <InventoryScreen :game="game" />
+      <InventoryScreen :items="inventoryItems" />
     </template>
-    <template v-else-if="gameStarted">
-      <div v-if="showLeftPanel" class="column1">
-        <div v-if="player" class="section">
-          <div class="section-title">Player</div>
-          <div v-for="item in characterItems" class="section-row" :key="item.label">
-            <div class="section-row-label">{{ item.label }}</div>
-            <div class="section-row-value">{{ item.value }}</div>
-          </div>
-        </div>
-        <InventoryComponent :game="game" />
-      </div>
-      <div class="column2">
-        <GameMessage :message="message" :show-more="game.messages.length > 1" :height="locationHeight" class="message"/>
-        <div v-if="showMap" class="map">
-          <template v-if="showCoordinates">
-            <GameCoordinate
-              v-for="coordinate in gameCoordinates"
-              :key="coordinate.x + '-' + coordinate.y"
-              :coordinate="coordinate"
-              :width="locationWidth"
-              :height="locationHeight"
-            />
-          </template>
-          <GameLocation
-            v-for="location in visibleLocations"
-            :key="location.x + '-' + location.y"
-            :location="location"
-            :width="locationWidth"
-            :height="locationHeight"
-          />
-        </div>
-        <div v-if="!showLeftPanel" class="bottom-panel">
-          <div v-for="item in characterItems" class="section-bottom-row" :key="item.label">
-            <div class="section-bottom-row-label">{{ item.label }}:</div>
-            <div class="section-bottom-row-value" v-html="item.value" />
-          </div>
-        </div>
-      </div>
-    </template>
-    <template v-else>
-      <WelcomeScreen @start-game="startGame" :scores="scores" />
-    </template>
+    <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
+    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="scores" />
   </div>
 </template>
 <script>
 import WelcomeScreen from './screens/Welcome.vue'
-import InventoryComponent from './components/Inventory.vue'
 import InventoryScreen from './screens/Inventory.vue'
-import Coordinate from './Coordinate.vue'
-import Location from './Location.vue'
-import Message from './Message.vue'
 import DeathScreen from './screens/Death.vue'
+import DungeonScreen from './screens/Dungeon.vue'
 import OptionsScreen from './screens/Options.vue'
 
 const fontRatio = 8/14
@@ -71,53 +29,52 @@ const TOP_PANEL_HEIGHT = 1
 export default {
   name: 'GameScreen',
   components: {
-    GameLocation: Location,
-    GameMessage: Message,
-    GameCoordinate: Coordinate,
     WelcomeScreen,
     InventoryScreen,
     DeathScreen,
+    DungeonScreen,
     OptionsScreen,
-    InventoryComponent
   },
   props: {
     game: { type: Object, required: true },
     showCoordinates: { type: Boolean, default: false },
   },
   data() {
-    const gameCoordinates = []
-    for (let i = 0; i < this.game.width; i++) {
-      gameCoordinates.push({
-        x: i,
-        y: -1,
-        label: i
-      })
-    }
-    for (let i = 0; i < this.game.height; i++) {
-      gameCoordinates.push({
-        x: -1,
-        y: i,
-        label: i
-      })
-    }
-
     return {
       alphabet: 'abcdefghijklmnopqrstuvwxyz',
       showMap: true,
       dropping: false,
       quaffing: false,
       wearingArmor: false,
-      gameCoordinates,
       gameStarted: false,
       gameFinished: false,
       showInventory: false,
       locationWidth: 0,
       locationHeight: 0,
       showOptions: false,
-      scores: []
+      scores: [],
+      mounted: false
     }
   },
   computed: {
+    showGame() {
+      return !this.showOptions && !this.showInventory && !this.gameFinished && this.gameStarted
+    },
+    showWelcome() {
+      return !this.showOptions && !this.showInventory && !this.gameFinished && !this.gameStarted
+    },
+    inventoryItems() {
+      const items = this.game.player.items.map(item => {
+        return {
+          label: item.label,
+          type: item.type
+        }
+      })
+      if (this.showInventory) {
+        items.forEach(item => item.fade = item.type !== 'potion')
+      }
+      return items
+    },
     fontSize() {
       return this.locationHeight + 'px'
     },
@@ -129,45 +86,6 @@ export default {
     },
     player() {
       return this.game?.player
-    },
-    characterItems() {
-      const player = this.player
-      if (!player) return []
-      let hitsValue = player.hits.current + '(' + player.hits.maximum + ')'
-      if (!this.showLeftPanel) {
-        const curHits = String(player.hits.current).padStart(2, 'x').replaceAll('x', '&nbsp;')
-        hitsValue = curHits + '(' + player.hits.maximum + ')'
-      }
-      return [
-        {
-          label: 'Level',
-          value: this.game.level
-        },
-        {
-          label: 'Hits',
-          value: hitsValue
-        },
-        {
-          label: 'Str',
-          value: player.strength.current + '(' + player.strength.maximum + ')'
-        },
-        {
-          label: 'Gold',
-          value: String(player.gold).padStart(3, 'x').replaceAll('x', '&nbsp;')
-        },
-        {
-          label: 'Damage',
-          value: player.damage
-        },
-        {
-          label: 'Armor',
-          value: player.armorLevel
-        },
-        {
-          label: 'Exp',
-          value: player.level + '/' + player.experience
-        }
-      ]
     },
     message() {
       if (this.game.messages.length > 0) {
@@ -227,6 +145,7 @@ export default {
     resizeObserver.observe(this.$refs.screen)
     this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
     this.scores = this.scores.sort((a, b) => b.gold - a.gold)
+    this.mounted = true
   },
   methods: {
     setFontSize() {
@@ -264,7 +183,7 @@ export default {
     },
     quaffPrompt() {
       this.quaffing = true
-      this.game.messages.push('Quaff: enter a letter, or Esc to cancel')
+      this.game.messages.push('Quaff: enter a letter, * for inventory, or Esc to cancel')
     },
     wieldPrompt() {
       this.wielding = true
@@ -275,6 +194,10 @@ export default {
       this.game.messages.push('Wear armor: enter a letter, or Esc to cancel')
     },
     handleQuaffingKeyDown(event) {
+      if (event.key === '*') {
+        this.showInventory = true
+        return
+      }
       if (event.key === 'Escape') {
         this.game.clearCurrentMessage()
         this.quaffing = false
@@ -452,38 +375,6 @@ input {
 }
 </style>
 <style scoped>
-.section-title {
-  color: #555;
-}
-.section-row {
-  display: flex;
-  color: lightgray;
-}
-.bottom-panel {
-  display: flex;
-  grid-gap: 2rem;
-  color: #ffff05;
-}
-.section-bottom-row {
-  display: flex;
-}
-.section-row-label {
-  flex: 1 1 auto;
-}
-.section-row-value {
-  flex: 0 0 auto;
-}
-.column1 {
-  flex: 1 1 auto;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-.column2 {
-  flex: 0 0 v-bind(mapWidth);
-  display: flex;
-  flex-direction: column;
-}
 .game-screen {
   background-color: black;
   font-family: IBMVGA8;
@@ -505,14 +396,5 @@ input {
   src: url("Web437_IBM_VGA_8x14.woff") format('woff');
   /* src: url("Web437_IBM_VGA_9x14.woff") format('woff'); */
   /* src: url("Web437_IBM_VGA_9x16.woff") format('woff'); */
-}
-.map {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-.message {
-  flex: 0 0 auto;
 }
 </style>

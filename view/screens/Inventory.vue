@@ -1,6 +1,6 @@
 <template>
   <div class="title">
-    <InventoryComponent :game="game" />
+    <InventoryComponent :items="items" />
   </div>
 </template>
 <script>
@@ -11,23 +11,8 @@ export default {
     InventoryComponent
   },
   props: {
-    game: { type: Object, required: true }
+    items: { type: Array, required: true },
   },
-  mounted() {
-    // this.$nextTick(() => {
-    //   this.$refs.input.focus()
-    // }) 
-  },
-  methods: {
-    handleKeydown(e) {
-      e.stopPropagation()
-      if (e.code === 'Enter') {
-        e.preventDefault()
-        e.stopPropagation()
-        this.$emit('startGame', this.name)
-      }
-    }
-  }
 }
 </script>
 <style scoped>
