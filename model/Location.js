@@ -58,7 +58,7 @@ class Location extends StatefulObject{
     this.item = null
     this.character = null
     this.room = null
-    this.show = false
+    this.show = true
     this.showContent = false
     this.marked = false
   }

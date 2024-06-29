@@ -134,10 +134,21 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
     damage = Math.floor((damage + 1) / 2)
   }
   if (didHit) {
-    const aAn = getVowelWord('a', 'an', attacker.monsterType.name)
+    const aAn = getAAn(attacker.monsterType.name)
     defender.takeDamage(damage, 'killed by ' + aAn + ' ' + attacker.monsterType.name)
   }
   return { didHit, damage }
+}
+
+export const getAAn = (word) => getVowelWord('a', 'an', word)
+
+export const shuffleArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const temp = array[i]
+    array[i] = array[j]
+    array[j] = temp
+  }
 }
 
 const VOWELS = 'aeiou'

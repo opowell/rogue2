@@ -1,6 +1,38 @@
 import Ring from "./Ring.js"
-import { randomElement } from "./utils.js"
+import { randomElement, shuffleArray } from "./utils.js"
 import MAGIC_TYPES from './MagicTypes.js'
+
+const STONE_TYPES = [
+  "agate",
+  "alexandrite",
+  "amethyst",
+  "carnelian",
+  "diamond",
+  "emerald",
+  "germanium",
+  "granite",
+  "garnet",
+  "jade",
+  "kryptonite",
+  "lapis lazuli",
+  "moonstone",
+  "obsidian",
+  "onyx",
+  "opal",
+  "pearl",
+  "peridot",
+  "ruby",
+  "sapphire",
+  "stibotantalite",
+  "tiger eye",
+  "topaz",
+  "turquoise",
+  "taaffeite",
+  "zircon"
+]
+
+shuffleArray(STONE_TYPES)
+
 const TYPES = {
   PROTECTION: {
     name: 'protection',
@@ -68,6 +100,12 @@ const TYPES = {
     magic: MAGIC_TYPES.GOOD
   }
 }
+
+const defKeys = Object.keys(TYPES)
+defKeys.forEach((key, index) => {
+  TYPES[key].stone = STONE_TYPES[index]
+  TYPES[key].identified = false
+})
 
 export const getRing = () => {
   const ringType = randomElement(TYPES, type => type.prob)

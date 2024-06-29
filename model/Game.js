@@ -244,7 +244,7 @@ class Game extends StatefulObject {
           const y2 = rightRoom.leftDoor.y
           const x1 = room.x + room.width
           const x2 = rightRoom.x - 1
-          const xhat = randomInt(x1 + 1, x2 - 1)
+          const xhat = randomInt(x1, x2)
           for (let x = x1; x <= x2; x++) {
             const y = x < xhat ? y1 : y2
             this.locations[x][y].type = 'hallway'
@@ -255,23 +255,20 @@ class Game extends StatefulObject {
         }
         if (j < NUM_ROOM_ROWS - 1) {
           const downRoom = this.rooms[i][j + 1]
-          this.addVerticalHallway(room, downRoom)
+          const x1 = room.downDoor.x
+          const x2 = downRoom.upDoor.x
+          const y1 = room.y + room.height
+          const y2 = downRoom.y - 1
+          const yhat = randomInt(y1, y2)
+          for (let y = y1; y <= y2; y++) {
+            const x = y < yhat ? x1 : x2
+            this.locations[x][y].type = 'hallway'
+          }
+          for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+            this.locations[x][yhat].type = 'hallway'
+          }
         }
       }
-    }
-  }
-  addVerticalHallway(A, B) {
-    const x1 = A.downDoor.x
-    const x2 = B.upDoor.x
-    const y1 = A.y + A.height
-    const y2 = B.y - 1
-    const yhat = randomInt(y1, y2)
-    for (let y = y1; y <= y2; y++) {
-      const x = y < yhat ? x1 : x2
-      this.locations[x][y].type = 'hallway'
-    }
-    for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-      this.locations[x][yhat].type = 'hallway'
     }
   }
   addDoors() {
