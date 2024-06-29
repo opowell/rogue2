@@ -39,7 +39,8 @@ class Character extends GameObject {
       restCounter: 0,
       resting: true,
       latestDamageCause: 'died of natural causes',
-      tookDamageRecently: false
+      tookDamageRecently: false,
+      confuseAttack: false
     })
 
     const ration = getFood(FOOD_TYPES.RATION)

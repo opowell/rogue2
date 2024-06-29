@@ -20,6 +20,7 @@ import WelcomeScreen from './screens/Welcome.vue'
 import InventoryScreen from './screens/Inventory.vue'
 import DeathScreen from './screens/Death.vue'
 import DungeonScreen from './screens/Dungeon.vue'
+import DiscoveredScreen from './screens/Discovered.vue'
 import OptionsScreen from './screens/Options.vue'
 
 const fontRatio = 8/14
@@ -30,12 +31,13 @@ const TOP_PANEL_HEIGHT = 1
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
 export default {
-  name: 'GameScreen',
+  name: 'GameView',
   components: {
     WelcomeScreen,
     InventoryScreen,
     DeathScreen,
     DungeonScreen,
+    DiscoveredScreen,
     OptionsScreen,
   },
   props: {
@@ -45,6 +47,7 @@ export default {
   data() {
     return {
       showMap: true,
+      showDiscovered: false,
       dropping: false,
       quaffing: false,
       wearingArmor: false,
@@ -55,7 +58,8 @@ export default {
       locationHeight: 0,
       showOptions: false,
       scores: [],
-      mounted: false
+      mounted: false,
+      reading: false
     }
   },
   computed: {
@@ -72,7 +76,7 @@ export default {
           type: item.type
         }
       })
-      if (this.showInventory) {
+      if (this.quaffing) {
         items.forEach(item => item.fade = item.type !== 'potion')
       }
       return items
@@ -168,6 +172,10 @@ export default {
       this.quaffing = true
       this.game.messages.push('Quaff: enter a letter, * for inventory, or Esc to cancel')
     },
+    readPrompt() {
+      this.reading = true
+      this.game.messages.push('Read: enter a letter, * for inventory, or Esc to cancel')
+    },
     wieldPrompt() {
       this.wielding = true
       this.game.messages.push('Wield: enter a letter, or Esc to cancel')
@@ -191,6 +199,26 @@ export default {
         this.game.quaffItem(index)
         this.quaffing = false
         this.game.clearCurrentMessage()
+      }
+    },
+    handleReadingKeyDown(event) {
+      if (event.key === '*') {
+        this.showInventory = true
+        return
+      }
+      if (event.key === 'Escape') {
+        this.game.clearCurrentMessage()
+        this.reading = false
+        return
+      }
+      const index = alphabet.indexOf(event.key)
+      if (index > -1 && index < this.game.player.items.length) {
+        this.game.clearCurrentMessage()
+        if (this.game.player.items[index].type !== 'scroll') {
+          this.game.addMessage('You cannot read that')
+        }
+        this.game.readItem(index)
+        this.reading = false
       }
     },
     handleDroppingKeyDown(event) {
@@ -245,6 +273,10 @@ export default {
         this.handleQuaffingKeyDown(event)
         return
       }
+      if (this.reading) {
+        this.handleReadingKeyDown(event)
+        return
+      }
       if (this.dropping) {
         this.handleDroppingKeyDown(event)
         return
@@ -263,12 +295,19 @@ export default {
         this.showInventory = false
         return
       }
+      if (this.showDiscovered) {
+        this.showDiscovered = false
+        return
+      }
       switch (event.key) {
         case 'D':
           this.showDiscovered = true
           break
         case 'o':
           this.showOptions = true
+          break
+        case 'r':
+          this.readPrompt()
           break
         case 'i':
           this.showInventory = true
@@ -367,7 +406,6 @@ input {
   font-size: v-bind(fontSize);
   display: flex;
   gap: 2rem;
-  padding: 1rem;
   flex: 1 1 auto;
   width: 100%;
   height: 100%;

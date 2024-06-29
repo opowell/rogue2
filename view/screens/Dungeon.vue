@@ -1,6 +1,6 @@
 <template>
   <div class="dungeon">
-    <div v-if="showLeftPanel" class="column1">
+    <div v-if="showSidePanels" class="column1">
       <div v-if="player" class="section">
         <div class="section-title">Player</div>
         <div v-for="item in characterItems" class="section-row" :key="item.label">
@@ -8,7 +8,6 @@
           <div class="section-row-value" v-html="item.value" />
         </div>
       </div>
-      <InventoryComponent :items="inventoryItems" />
     </div>
     <div class="column2">
       <GameMessage :message="message" :show-more="game.messages.length > 1" :height="locationHeight" class="message"/>
@@ -30,25 +29,28 @@
           :height="locationHeight"
         />
       </div>
-      <div v-if="!showLeftPanel" class="bottom-panel">
+      <div v-if="!showSidePanels" class="bottom-panel">
         <div v-for="item in characterItems" class="section-bottom-row" :key="item.label">
           <div class="section-bottom-row-label">{{ item.label }}:</div>
           <div class="section-bottom-row-value" v-html="item.value" />
         </div>
       </div>
     </div>
+    <div v-if="showSidePanels" class="column1">
+      <InventoryComponent :items="inventoryItems" />
+    </div>
   </div>
 </template>
 <script>
 import InventoryComponent from '../components/Inventory.vue'
-import Coordinate from '../Coordinate.vue'
-import Location from '../Location.vue'
-import Message from '../Message.vue'
+import Coordinate from '../components/Coordinate.vue'
+import Location from '../components/Location.vue'
+import Message from '../components/Message.vue'
 
 const MIN_LEFT_PANEL_WIDTH = 12
 
 export default {
-  name: 'GameScreen',
+  name: 'DungeonScreen',
   components: {
     GameLocation: Location,
     GameMessage: Message,
@@ -97,7 +99,7 @@ export default {
       const player = this.player
       if (!player) return []
       let hitsValue = player.hits.current + '(' + player.hits.maximum + ')'
-      if (!this.showLeftPanel) {
+      if (!this.showSidePanels) {
         const curHits = String(player.hits.current).padStart(2, 'x').replaceAll('x', '&nbsp;')
         hitsValue = curHits + '(' + player.hits.maximum + ')'
       }
@@ -157,9 +159,9 @@ export default {
     mapWidth() {
       return this.locationWidth * this.game.width + 'px'
     },
-    showLeftPanel() {
+    showSidePanels() {
       const windowCols = Math.floor(window.innerWidth / this.locationWidth)
-      return windowCols > this.game.width + MIN_LEFT_PANEL_WIDTH
+      return windowCols > this.game.width + 2*MIN_LEFT_PANEL_WIDTH
     }
   },
 }

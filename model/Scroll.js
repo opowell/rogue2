@@ -16,5 +16,8 @@ class Scroll extends Item {
   matchesForInventory(item) {
     return item.type === 'scroll' && item.scrollType === this.scrollType
   }
+  identify() {
+    this.scrollType.identified = true
+  }
 }
 export default Scroll

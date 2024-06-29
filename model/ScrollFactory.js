@@ -4,11 +4,21 @@ import { randomElement } from "./utils.js"
 const TYPES = {
   CONFUSE_MONSTER: {
     name: 'confuse monster',
-    prob: 8
+    prob: 8,
+    action: (character, scroll) => {
+      character.confuseAttack = true
+      character.addMessage('your hands begin to glow red')
+      scroll.identify()
+    }
   },
   MAGIC_MAPPING: {
     name: 'magic mapping',
-    prob: 5
+    prob: 5,
+    action: (character, scroll) => {
+      character.addMessage('this is a scroll of magic mapping')
+      character.game.revealMap()
+      scroll.identify()
+    }
   },
   HOLD_MONSTER: {
     name: 'hold monster',

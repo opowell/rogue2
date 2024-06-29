@@ -34,6 +34,7 @@ export default {
         e.preventDefault()
         e.stopPropagation()
         this.$emit('startGame', this.name)
+        this.name = ''
       }
     }
   }

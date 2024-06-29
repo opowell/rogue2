@@ -33,6 +33,9 @@ export default {
 }
 .section-row-value {
   flex: 0 0 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .fade {
   color: gray;
