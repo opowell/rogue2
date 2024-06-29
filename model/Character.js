@@ -180,7 +180,7 @@ class Character extends GameObject {
     }
   }
   restoreStrength() {
-    this.strength.current = this.strengh.maximum
+    this.strength.current = this.strength.maximum
   }
   heal() {
     this.hits.current += roll(this.level, 4)
