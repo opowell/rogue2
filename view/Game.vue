@@ -26,6 +26,8 @@ const MIN_LEFT_PANEL_WIDTH = 12
 const BOTTOM_PANEL_HEIGHT = 2
 const TOP_PANEL_HEIGHT = 1
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
 export default {
   name: 'GameScreen',
   components: {
@@ -41,7 +43,6 @@ export default {
   },
   data() {
     return {
-      alphabet: 'abcdefghijklmnopqrstuvwxyz',
       showMap: true,
       dropping: false,
       quaffing: false,
@@ -92,25 +93,6 @@ export default {
         return this.game.messages[0]
       }
       return ''
-    },
-    locations() {
-      return this.game.locations.flat()
-    },
-    visibleLocations() {
-      return this.locations
-      // return this.locations.filter(location => {
-      //   return location.visible ||
-      //     (
-      //       location.mapped &&
-      //       (
-      //         location.room?.lit ||
-      //         location.item?.type === 'staircase'
-      //       )
-      //     )
-      // })
-    },
-    mapWidth() {
-      return this.locationWidth * this.game.width + 'px'
     },
     showLeftPanel() {
       const windowCols = Math.floor(window.innerWidth / this.locationWidth)
@@ -203,7 +185,7 @@ export default {
         this.quaffing = false
         return
       }
-      const index = this.alphabet.indexOf(event.key)
+      const index = alphabet.indexOf(event.key)
       if (index > -1 && index < this.game.player.items.length) {
         this.game.quaffItem(index)
         this.quaffing = false
@@ -216,7 +198,7 @@ export default {
         this.dropping = false
         return
       }
-      const index = this.alphabet.indexOf(event.key)
+      const index = alphabet.indexOf(event.key)
       if (index > -1 && index < this.game.player.items.length) {
         this.game.dropItem(index)
         this.dropping = false
@@ -229,7 +211,7 @@ export default {
         this.wearingArmor = false
         return
       }
-      const index = this.alphabet.indexOf(event.key)
+      const index = alphabet.indexOf(event.key)
       if (index > -1 && index < this.game.player.items.length) {
         this.game.player.wearArmor(this.game.player.items[index])
         this.wearingArmor = false
@@ -242,7 +224,7 @@ export default {
         this.wielding = false
         return
       }
-      const index = this.alphabet.indexOf(event.key)
+      const index = alphabet.indexOf(event.key)
       if (index > -1 && index < this.game.player.items.length) {
         this.game.player.wield(this.game.player.items[index])
         this.wielding = false
