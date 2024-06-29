@@ -10,6 +10,7 @@
     <template v-else-if="showInventory">
       <InventoryScreen :items="inventoryItems" />
     </template>
+    <DiscoveredScreen v-show="showDiscovered" :game="game" />
     <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
     <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="scores" />
   </div>
@@ -263,6 +264,9 @@ export default {
         return
       }
       switch (event.key) {
+        case 'D':
+          this.showDiscovered = true
+          break
         case 'o':
           this.showOptions = true
           break

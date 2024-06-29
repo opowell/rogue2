@@ -62,7 +62,7 @@ const DEFINITIONS = {
     prob: 8,
     action: (character, potion) => {
       character.counts.hold += spread(2)
-      character.addMessage('you can\'t move')
+      character.addMessage('you feel sick')
       potion.identify()
     }
   },
@@ -71,6 +71,7 @@ const DEFINITIONS = {
     prob: 5,
     action: (character, potion) => {
       character.counts.confuse += CONFUSE_DURATION + randomInt(8)
+      character.addMessage('you feel confused')
       potion.identify()
     }
   },
@@ -78,7 +79,8 @@ const DEFINITIONS = {
     name: 'paralysis',
     prob: 10,
     action: (character, potion) => {
-      character.paralyse()
+      character.counts.hold += PARALYZE_DURATION + randomInt(8)
+      character.addMessage('you can\'t move')
       potion.identify()
     }
   },
@@ -97,12 +99,18 @@ const DEFINITIONS = {
     prob: 6,
     action: (character, potion) => {
       character.counts.detectMonsters += 30
+      character.addMessage('you can detect monsters!')
       potion.identify()
     }
   },
   DETECT_MAGIC: {
     name: 'detect magic',
-    prob: 6
+    prob: 6,
+    action: (character, potion) => {
+      character.game.detectMagic()
+      character.addMessage('magic detected!')
+      potion.identify()
+    }
   },
   RAISE_LEVEL: {
     name: 'raise level',
@@ -114,7 +122,11 @@ const DEFINITIONS = {
   },
   EXTRA_HEALING: {
     name: 'extra healing',
-    prob: 5
+    prob: 5,
+    action: (character, potion) => {
+      character.healExtra()
+      potion.identify()
+    }
   },
   HASTE_SELF: {
     name: 'haste self',

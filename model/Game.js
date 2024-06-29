@@ -118,9 +118,8 @@ class Game extends StatefulObject {
   greetPlayer() {
     this.addMessage('Welcome, ' + this.playerName + ', to the Dungeons of Doom!')
   }
-  increasePlayerStrength() {
-    this.player.increaseStrength()
-    this.addMessage('You feel stronger, now. What bulging muscles!')
+  detectMagic() {
+    console.log('TODO')
   }
   clearCurrentMessage() {
     this.messages.splice(0, 1)

@@ -188,6 +188,7 @@ class Character extends GameObject {
       this.hits.current = this.hits.maximum
     }
     this.sight()
+    this.game.addMessage('You feel better')
   }
   blind() {
     this.counts.blind += SEE_DURATION
@@ -208,6 +209,7 @@ class Character extends GameObject {
       this.strength.maximum++
     }
     this.strength.current++
+    this.game.addMessage('You feel stronger, now. What bulging muscles!')
   }
   takeOffArmor() {
     if (!this.armor) {
