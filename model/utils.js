@@ -73,6 +73,8 @@ const swing = (attackerLevel, defArmor, weaponPlus) => {
   return res + weaponPlus >= need
 }
 
+export const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
 /*
  * roll_em: Roll several attacks
  */

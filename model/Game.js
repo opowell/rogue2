@@ -52,12 +52,19 @@ class Game extends StatefulObject {
       seenAmulet: false,
       levelsWithoutFood: 0,
       wandererCount: 0,
+      mostRecentMessage: null
     })
     this.player = new Character(this)
     this.createLocations()
     this.startNewLevel()
     this.playerDead = computed(() => {
       return this.player.hits.current < 1
+    })
+    this.message = computed(() => {
+      if (this.messages.length === 0) {
+        return ''
+      }
+      return this.messages[0]
     })
     watch(() => this.level, (val) => {
       this.maxLevel = Math.max(val, this.maxLevel)
@@ -70,6 +77,20 @@ class Game extends StatefulObject {
         this.wandererCount = 0
       }
     })
+    watch(() => this.message.value, (val) => {
+      console.log('set', val)
+      this.mostRecentMessage = val
+    })
+  }
+  showMostRecentMessage() {
+    console.log('show most recent', this.messages, this.mostRecentMessage)
+    if (this.messages.length > 0) {
+      return
+    }
+    if (!this.mostRecentMessage) {
+      return
+    }
+    this.messages.push(this.mostRecentMessage)
   }
   restart() {
     this.level = 1

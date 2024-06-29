@@ -2,7 +2,7 @@ import { TYPES as ARMOR_TYPES, getArmor } from './ArmorFactory.js'
 import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
 import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
-import { randomInt, roll, spread } from './utils.js'
+import { alphabet, randomInt, roll, spread } from './utils.js'
 const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
@@ -280,12 +280,16 @@ class Character extends GameObject {
           }
           return i.matchesForInventory(item)
         })
+        let letter = ''
         if (matchingItem) {
+          const index = this.items.findIndex(item => item === matchingItem)
+          letter = alphabet[index]
           matchingItem.quantity++
         } else {
           this.items.push(item)
+          letter = alphabet[this.items.length - 1]
         }
-        this.game.addMessage('You picked up ' + (item.label || ('a ' + item.type)))
+        this.game.addMessage('You picked up ' + (item.label || ('a ' + item.type)) + ' (' + letter + ')')
         location.item = null
       }
     }
@@ -323,8 +327,8 @@ class Character extends GameObject {
       if (location.type === 'door') {
         out.touchable.push('door')
       }
-      if (location.item?.type === 'staircase') {
-        out.touchable.push('staircase')
+      if (location.item) {
+        out.touchable.push(location.item.type)
       }
     })
     out.touchable.sort()

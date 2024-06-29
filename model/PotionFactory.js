@@ -61,8 +61,7 @@ const DEFINITIONS = {
     name: 'poison',
     prob: 8,
     action: (character, potion) => {
-      character.counts.hold += spread(2)
-      character.addMessage('you feel sick')
+      character.poison()
       potion.identify()
     }
   },

@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="column2">
-      <GameMessage :message="message" :show-more="game.messages.length > 1" :height="locationHeight" class="message"/>
+      <GameMessage :message="game.message" :show-more="game.messages.length > 1" :height="locationHeight" class="message" />
       <div v-if="showMap" class="map">
         <template v-if="showCoordinates">
           <GameCoordinate
@@ -133,12 +133,6 @@ export default {
           value: player.level + '/' + player.experience
         }
       ]
-    },
-    message() {
-      if (this.game.messages.length > 0) {
-        return this.game.messages[0]
-      }
-      return ''
     },
     locations() {
       return this.game.locations.flat()

@@ -23,7 +23,7 @@ import DungeonScreen from './screens/Dungeon.vue'
 import DiscoveredScreen from './screens/Discovered.vue'
 import OptionsScreen from './screens/Options.vue'
 
-const fontRatio = 8/14
+const fontRatio = 8 / 14
 const MIN_LEFT_PANEL_WIDTH = 12
 const BOTTOM_PANEL_HEIGHT = 2
 const TOP_PANEL_HEIGHT = 1
@@ -59,7 +59,7 @@ export default {
       showOptions: false,
       scores: [],
       mounted: false,
-      reading: false
+      reading: false,
     }
   },
   computed: {
@@ -300,6 +300,9 @@ export default {
         return
       }
       switch (event.key) {
+        case 'F4':
+          this.game.showMostRecentMessage()
+          break
         case 'D':
           this.showDiscovered = true
           break
