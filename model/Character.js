@@ -189,7 +189,16 @@ class Character extends GameObject {
       this.hits.current = this.hits.maximum
     }
     this.sight()
-    this.game.addMessage('You feel better')
+    this.game.addMessage('you begin to feel better')
+  }
+  healExtra() {
+    this.hits.current += roll(this.level, 8)
+    if (this.hits.current > this.hits.maximum) {
+      this.hits.maximum = this.hits.maximum + 2
+      this.hits.current = this.hits.maximum
+    }
+    this.sight()
+    this.game.addMessage('you begin to feel much better')
   }
   blind() {
     this.counts.blind += SEE_DURATION
