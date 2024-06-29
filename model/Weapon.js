@@ -2,7 +2,7 @@ import Item from "./Item.js"
 import { randomInt } from "./utils.js"
 
 class Weapon extends Item {
-  constructor(type, groupId) {
+  constructor(type, groupId, randomize = true) {
     super({
       weaponType: type.name,
       hitBonus: 0,
@@ -16,11 +16,13 @@ class Weapon extends Item {
     })
     this.type = 'weapon'
     const r = Math.random()
-    if (r < 0.1) {
-      this.hitBonus = -randomInt(1, 3)
-      this.cursed = true
-    } else if (r < 0.15) {
-      this.hitBonus = randomInt(1, 3)
+    if (randomize) {
+      if (r < 0.1) {
+        this.hitBonus = -randomInt(1, 3)
+        this.cursed = true
+      } else if (r < 0.15) {
+        this.hitBonus = randomInt(1, 3)
+      }
     }
     if (type.isMany) {
       this.quantity = randomInt(8, 15)

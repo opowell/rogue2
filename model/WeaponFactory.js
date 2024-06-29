@@ -75,13 +75,13 @@ export const getWeapon = (weaponType) => {
 }
 
 export const spawnMace = () => {
-  return new Weapon(DEFINITIONS.MACE)
+  return new Weapon(DEFINITIONS.MACE, groupCount++, false)
 }
 export const spawnBow = () => {
-  return new Weapon(DEFINITIONS.SHORT_BOW)
+  return new Weapon(DEFINITIONS.SHORT_BOW, groupCount++, false)
 }
 export const spawnArrows = () => {
-  const arrows = new Weapon(DEFINITIONS.ARROW)
+  const arrows = new Weapon(DEFINITIONS.ARROW, groupCount++, false)
   arrows.quantity = randomInt(15) + 25
   return arrows
 }

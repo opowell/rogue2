@@ -234,6 +234,10 @@ class Character extends GameObject {
     this.game.messages.push('Removed armor.')
   }
   wield(item) {
+    if (this.weapon?.cursed) {
+      this.game.messages.push('You cannot, your current weapon is cursed.')
+      return
+    }
     this.weapon = item
   }
   wearArmor(item) {

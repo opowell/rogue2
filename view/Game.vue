@@ -60,6 +60,7 @@ export default {
       scores: [],
       mounted: false,
       reading: false,
+      takingAction: false
     }
   },
   computed: {
@@ -166,97 +167,68 @@ export default {
         return
       }
       this.dropping = true
+      this.takingAction = true
       this.game.messages.push('Drop: enter a letter, or Esc to cancel')
     },
     quaffPrompt() {
       this.quaffing = true
+      this.takingAction = true
       this.game.messages.push('Quaff: enter a letter, * for inventory, or Esc to cancel')
     },
     readPrompt() {
       this.reading = true
+      this.takingAction = true
       this.game.messages.push('Read: enter a letter, * for inventory, or Esc to cancel')
     },
     wieldPrompt() {
       this.wielding = true
+      this.takingAction = true
       this.game.messages.push('Wield: enter a letter, or Esc to cancel')
     },
     wearingArmorPrompt() {
       this.wearingArmor = true
+      this.takingAction = true
       this.game.messages.push('Wear armor: enter a letter, or Esc to cancel')
     },
-    handleQuaffingKeyDown(event) {
+    handleTakingActionKeyDown(event) {
+      this.showInventory = false
       if (event.key === '*') {
         this.showInventory = true
         return
       }
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !this.showInventory) {
         this.game.clearCurrentMessage()
         this.quaffing = false
-        return
-      }
-      const index = alphabet.indexOf(event.key)
-      if (index > -1 && index < this.game.player.items.length) {
-        this.game.quaffItem(index)
-        this.quaffing = false
-        this.game.clearCurrentMessage()
-      }
-    },
-    handleReadingKeyDown(event) {
-      if (event.key === '*') {
-        this.showInventory = true
-        return
-      }
-      if (event.key === 'Escape') {
-        this.game.clearCurrentMessage()
+        this.wearingArmor = false
         this.reading = false
+        this.dropping = false
+        this.wielding = false
+        this.takingAction = false
         return
       }
       const index = alphabet.indexOf(event.key)
       if (index > -1 && index < this.game.player.items.length) {
-        this.game.clearCurrentMessage()
-        if (this.game.player.items[index].type !== 'scroll') {
-          this.game.addMessage('You cannot read that')
+        if (this.quaffing) {
+          this.game.quaffItem(index)
+          this.quaffing = false
+        } else if (this.wearingArmor) {
+          this.game.player.wearArmor(this.game.player.items[index])
+          this.wearingArmor = false
+        } else if (this.reading) {
+          if (this.game.player.items[index].type !== 'scroll') {
+            this.game.addMessage('You cannot read that')
+            return
+          }
+          this.game.readItem(index)
+          this.reading = false
+        } else if (this.dropping) {
+          this.game.dropItem(index)
+          this.dropping = false
+        } else if (this.wielding) {
+          this.game.player.wield(this.game.player.items[index])
+          this.wielding = false
         }
-        this.game.readItem(index)
-        this.reading = false
-      }
-    },
-    handleDroppingKeyDown(event) {
-      if (event.key === 'Escape') {
-        this.game.clearCurrentMessage()
-        this.dropping = false
-        return
-      }
-      const index = alphabet.indexOf(event.key)
-      if (index > -1 && index < this.game.player.items.length) {
-        this.game.dropItem(index)
-        this.dropping = false
-        this.game.clearCurrentMessage()
-      }
-    },
-    handleWearingArmorKeyDown(event) {
-      if (event.key === 'Escape') {
-        this.game.clearCurrentMessage()
-        this.wearingArmor = false
-        return
-      }
-      const index = alphabet.indexOf(event.key)
-      if (index > -1 && index < this.game.player.items.length) {
-        this.game.player.wearArmor(this.game.player.items[index])
-        this.wearingArmor = false
-        this.game.clearCurrentMessage()
-      }
-    },
-    handleWieldingKeyDown(event) {
-      if (event.key === 'Escape') {
-        this.game.clearCurrentMessage()
-        this.wielding = false
-        return
-      }
-      const index = alphabet.indexOf(event.key)
-      if (index > -1 && index < this.game.player.items.length) {
-        this.game.player.wield(this.game.player.items[index])
-        this.wielding = false
+        this.takingAction = false
         this.game.clearCurrentMessage()
       }
     },
@@ -265,24 +237,8 @@ export default {
         return
       }
       this.game.prepareTurn()
-      if (this.wearingArmor) {
-        this.handleWearingArmorKeyDown(event)
-        return
-      }
-      if (this.quaffing) {
-        this.handleQuaffingKeyDown(event)
-        return
-      }
-      if (this.reading) {
-        this.handleReadingKeyDown(event)
-        return
-      }
-      if (this.dropping) {
-        this.handleDroppingKeyDown(event)
-        return
-      }
-      if (this.wielding) {
-        this.handleWieldingKeyDown(event)
+      if (this.takingAction) {
+        this.handleTakingActionKeyDown(event)
         return
       }
       if (this.game.messages.length > 1 && event.key !== ' ') {
