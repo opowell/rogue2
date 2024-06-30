@@ -35,7 +35,8 @@ class Monster extends GameObject {
       },
       meleeDamageBonus: 0,
       meleeHitBonus: 0,
-      tookDamageRecently: false
+      tookDamageRecently: false,
+      held: monsterType.held || false
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem(this.game)
@@ -111,6 +112,9 @@ class Monster extends GameObject {
       } else {
         this.game.addMessage('The ' + this.monsterType.name + ' missed you.')
       }
+      return
+    }
+    if (this.held) {
       return
     }
     if (!to.canCharacterMoveTo) return

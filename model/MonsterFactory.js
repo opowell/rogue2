@@ -54,6 +54,7 @@ const DEFINITIONS = {
     label: '&#x0046',
     name: 'venus flytrap',
     mean: true,
+    held: true,
     exp: 80,
     level: 8,
     armor: 3,

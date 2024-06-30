@@ -234,6 +234,16 @@ class Game extends StatefulObject {
       }
     }
   }
+  getNearbyEnemies(location, distance) {
+    
+  }
+  readScroll(scroll, index) {
+    this.player.removeItem(index)
+    scroll.read(this.player, scroll)
+  }
+  revealMap() {
+    this.locations.flat().forEach(location => location.show = true)
+  }
   addHallways() {
     for (let i = 0; i < NUM_ROOM_COLS; i++) {
       for (let j = 0; j < NUM_ROOM_ROWS; j++) {

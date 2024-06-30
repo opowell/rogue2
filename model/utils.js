@@ -142,6 +142,14 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
 
 export const getAAn = (word) => getVowelWord('a', 'an', word)
 
+export const randomElements = (array, n) => {
+  const elements = []
+  for (let i = 0; i < n; i++) {
+    elements.push(randomElement(array))
+  }
+  return elements
+}
+
 export const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))

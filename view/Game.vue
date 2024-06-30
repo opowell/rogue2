@@ -5,14 +5,14 @@
       <OptionsScreen />
     </template>
     <template v-else-if="gameFinished">
-      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" :scores="scores" />
+      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
     </template>
     <template v-else-if="showInventory">
       <InventoryScreen :items="inventoryItems" />
     </template>
     <DiscoveredScreen v-show="showDiscovered" :game="game" />
     <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
-    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="scores" />
+    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" />
   </div>
 </template>
 <script>
@@ -60,7 +60,8 @@ export default {
       scores: [],
       mounted: false,
       reading: false,
-      takingAction: false
+      takingAction: false,
+      deathScoreIndex: null
     }
   },
   computed: {
@@ -103,6 +104,27 @@ export default {
     showLeftPanel() {
       const windowCols = Math.floor(window.innerWidth / this.locationWidth)
       return windowCols > this.game.width + MIN_LEFT_PANEL_WIDTH
+    },
+    welcomeScores() {
+      if (!this.scores) {
+        return []
+      }
+      return this.scores.slice(0, 5)
+    },
+    deathScoresStartIndex() {
+      if (!this.deathScoreIndex) {
+        return null
+      }
+      return Math.max(this.deathScoreIndex - 4, 0)
+    },
+    deathScores() {
+      if (!this.scores) {
+        return []
+      }
+      if (!this.deathScoresStartIndex) {
+        return []
+      }
+      return this.scores.slice(this.deathScoresStartIndex, 9)
     }
   },
   watch: {
@@ -114,13 +136,15 @@ export default {
           this.$refs.deathScreen.focus()
         })
         this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
-        this.scores.push({
+        const newScore = {
           name: this.game.playerName,
           gold: this.game.player.gold,
           causeOfDeath: this.game.player.latestDamageCause,
           level: this.game.level
-        })
+        }
+        this.scores.push(newScore)
         this.scores = this.scores.sort((a, b) => b.gold - a.gold)
+        this.deathScoreIndex = this.scores.findIndex(score => score === newScore)
         window.localStorage.setItem('scores', JSON.stringify(this.scores))
       }
     }
@@ -215,11 +239,12 @@ export default {
           this.game.player.wearArmor(this.game.player.items[index])
           this.wearingArmor = false
         } else if (this.reading) {
-          if (this.game.player.items[index].type !== 'scroll') {
+          const scroll = this.game.player.items[index]
+          if (scroll.type !== 'scroll') {
             this.game.addMessage('You cannot read that')
             return
           }
-          this.game.readItem(index)
+          this.game.readScroll(scroll, index)
           this.reading = false
         } else if (this.dropping) {
           this.game.dropItem(index)
@@ -249,6 +274,10 @@ export default {
       }
       if (this.showInventory) {
         this.showInventory = false
+        return
+      }
+      if (this.showOptions) {
+        this.showOptions = false
         return
       }
       if (this.showDiscovered) {

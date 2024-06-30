@@ -7,6 +7,7 @@
   />
 </template>
 <script>
+import { COLORS, CONTENT } from '../constants.js'
 const NO_CHARACTER = -1
 
 export default {
@@ -76,7 +77,7 @@ export default {
             case 'ring':
               return '&#x25CB;'
             case 'gold':
-              return '&#x263C;'
+              return CONTENT.GOLD
             case 'armor':
               return '&#x25D8;'
             case 'staircase':
@@ -165,7 +166,7 @@ export default {
               case 'scroll':
                 return '#5555ff'
               case 'gold':
-                return '#ffff05'
+                return COLORS.GOLD
               case 'food':
                 return '#ba0000'
               case 'staircase':

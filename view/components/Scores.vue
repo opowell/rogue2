@@ -1,15 +1,16 @@
 <template>
   <div class="hall">Hall of fame</div>
   <div class="scores">
-    <div v-for="(score, index) in scores" :key="index" class="score" v-html="label(score)" />
+    <div v-for="(score, index) in scores" :key="index" class="score" v-html="label(score, index)" />
   </div>
 </template>
 <script>
-
+import { COLORS, CONTENT } from '../constants.js'
 export default {
   name: 'Scores',
   props: {
     scores: { type: Array, required: true },
+    startIndex: { type: Number, default: 1 }
   },
   computed: {
     goldDigits() {
@@ -17,9 +18,11 @@ export default {
     }
   },
   methods: {
-    label(score) {
+    label(score, index) {
+      index = this.startIndex + index
       const gold = String(score.gold).padStart(this.goldDigits, 'x').replaceAll('x', '&nbsp;')
-      return gold + ' gold - ' + score.name + ', ' + score.causeOfDeath + ' on level ' + score.level
+      const goldDiv = gold + '<div style="color: ' + COLORS.GOLD + '">' + CONTENT.GOLD + '</div>'
+      return '#' + index + '&nbsp;' + goldDiv + '&nbsp;' + score.name + ', ' + score.causeOfDeath + ' on level ' + score.level
     }
   }
 }

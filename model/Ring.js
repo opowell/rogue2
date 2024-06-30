@@ -1,4 +1,5 @@
 import Item from "./Item.js"
+import { getAAn } from "./utils.js"
 
 class Ring extends Item {
   constructor(ringType) {

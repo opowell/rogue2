@@ -8,10 +8,13 @@ class Scroll extends Item {
     })
   }
   get label() {
-    if (this.quantity === 1) {
-      return 'a scroll'
+    if (this.scrollType.identified) {
+      return 'a scroll of ' + this.scrollType.name
     }
-    return this.quantity + ' scrolls'
+    if (this.quantity === 1) {
+      return 'a scroll titled ' + this.scrollType.hiddenName
+    }
+    return this.quantity + ' scrolls titled ' + this.scrollType.hiddenName
   }
   matchesForInventory(item) {
     return item.type === 'scroll' && item.scrollType === this.scrollType

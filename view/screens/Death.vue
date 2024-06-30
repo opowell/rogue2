@@ -1,6 +1,6 @@
 <template>
   <div ref="el" class="death-screen" tabindex="0" @keydown="handleKeydown">
-    <ScoresComponent :scores />
+    <ScoresComponent :scores :start-index="scoreStartIndex" />
     <div class="message">{{ message }}</div>
     <div>Press Enter to continue</div>
   </div>
@@ -14,7 +14,8 @@ export default {
   },
   props: {
     message: { type: String, required: true },
-    scores: { type: Array, required: true }
+    scores: { type: Array, required: true },
+    scoreStartIndex: { type: Number, default: 1 }
   },
   methods: {
     handleKeydown(e) {

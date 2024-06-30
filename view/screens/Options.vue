@@ -24,25 +24,14 @@ export default {
         {
           name: 'Stats on left',
           value: 'yes'
+        },
+        { 
+          name: 'Pulsing damage',
+          value: 'yes'
         }
       ]
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.$refs.input.focus()
-    }) 
-  },
-  methods: {
-    handleKeydown(e) {
-      e.stopPropagation()
-      if (e.code === 'Enter') {
-        e.preventDefault()
-        e.stopPropagation()
-        this.$emit('startGame', this.name)
-      }
-    }
-  }
 }
 </script>
 <style scoped>

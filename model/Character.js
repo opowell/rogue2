@@ -233,6 +233,17 @@ class Character extends GameObject {
     this.armor = null
     this.game.messages.push('Removed armor.')
   }
+  removeItem(index) {
+    const item = this.items[index]
+    let out = null
+    if (item.quantity > 1) {
+      item.quantity--
+      out = item.clone()
+    } else {
+      out = this.items.splice(index, 1)[0]
+    }
+    return item
+  }
   wield(item) {
     if (this.weapon?.cursed) {
       this.game.messages.push('You cannot, your current weapon is cursed.')
@@ -245,12 +256,7 @@ class Character extends GameObject {
     item.identified = true
   }
   dropItem(index) {
-    const item = this.items[0]
-    if (item.quantity > 1) {
-      item.quantity--
-    } else {
-      this.items.splice(index, 1)
-    }
+    const item = this.removeItem(index)
     this.location.item = item
   }
   /**

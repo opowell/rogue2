@@ -13,5 +13,10 @@ class GameObject extends StatefulObject{
     }
     return this.type
   }
+  clone() {
+    const out = new GameObject()
+    out.type = this.type
+    return out
+  }
 }
 export default GameObject
