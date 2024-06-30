@@ -3,7 +3,6 @@ import { randomElement, randomInt } from "./utils.js"
 
 const LEVEL_ORDER = "KEBHISOR LCA NYTWFP GMXVJD"
 const WAND_ORDER = "KEBHISORZ CAQ YTW PUGM VJ "
-
 const DEFINITIONS = {
   A: {
     label: '&#x0041',
@@ -21,7 +20,12 @@ const DEFINITIONS = {
     exp: 1,
     level: 1,
     armor: 3,
-    damage: '1d2'
+    damage: '1d2',
+    getMoveLocation: (monster) => {
+      if (Math.random() > 0.5) {
+        
+      }
+    }
   },
   C: {
     label: '&#x0043',
@@ -248,6 +252,13 @@ const DEFINITIONS = {
     damage: '1d8'
   },
 }
+
+const defKeys = Object.keys(DEFINITIONS)
+defKeys.forEach((key) => {
+  const type = DEFINITIONS[key]
+  type.strength = 10
+})
+
 export const getLevelMonster = (game, level) => {
   if (!level) {
     level = game.level

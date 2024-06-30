@@ -70,6 +70,7 @@ const IMMOBILE_HIT_BONUS = 4
 const swing = (attackerLevel, defArmor, weaponPlus) => {
   const res = randomInt(19)
   const need = 20 - attackerLevel - defArmor
+  console.log(res, weaponPlus, '20', attackerLevel, defArmor, res, need)
   return res + weaponPlus >= need
 }
 
@@ -84,7 +85,6 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
   let dPlus = 0
   let weaponDamage = 0
   if (weapon) {
-    // cp = att->s_dmg;
     hPlus = weapon.hitBonus
     dPlus = weapon.damageBonus
     if (weapon.vorpalizeType === defender.monsterType) {
@@ -123,6 +123,7 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
   const swings = weaponDamage.split('/')
   let damage = 0
   swings.forEach(swingDef => {
+    console.log('swing', attacker.level, defender.toHitArmorLevel, attacker, attacker.strengthToHitBonus)
     const hit = swing(attacker.level, defender.toHitArmorLevel, attacker.strengthToHitBonus)
     if (hit) {
       didHit = true
@@ -168,7 +169,7 @@ const getVowelWord = (A, B, word) => {
 }
 
 export const strengthToHitBonus = (strength) => {
-  const add = 4
+  let add = 4
   if (strength < 8)
     return strength - 7
   if (strength < 31)

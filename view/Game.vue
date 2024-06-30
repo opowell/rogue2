@@ -12,7 +12,7 @@
     </template>
     <DiscoveredScreen v-show="showDiscovered" :game="game" />
     <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
-    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" />
+    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
   </div>
 </template>
 <script>
@@ -146,6 +146,11 @@ export default {
         this.scores = this.scores.sort((a, b) => b.gold - a.gold)
         this.deathScoreIndex = this.scores.findIndex(score => score === newScore)
         window.localStorage.setItem('scores', JSON.stringify(this.scores))
+      }
+    },
+    showWelcome(val) {
+      if (val) {
+        this.$refs.welcome.focusInput()
       }
     }
   },

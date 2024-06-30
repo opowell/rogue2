@@ -24,10 +24,13 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$refs.input.focus()
+      this.focusInput()
     }) 
   },
   methods: {
+    focusInput() {
+      this.$refs.input.focus()
+    },
     handleKeydown(e) {
       e.stopPropagation()
       if (e.code === 'Enter') {
