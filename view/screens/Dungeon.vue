@@ -120,9 +120,13 @@ export default {
           label: 'Gold',
           value: String(player.gold).padStart(3, 'x').replaceAll('x', '&nbsp;')
         },
+        // {
+        //   label: 'Damage',
+        //   value: player.damage
+        // },
         {
-          label: 'Damage',
-          value: player.damage
+          label: 'Food',
+          value: player.foodLeft
         },
         {
           label: 'Armor',

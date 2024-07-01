@@ -84,10 +84,12 @@ class Monster extends GameObject {
       return
     }
     const to = this.getMoveDestination()
+    if (!to) {
+      console.log('huh?', to, this)
+    }
     this.moveTo(to)
   }
   getMoveDestination(useFromType = true) {
-    console.log('getMoveDestination')
     if (useFromType && this.monsterType.getMoveDestination) {
       return this.monsterType.getMoveDestination(this)
     }

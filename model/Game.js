@@ -57,9 +57,7 @@ class Game extends StatefulObject {
     this.player = new Character(this)
     this.createLocations()
     this.startNewLevel()
-    this.playerDead = computed(() => {
-      return this.player.hits.current < 1
-    })
+    this.playerDead = computed(() => this.player.dead)
     this.message = computed(() => {
       if (this.messages.length === 0) {
         return ''
@@ -316,6 +314,9 @@ class Game extends StatefulObject {
     let out = []
     for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
+        if (x === location.x && y === location.y) {
+          continue
+        }
         const loc = this.locations[x][y]
         if (filter(loc)) {
           out.push(loc)

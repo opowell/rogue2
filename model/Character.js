@@ -6,7 +6,26 @@ import { alphabet, randomInt, roll, spread } from './utils.js'
 const { computed, watch } = Vue
 
 const SEE_DURATION = spread(300)
-
+const STOMACH_SIZE = 2000
+const FOOD_TIME = spread(1300)
+const HUNGRY_TIME = 150
+const STARVING_TIME = 850
+const NUTRITION_STATUS = {
+  FINE: {
+    order: 0,
+  },
+  HUNGRY: {
+    order: 1,
+    message: 'you are starting to get hungry',
+  },
+  WEAK: {
+    order: 2,
+    message: 'you are starting to feel weak'
+  },
+  STARVING: {
+    order: 3
+  }
+}
 export const TYPE = 'character'
 
 class Character extends GameObject {
@@ -29,7 +48,8 @@ class Character extends GameObject {
         blind: 0,
         haste: 0,
         hold: 0,
-        confuse: 0
+        confuse: 0,
+        sleep: 0,
       },
       experience: 0,
       gold: 0,
@@ -40,7 +60,8 @@ class Character extends GameObject {
       resting: true,
       latestDamageCause: 'died of natural causes',
       tookDamageRecently: false,
-      confuseAttack: false
+      confuseAttack: false,
+      foodLeft: FOOD_TIME
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -117,6 +138,43 @@ class Character extends GameObject {
     this.paralyzed = computed(() => {
       return this.counts.paralyze > 0
     })
+    this.nutritionStatus = computed(() => {
+      if (this.foodLeft >= 2 * HUNGRY_TIME) {
+        return NUTRITION_STATUS.FINE
+      }
+      if (this.foodLeft >= HUNGRY_TIME) {
+        return NUTRITION_STATUS.HUNGRY
+      }
+      if (this.foodLeft >= 0) {
+        return NUTRITION_STATUS.WEAK
+      }
+      return NUTRITION_STATUS.STARVING
+    })
+    this.starved = computed(() => this.foodLeft < -STARVING_TIME)
+    this.dead = computed(() => {
+      console.log('dead?', this.starved.value, this.foodLeft, STARVING_TIME)
+      if (this.starved.value) {
+        return true
+      }
+      return this.hits.current < 1
+    })
+    watch(this.nutritionStatus, (newVal, oldVal) => {
+      if (newVal.order < oldVal.order) {
+        return
+      }
+      if (newVal.message) {
+        this.addMessage(newVal.message)
+      }
+    })
+    watch(() => this.foodLeft, val => {
+      if (val >= 0) {
+        return
+      } 
+      if (Math.random() < 0.2) {
+        this.addMessage('you faint from lack of food')
+        this.counts.sleep += randomInt(4, 11)
+      }
+    })
     watch(this.level, (newVal, oldVal) => {
       const modifier = newVal > oldVal ? 1 : -1
       const diff = Math.abs(newVal - oldVal)
@@ -166,6 +224,7 @@ class Character extends GameObject {
     }
     this.resting = true
     this.tookDamageRecently = false
+    this.foodLeft--
   }
   prepareTurn() {
     this.tookDamageRecently = false
@@ -233,6 +292,10 @@ class Character extends GameObject {
     this.armor = null
     this.game.messages.push('Removed armor.')
   }
+  loseItem(item) {
+    const index = this.items.indexOf(item)
+    this.items.splice(index, 1)
+  }
   removeItem(index) {
     const item = this.items[index]
     let out = null
@@ -254,6 +317,25 @@ class Character extends GameObject {
   wearArmor(item) {
     this.armor = item
     item.identified = true
+  }
+  eat(item) {
+    if (item.type !== 'food') {
+      this.addMessage("ugh, you would get ill if you ate that")
+      return
+    }
+    item.quantity--
+    if (this.foodLeft < 0) {
+      this.foodLeft = 0
+    }
+    if (this.foodLeft > STOMACH_SIZE - 20) {
+      this.counts.sleep += randomInt(2, 6)
+      this.addMessage('You feel bloated and fall asleep')
+    }
+    this.foodLeft += FOOD_TIME - 200 + randomInt(400)
+    if (this.foodLeft > STOMACH_SIZE) {
+      this.foodLeft = STOMACH_SIZE
+    }
+    item.eat(this)
   }
   dropItem(index) {
     const item = this.removeItem(index)

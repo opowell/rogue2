@@ -62,5 +62,8 @@ class Location extends StatefulObject{
     this.showContent = false
     this.marked = false
   }
+  removeItem() {
+    this.item = null
+  }
 }
 export default Location
