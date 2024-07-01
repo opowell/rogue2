@@ -1,6 +1,15 @@
 import Monster from "./Monster.js"
 import { randomElement, randomInt } from "./utils.js"
 
+const randomMove = (monster, probRandom) => {
+  if (Math.random() < probRandom) {
+    const locations = monster.game.getLocationsNearby(monster.location, location => location.canPlaceMonster)
+    return randomElement(locations)
+  } else {
+    return monster.getMoveDestination(false)
+  }
+}
+
 const LEVEL_ORDER = "KEBHISOR LCA NYTWFP GMXVJD"
 const WAND_ORDER = "KEBHISORZ CAQ YTW PUGM VJ "
 const DEFINITIONS = {
@@ -21,15 +30,7 @@ const DEFINITIONS = {
     level: 1,
     armor: 3,
     damage: '1d2',
-    getMoveDestination: (monster) => {
-      console.log('move from type')
-      if (Math.random() > 0.5) {
-        return monster.getMoveDestination(false)
-      } else {
-        const locations = monster.game.getLocationsNearby(monster.location, location => location.canPlaceMonster)
-        return randomElement(locations)
-      }
-    }
+    getMoveDestination: (monster) => randomMove(monster, 0.5)
   },
   C: {
     label: '&#x0043',
@@ -160,7 +161,8 @@ const DEFINITIONS = {
     exp: 120,
     level: 8,
     armor: 3,
-    damage: '4d4'
+    damage: '4d4',
+    getMoveDestination: (monster) => randomMove(monster, 0.2)
   },
   Q: {
     label: '&#x0051',
