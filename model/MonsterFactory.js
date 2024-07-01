@@ -21,9 +21,13 @@ const DEFINITIONS = {
     level: 1,
     armor: 3,
     damage: '1d2',
-    getMoveLocation: (monster) => {
+    getMoveDestination: (monster) => {
+      console.log('move from type')
       if (Math.random() > 0.5) {
-        
+        return monster.getMoveDestination(false)
+      } else {
+        const locations = monster.game.getLocationsNearby(monster.location, location => location.canPlaceMonster)
+        return randomElement(locations)
       }
     }
   },

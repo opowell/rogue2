@@ -308,6 +308,22 @@ class Game extends StatefulObject {
       }
     }
   }
+  getLocationsNearby(location, filter = () => true, distance = 1) {
+    const minX = Math.max(location.x - distance, 0)
+    const maxX = Math.min(location.x + distance, this.locations.length - 1)
+    const minY = Math.max(location.y - distance, 0)
+    const maxY = Math.min(location.y + distance, this.locations[0].length - 1)
+    let out = []
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        const loc = this.locations[x][y]
+        if (filter(loc)) {
+          out.push(loc)
+        }
+      }
+    }
+    return out
+  }
   addRoom(x, y, w, h) {
     const room = new Room(x, y, w, h)
     room.lit = randomInt(100) > this.level - 1

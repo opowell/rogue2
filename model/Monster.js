@@ -83,6 +83,14 @@ class Monster extends GameObject {
     if (this.dead) {
       return
     }
+    const to = this.getMoveDestination()
+    this.moveTo(to)
+  }
+  getMoveDestination(useFromType = true) {
+    console.log('getMoveDestination')
+    if (useFromType && this.monsterType.getMoveDestination) {
+      return this.monsterType.getMoveDestination(this)
+    }
     const playerLoc = this.game.player.location
     const curLoc = this.location
     const dx = Math.sign(playerLoc.x - curLoc.x)
@@ -98,7 +106,7 @@ class Monster extends GameObject {
         to = loc2
       }
     }
-    this.moveTo(to)
+    return to
   }
   prepareTurn() {
     this.tookDamageRecently = false
