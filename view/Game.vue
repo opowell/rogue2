@@ -60,6 +60,7 @@ export default {
       scores: [],
       mounted: false,
       reading: false,
+      eating: false,
       takingAction: false,
       deathScoreIndex: null
     }
@@ -209,6 +210,11 @@ export default {
       this.takingAction = true
       this.game.messages.push('Read: enter a letter, * for inventory, or Esc to cancel')
     },
+    eatPrompt() {
+      this.eating = true
+      this.takingAction = true
+      this.game.messages.push('Eat: enter a letter, * for inventory, or Esc to cancel')
+    },
     wieldPrompt() {
       this.wielding = true
       this.takingAction = true
@@ -232,6 +238,7 @@ export default {
         this.reading = false
         this.dropping = false
         this.wielding = false
+        this.eating = false
         this.takingAction = false
         return
       }
@@ -257,6 +264,9 @@ export default {
         } else if (this.wielding) {
           this.game.player.wield(this.game.player.items[index])
           this.wielding = false
+        } else if (this.eating) {
+          this.game.player.eat(this.game.player.items[index])
+          this.eating = false
         }
         this.takingAction = false
         this.game.clearCurrentMessage()
@@ -301,6 +311,9 @@ export default {
           break
         case 'r':
           this.readPrompt()
+          break
+        case 'e':
+          this.eatPrompt()
           break
         case 'i':
           this.showInventory = true

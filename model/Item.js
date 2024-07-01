@@ -10,15 +10,14 @@ class Item extends StatefulObject{
       owner: null,
       ...object
     })
-    watch(() => this.quantity, () => {
-      if (this.quantity === 1) {
-        if (this.owner) {
-          this.owner.loseItem(this)
-        } else if (this.location) {
-          this.location.removeItem()
-        }
-      } else {
-        this.quantity--
+    watch(() => this.quantity, (val) => {
+      if (val !== 0) {
+        return
+      }
+      if (this.owner) {
+        this.owner.loseItem(this)
+      } else if (this.location) {
+        this.location.removeItem()
       }
     })
   }

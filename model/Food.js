@@ -4,14 +4,17 @@ class Food extends Item {
   constructor(foodType) {
     super({
       type: 'food',
-      foodType: foodType.name,
+      foodType,
     })
   }
   get label() {
     if (this.quantity === 1) {
-      return 'a ration of food'
+      return this.foodType.name
     }
-    return this.quantity + ' rations of food'
+    return this.quantity + ' ' + this.foodType.pluralName
+  }
+  eat(character) {
+    return this.foodType.eat(character)
   }
   matchesForInventory(item) {
     return item.type === 'food' && item.foodType === this.foodType

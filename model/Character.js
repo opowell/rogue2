@@ -152,7 +152,6 @@ class Character extends GameObject {
     })
     this.starved = computed(() => this.foodLeft < -STARVING_TIME)
     this.dead = computed(() => {
-      console.log('dead?', this.starved.value, this.foodLeft, STARVING_TIME)
       if (this.starved.value) {
         return true
       }

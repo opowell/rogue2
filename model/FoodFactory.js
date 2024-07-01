@@ -3,6 +3,7 @@ import { randomElement } from "./utils.js"
 export const TYPES = {
   RATION: {
     name: 'ration of food',
+    pluralName: 'rations of food',
     prob: 9,
     eat: (character) => {
       if (Math.random() > 0.7) {
@@ -15,6 +16,7 @@ export const TYPES = {
   },
   SLIME_MOLD: {
     name: 'slime mold',
+    pluralName: 'slime molds',
     eat: () => character.addMessage("my, that was a yummy slime mold"),
     prob: 1
   }
