@@ -36,7 +36,8 @@ class Monster extends GameObject {
       meleeDamageBonus: 0,
       meleeHitBonus: 0,
       tookDamageRecently: false,
-      held: monsterType.held || false
+      held: monsterType.held || false,
+      sleeping: true
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem(this.game)
@@ -80,7 +81,7 @@ class Monster extends GameObject {
     })
   }
   step() {
-    if (this.dead) {
+    if (this.dead || this.sleeping) {
       return
     }
     const to = this.getMoveDestination()

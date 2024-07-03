@@ -233,7 +233,7 @@ class Game extends StatefulObject {
     }
   }
   getNearbyEnemies(location, distance) {
-    
+    return this.getLocationsNearby(location, (loc) => !!loc.character && loc.character !== this.player, distance).map(loc => loc.character)
   }
   readScroll(scroll, index) {
     this.player.removeItem(index)
@@ -326,7 +326,7 @@ class Game extends StatefulObject {
     return out
   }
   addRoom(x, y, w, h) {
-    const room = new Room(x, y, w, h)
+    const room = new Room(x, y, w, h, this)
     room.lit = randomInt(100) > this.level - 1
     this.locations[x][y].type = 'downRightWall'
     this.locations[x + w - 1][y].type = 'downLeftWall'
@@ -777,6 +777,7 @@ class Game extends StatefulObject {
       character.step()
     })
     this.wandererCount++
+    this.player.wakeAdjacentEnemies()
   }
 }
 export default Game

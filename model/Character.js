@@ -35,7 +35,7 @@ class Character extends GameObject {
     this.addState({
       game,
       items: [],
-      strength:  {
+      strength: {
         current: 16,
         maximum: 16
       },
@@ -107,7 +107,10 @@ class Character extends GameObject {
       if (xp < 10) {
         return 1
       }
-      return Math.ceil(Math.log2((xp+1)/10)) + 1
+      return Math.ceil(Math.log2((xp + 1) / 10)) + 1
+    })
+    this.room = computed(() => {
+      return this.location?.room
     })
     this.nextLevelXp = computed(() => {
       return Math.pow(2, this.level - 1) * 10
@@ -156,6 +159,19 @@ class Character extends GameObject {
         return true
       }
       return this.hits.current < 1
+    })
+    this.adjacentEnemies = computed(() => {
+      return this.game.getNearbyEnemies(this.location, 1)
+    })
+    watch(this.room, (val) => {
+      if (!val) {
+        return
+      }
+      val.enemies.forEach(enemy => {
+        if (Math.random() * 3 > 1) {
+          enemy.sleeping = false
+        }
+      })
     })
     watch(this.nutritionStatus, (newVal, oldVal) => {
       if (newVal.order < oldVal.order) {
@@ -206,6 +222,13 @@ class Character extends GameObject {
     }
     item.quaff(this)
     this.takeTurn()
+  }
+  wakeAdjacentEnemies() {
+    this.adjacentEnemies.forEach(enemy => {
+      if (enemy.monsterType.mean && 3 * Math.random() > 1) {
+        enemy.sleeping = false
+      }
+    })
   }
   takeTurn() {
     const keys = Object.keys(this.counts)

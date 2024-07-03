@@ -1,8 +1,9 @@
 import StatefulObject from "./StatefulObject.js"
 import { randomElement } from "./utils.js"
+const { computed } = Vue
 
 class Room extends StatefulObject {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, game) {
     super({
       x,
       y,
@@ -13,7 +14,11 @@ class Room extends StatefulObject {
       rightDoor: null,
       leftDoor: null,
       upDoor: null,
-      downDoor: null
+      downDoor: null,
+      game
+    })
+    this.enemies = computed(() => {
+      return this.locations.filter(loc => !!loc.character && loc.character !== this.game.player).map(loc => loc.character)
     })
   }
   getFreeItemLocation() {

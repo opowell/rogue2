@@ -14,7 +14,7 @@ const LEVEL_ORDER = "KEBHISOR LCA NYTWFP GMXVJD"
 const WAND_ORDER = "KEBHISORZ CAQ YTW PUGM VJ "
 const DEFINITIONS = {
   A: {
-    label: '&#x0041',
+    label: 'A',
     name: 'aquator',
     mean: true,
     exp: 20,
@@ -23,7 +23,7 @@ const DEFINITIONS = {
     damage: '0d0/0d0'
   },
   B: {
-    label: '&#x0042',
+    label: 'B',
     name: 'bat',
     fly: true,
     exp: 1,
@@ -33,7 +33,7 @@ const DEFINITIONS = {
     getMoveDestination: (monster) => randomMove(monster, 0.5)
   },
   C: {
-    label: '&#x0043',
+    label: 'C',
     name: 'centaur',
     carry: 15,
     exp: 25,
@@ -42,7 +42,7 @@ const DEFINITIONS = {
     damage: '1d6/1d6'
   },
   D: {
-    label: '&#x0044',
+    label: 'D',
     name: 'dragon',
     mean: true,
     exp: 6800,
@@ -51,7 +51,7 @@ const DEFINITIONS = {
     damage: '1d8/1d8/3d10'
   },
   E: {
-    label: '&#x0045',
+    label: 'E',
     name: 'emu',
     mean: true,
     exp: 2,
@@ -60,7 +60,7 @@ const DEFINITIONS = {
     damage: '1d2'
   },
   F: {
-    label: '&#x0046',
+    label: 'F',
     name: 'venus flytrap',
     mean: true,
     held: true,
@@ -70,7 +70,7 @@ const DEFINITIONS = {
     damage: 'custom'
   },
   G: {
-    label: '&#x0047',
+    label: 'G',
     name: 'griffin',
     carry: 20,
     mean: true,
@@ -82,7 +82,7 @@ const DEFINITIONS = {
     damage: '4d3/3d5/4d3'
   },
   H: {
-    label: '&#x0048',
+    label: 'H',
     name: 'hobgoblin',
     mean: true,
     exp: 3,
@@ -91,9 +91,8 @@ const DEFINITIONS = {
     damage: '1d8'
   },
   I: {
-    label: '&#x0049',
+    label: 'I',
     name: 'ice monster',
-    mean: true,
     exp: 15,
     level: 1,
     armor: 9,
