@@ -237,7 +237,7 @@ class Game extends StatefulObject {
   }
   readScroll(scroll, index) {
     this.player.removeItem(index)
-    scroll.read(this.player, scroll)
+    scroll.read(this.player)
   }
   revealMap() {
     this.locations.flat().forEach(location => location.show = true)

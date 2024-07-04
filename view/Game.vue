@@ -13,10 +13,12 @@
     <DiscoveredScreen v-show="showDiscovered" :game="game" />
     <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
     <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
+    <HelpScreen v-show="showHelp" />
   </div>
 </template>
 <script>
 import WelcomeScreen from './screens/Welcome.vue'
+import HelpScreen from './screens/Help.vue'
 import InventoryScreen from './screens/Inventory.vue'
 import DeathScreen from './screens/Death.vue'
 import DungeonScreen from './screens/Dungeon.vue'
@@ -34,6 +36,7 @@ export default {
   name: 'GameView',
   components: {
     WelcomeScreen,
+    HelpScreen,
     InventoryScreen,
     DeathScreen,
     DungeonScreen,
@@ -54,6 +57,7 @@ export default {
       gameStarted: false,
       gameFinished: false,
       showInventory: false,
+      showHelp: false,
       locationWidth: 0,
       locationHeight: 0,
       showOptions: false,
@@ -67,10 +71,10 @@ export default {
   },
   computed: {
     showGame() {
-      return !this.showOptions && !this.showInventory && !this.gameFinished && this.gameStarted
+      return !this.showOptions && !this.showHelp && !this.showInventory && !this.gameFinished && this.gameStarted
     },
     showWelcome() {
-      return !this.showOptions && !this.showInventory && !this.gameFinished && !this.gameStarted
+      return !this.showOptions && !this.showHelp && !this.showInventory && !this.gameFinished && !this.gameStarted
     },
     inventoryItems() {
       const items = this.game.player.items.map(item => {
@@ -276,6 +280,10 @@ export default {
       if (event.altKey || event.ctrlKey || event.metaKey) {
         return
       }
+      if (this.showHelp) {
+        this.showHelp = false
+        return
+      }
       this.game.prepareTurn()
       if (this.takingAction) {
         this.handleTakingActionKeyDown(event)
@@ -302,6 +310,10 @@ export default {
       switch (event.key) {
         case 'F4':
           this.game.showMostRecentMessage()
+          break
+        case 'F1':
+        case '?':
+          this.showHelp = true
           break
         case 'D':
           this.showDiscovered = true

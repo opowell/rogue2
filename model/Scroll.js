@@ -22,5 +22,8 @@ class Scroll extends Item {
   identify() {
     this.scrollType.identified = true
   }
+  read(character) {
+    this.scrollType.read(character, this)
+  }
 }
 export default Scroll
