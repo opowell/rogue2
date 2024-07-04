@@ -27,5 +27,11 @@ class Item extends StatefulObject{
   get inventoryCount() {
     return this.quantity
   }
+  get label() {
+    return 'an item'
+  }
+  clone() {
+    return new Item({ ...this.state })
+  }
 }
 export default Item

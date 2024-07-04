@@ -64,6 +64,7 @@ class Game extends StatefulObject {
       }
       return this.messages[0]
     })
+    this.playerPickedUpItem = computed(() => this.player.pickedUpItem)
     watch(() => this.level, (val) => {
       this.maxLevel = Math.max(val, this.maxLevel)
     })

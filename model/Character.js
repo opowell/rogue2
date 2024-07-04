@@ -3,7 +3,7 @@ import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
 import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
 import { alphabet, randomInt, roll, spread } from './utils.js'
-const { computed, watch } = Vue
+const { computed, nextTick, watch } = Vue
 
 const SEE_DURATION = spread(300)
 const STOMACH_SIZE = 2000
@@ -61,7 +61,8 @@ class Character extends GameObject {
       latestDamageCause: 'died of natural causes',
       tookDamageRecently: false,
       confuseAttack: false,
-      foodLeft: FOOD_TIME
+      foodLeft: FOOD_TIME,
+      pickedUpItem: false
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -247,6 +248,9 @@ class Character extends GameObject {
     this.resting = true
     this.tookDamageRecently = false
     this.foodLeft--
+    nextTick(() => {
+      this.pickedUpItem = false
+    })
   }
   prepareTurn() {
     this.tookDamageRecently = false
@@ -362,6 +366,7 @@ class Character extends GameObject {
   dropItem(index) {
     const item = this.removeItem(index)
     this.location.item = item
+    this.addMessage('You dropped a ' + item.label)
   }
   /**
    * 
@@ -383,6 +388,7 @@ class Character extends GameObject {
         this.gold += item.amount
         this.game.addMessage('You picked up ' + item.amount + ' pieces of gold.')
         location.item = null
+        this.pickedUpItem = true
       }
       else if (this.numItems > 25) {
         this.game.addMessage('Your pack is full.')
@@ -405,6 +411,7 @@ class Character extends GameObject {
         }
         this.game.addMessage('You picked up ' + (item.label || ('a ' + item.type)) + ' (' + letter + ')')
         location.item = null
+        this.pickedUpItem = true
       }
     }
     this.takeTurn()

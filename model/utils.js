@@ -123,7 +123,6 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
   const swings = weaponDamage.split('/')
   let damage = 0
   swings.forEach(swingDef => {
-    console.log('swing', attacker.level, defender.toHitArmorLevel, attacker, attacker.strengthToHitBonus)
     const hit = swing(attacker.level, defender.toHitArmorLevel, attacker.strengthToHitBonus)
     if (hit) {
       didHit = true

@@ -25,5 +25,8 @@ class Scroll extends Item {
   read(character) {
     this.scrollType.read(character, this)
   }
+  clone() {
+    return new Scroll({ ...this.state })
+  }
 }
 export default Scroll

@@ -31,6 +31,9 @@ const BOTTOM_PANEL_HEIGHT = 2
 const TOP_PANEL_HEIGHT = 1
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'
+const audio = {
+  itemPickup: new Audio('./view/assets/item-pickup.mp3')
+}
 
 export default {
   name: 'GameView',
@@ -49,6 +52,7 @@ export default {
   },
   data() {
     return {
+      audio,
       showMap: true,
       showDiscovered: false,
       dropping: false,
@@ -70,6 +74,9 @@ export default {
     }
   },
   computed: {
+    playerPickedUpItem() {
+      return this.game.playerPickedUpItem
+    },
     showGame() {
       return !this.showOptions && !this.showHelp && !this.showInventory && !this.gameFinished && this.gameStarted
     },
@@ -133,6 +140,15 @@ export default {
     }
   },
   watch: {
+    playerPickedUpItem(val) {
+      console.log('new val', val)
+      if (!val) {
+        return
+      }
+      audio.itemPickup.pause()
+      audio.itemPickup.load()
+      audio.itemPickup.play()
+    },
     showDeathScreenTrigger(val) {
       if (val) {
         this.gameFinished = true
