@@ -214,6 +214,9 @@ class Character extends GameObject {
   addMessage(m) {
     this.game.addMessage(m)
   }
+  sleep(x) {
+    this.counts.sleep += x
+  }
   quaffItem(index) {
     const item = this.items[index]
     if (item.quantity === 1) {

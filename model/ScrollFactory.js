@@ -1,5 +1,6 @@
 import Scroll from "./Scroll.js"
-import { alphabet, randomElement, randomElements } from "./utils.js"
+import { alphabet, randomElement, randomElements, spread } from "./utils.js"
+const SLEEPTIME = 4
 
 const TYPES = {
   CONFUSE_MONSTER: {
@@ -33,8 +34,10 @@ const TYPES = {
     name: 'sleep',
     prob: 5,
     read: (character, scroll) => {
-      console.log('TODO')
+      const turns = Math.round(spread(SLEEPTIME) + 4)
+      character.sleep(turns)
       scroll.identify()
+      character.addMessage('you fall asleep for ' + turns + ' turns')
     }
   },
   ENCHANT_ARMOR: {
