@@ -2,7 +2,7 @@ import Scroll from "./Scroll.js"
 import { alphabet, randomElement, randomElements, spread } from "./utils.js"
 const SLEEPTIME = 4
 
-const TYPES = {
+export const TYPES = {
   CONFUSE_MONSTER: {
     name: 'confuse monster',
     prob: 8,

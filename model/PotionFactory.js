@@ -1,5 +1,6 @@
 import Potion from "./Potion.js"
 import { randomElement, randomInt, spread } from "./utils.js"
+const { ref } = Vue
 
 const colors = [
   // "amber",
@@ -40,7 +41,7 @@ while (colors.length > 0) {
 
 const CONFUSE_DURATION = spread(20)
 
-const DEFINITIONS = {
+export const DEFINITIONS = ref({
   GAIN_STRENGTH: {
     name: 'gain strength',
     prob: 15,
@@ -155,15 +156,15 @@ const DEFINITIONS = {
     name: 'quench thirst',
     prob: 1
   }
-}
+})
 
-const defKeys = Object.keys(DEFINITIONS)
+const defKeys = Object.keys(DEFINITIONS.value)
 defKeys.forEach((key, index) => {
-  DEFINITIONS[key].color = randomColors[index]
-  DEFINITIONS[key].identified = false
+  DEFINITIONS.value[key].color = randomColors[index]
+  DEFINITIONS.value[key].identified = false
 })
 
 export const getPotion = () => {
-  const type = randomElement(DEFINITIONS, def => def.prob)
+  const type = randomElement(DEFINITIONS.value, def => def.prob)
   return new Potion(type)
 }

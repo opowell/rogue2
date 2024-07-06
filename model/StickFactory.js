@@ -67,7 +67,7 @@ const METAL_TYPES = [
 
 shuffleArray(METAL_TYPES)
 
-const TYPES = {
+export const TYPES = {
   LIGHT: {
     name: 'light',
     prob: 12,

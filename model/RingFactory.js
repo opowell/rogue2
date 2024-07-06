@@ -33,7 +33,7 @@ const STONE_TYPES = [
 
 shuffleArray(STONE_TYPES)
 
-const TYPES = {
+export const TYPES = {
   PROTECTION: {
     name: 'protection',
     prob: 9

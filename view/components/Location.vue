@@ -8,7 +8,6 @@
 </template>
 <script>
 import { COLORS, CONTENT } from '../constants.js'
-const NO_CHARACTER = -1
 
 export default {
   name: 'GameLocation',

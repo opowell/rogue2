@@ -1,6 +1,6 @@
 <template>
   <div class="title">
-    <DiscoveredComponent :game="game" />
+    <DiscoveredComponent />
   </div>
 </template>
 <script>
@@ -9,9 +9,6 @@ export default {
   name: 'DiscoveredScreen',
   components: {
     DiscoveredComponent
-  },
-  props: {
-    game: { type: Object, required: true },
   },
 }
 </script>

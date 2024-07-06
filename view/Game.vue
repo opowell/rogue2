@@ -5,7 +5,7 @@
       <OptionsScreen v-show="showOptions" />
       <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
       <InventoryScreen v-show="showInventory" :items="inventoryItems" />
-      <DiscoveredScreen v-show="showDiscovered" :game="game" />
+      <DiscoveredScreen v-show="showDiscovered" />
       <DungeonScreen v-show="showDungeon" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
       <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
       <HelpScreen v-show="showHelp" />
@@ -344,14 +344,14 @@ export default {
           break
         case 'F1':
         case '?':
-          this.showHelp = true
+          this.screen = SCREENS.HELP
           break
         case 'F6':
         case 'D':
-          this.showDiscovered = true
+          this.screen = SCREENS.DISCOVERED
           break
         case 'o':
-          this.showOptions = true
+          this.screen = SCREENS.OPTIONS
           break
         case 'r':
           this.readPrompt()
