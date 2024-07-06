@@ -1,19 +1,15 @@
 <template>
   <div class="game-screen" @keydown="handleKeydown" tabindex="0" ref="screen">
     <template v-if="!mounted" />
-    <template v-else-if="showOptions">
-      <OptionsScreen />
+    <template v-else>
+      <OptionsScreen v-show="showOptions" />
+      <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
+      <InventoryScreen v-show="showInventory" :items="inventoryItems" />
+      <DiscoveredScreen v-show="showDiscovered" :game="game" />
+      <DungeonScreen v-show="showDungeon" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
+      <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
+      <HelpScreen v-show="showHelp" />
     </template>
-    <template v-else-if="gameFinished">
-      <DeathScreen ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
-    </template>
-    <template v-else-if="showInventory">
-      <InventoryScreen :items="inventoryItems" />
-    </template>
-    <DiscoveredScreen v-show="showDiscovered" :game="game" />
-    <DungeonScreen v-show="showGame" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
-    <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
-    <HelpScreen v-show="showHelp" />
   </div>
 </template>
 <script>
@@ -35,6 +31,16 @@ const audio = {
   itemPickup: new Audio('./view/assets/item-pickup.mp3')
 }
 
+const SCREENS = {
+  WELCOME: 'welcome',
+  HELP: 'help',
+  INVENTORY: 'inventory',
+  DEATH: 'death',
+  DUNGEON: 'dungeon',
+  DISCOVERED: 'discovered',
+  OPTIONS: 'options'
+}
+
 export default {
   name: 'GameView',
   components: {
@@ -52,19 +58,13 @@ export default {
   },
   data() {
     return {
+      screen: SCREENS.WELCOME,
       audio,
-      showMap: true,
-      showDiscovered: false,
       dropping: false,
       quaffing: false,
       wearingArmor: false,
-      gameStarted: false,
-      gameFinished: false,
-      showInventory: false,
-      showHelp: false,
       locationWidth: 0,
       locationHeight: 0,
-      showOptions: false,
       scores: [],
       mounted: false,
       reading: false,
@@ -77,11 +77,26 @@ export default {
     playerPickedUpItem() {
       return this.game.playerPickedUpItem
     },
-    showGame() {
-      return !this.showOptions && !this.showHelp && !this.showInventory && !this.gameFinished && this.gameStarted
+    showDungeon() {
+      return this.screen === SCREENS.DUNGEON
     },
     showWelcome() {
-      return !this.showOptions && !this.showHelp && !this.showInventory && !this.gameFinished && !this.gameStarted
+      return this.screen === SCREENS.WELCOME
+    },
+    showOptions() {
+      return this.screen === SCREENS.OPTIONS
+    },
+    showDeath() {
+      return this.screen === SCREENS.DEATH
+    },
+    showInventory() {
+      return this.screen === SCREENS.INVENTORY
+    },
+    showDiscovered() {
+      return this.screen === SCREENS.DISCOVERED
+    },
+    showHelp() {
+      return this.screen === SCREENS.HELP
     },
     inventoryItems() {
       const items = this.game.player.items.map(item => {
@@ -141,7 +156,6 @@ export default {
   },
   watch: {
     playerPickedUpItem(val) {
-      console.log('new val', val)
       if (!val) {
         return
       }
@@ -151,8 +165,7 @@ export default {
     },
     showDeathScreenTrigger(val) {
       if (val) {
-        this.gameFinished = true
-        this.gameStarted = false
+        this.screen = SCREENS.DEATH
         this.$nextTick(() => {
           this.$refs.deathScreen.focus()
         })
@@ -201,13 +214,13 @@ export default {
       this.locationHeight = height
     },
     restart() {
-      this.gameFinished = false
+      this.screen = SCREENS.WELCOME
     },
     startGame(name) {
       this.game.restart()
       this.game.playerName = name
       this.game.greetPlayer()
-      this.gameStarted = true
+      this.screen = SCREENS.DUNGEON
       this.$nextTick(() => {
         this.$refs.screen.focus()
       })
@@ -246,9 +259,11 @@ export default {
       this.game.messages.push('Wear armor: enter a letter, or Esc to cancel')
     },
     handleTakingActionKeyDown(event) {
-      this.showInventory = false
+      if (this.showInventory) {
+        this.screen = SCREENS.DUNGEON
+      }
       if (event.key === '*') {
-        this.showInventory = true
+        this.screen = SCREENS.INVENTORY
         return
       }
       if (event.key === 'Escape' && !this.showInventory) {
@@ -312,15 +327,15 @@ export default {
         this.game.clearCurrentMessage()
       }
       if (this.showInventory) {
-        this.showInventory = false
+        this.screen = SCREENS.DUNGEON
         return
       }
       if (this.showOptions) {
-        this.showOptions = false
+        this.screen = SCREENS.DUNGEON
         return
       }
       if (this.showDiscovered) {
-        this.showDiscovered = false
+        this.screen = SCREENS.DUNGEON
         return
       }
       switch (event.key) {
@@ -331,6 +346,7 @@ export default {
         case '?':
           this.showHelp = true
           break
+        case 'F6':
         case 'D':
           this.showDiscovered = true
           break
@@ -344,7 +360,7 @@ export default {
           this.eatPrompt()
           break
         case 'i':
-          this.showInventory = true
+          this.screen = SCREENS.INVENTORY
           break
         case 'q':
           this.quaffPrompt()
