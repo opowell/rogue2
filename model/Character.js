@@ -3,7 +3,24 @@ import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
 import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
 import { alphabet, randomInt, roll, spread } from './utils.js'
+import { TYPE as FoodType } from './Food.js'
+import { TYPE as RingType } from './Ring.js'
+import { TYPE as StickType } from './Stick.js'
+import { TYPE as PotionType } from './Potion.js'
+import { TYPE as ScrollType } from './Scroll.js'
+import { TYPE as ArmorType } from './Armor.js'
+import { TYPE as WeaponType } from './Weapon.js'
 const { computed, nextTick, watch } = Vue
+
+const INVENTORY_ORDER = [
+  FoodType,
+  RingType,
+  StickType,
+  PotionType,
+  ScrollType,
+  ArmorType,
+  WeaponType
+]
 
 const SEE_DURATION = spread(300)
 const STOMACH_SIZE = 2000
@@ -66,7 +83,7 @@ class Character extends GameObject {
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
-    this.items.push(ration)
+    this.addItem(ration)
 
     this.toHitArmorLevel = computed(() => {
       return this.armorLevel.value
@@ -75,21 +92,21 @@ class Character extends GameObject {
     mace.enchantHit()
     mace.enchantDamage()
     mace.identify()
-    this.items.push(mace)
+    this.addItem(mace)
 
     const bow = spawnBow()
     bow.enchantHit()
     bow.identify()
-    this.items.push(bow)
+    this.addItem(bow)
 
     const arrows = spawnArrows()
     arrows.identify()
-    this.items.push(arrows)
+    this.addItem(arrows)
 
     const ringMail = getArmor(ARMOR_TYPES.RING_MAIL, false)
     ringMail.enchant()
     ringMail.identify()
-    this.items.push(ringMail)
+    this.addItem(ringMail)
 
     this.numItems = computed(() => {
       return this.items.reduce((acc, value) => acc + value.inventoryCount, 0)
@@ -348,7 +365,7 @@ class Character extends GameObject {
     item.identified = true
   }
   eat(item) {
-    if (item.type !== 'food') {
+    if (item.type !== FoodType) {
       this.addMessage("ugh, you would get ill if you ate that")
       return
     }
@@ -403,22 +420,34 @@ class Character extends GameObject {
           }
           return i.matchesForInventory(item)
         })
-        let letter = ''
+        let index = 0
+        let itemToDisplay = item
         if (matchingItem) {
-          const index = this.items.findIndex(item => item === matchingItem)
-          letter = alphabet[index]
+          itemToDisplay = matchingItem
+          index = this.items.findIndex(item => item === matchingItem)
           matchingItem.quantity++
         } else {
-          this.items.push(item)
-          letter = alphabet[this.items.length - 1]
+          index = this.addItem(item)
         }
-        this.game.addMessage('You picked up ' + (item.label || ('a ' + item.type)) + ' (' + letter + ')')
+        const letter = alphabet[index]
+        this.game.addMessage('You now have ' + (itemToDisplay.label || ('a ' + item.type)) + ' (' + letter + ')')
         location.item = null
         this.pickedUpItem = true
       }
     }
     this.takeTurn()
     return true
+  }
+  addItem(item) {
+    const itemTypeIndex = INVENTORY_ORDER.indexOf(item.type)
+    let insertIndex = this.items.findIndex(i => INVENTORY_ORDER.indexOf(i.type) > itemTypeIndex)
+    if (insertIndex >= 0) {
+      this.items.splice(insertIndex, 0, item)
+    } else {
+      this.items.push(item)
+      insertIndex = this.items.length - 1
+    }
+    return insertIndex
   }
   getCurrentVisibleItems() {
     const out = {

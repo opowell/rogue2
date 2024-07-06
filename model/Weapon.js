@@ -1,6 +1,8 @@
 import Item from "./Item.js"
 import { randomInt } from "./utils.js"
 
+export const TYPE = 'weapon'
+
 class Weapon extends Item {
   constructor(type, groupId, randomize = true) {
     super({
@@ -12,9 +14,9 @@ class Weapon extends Item {
       vorpalizeType: null,
       cursed: false,
       quantity: 1,
-      groupId
+      groupId,
+      type: TYPE
     })
-    this.type = 'weapon'
     const r = Math.random()
     if (randomize) {
       if (r < 0.1) {

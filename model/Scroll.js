@@ -1,9 +1,11 @@
 import Item from "./Item.js"
 
+export const TYPE = 'scroll'
+
 class Scroll extends Item {
   constructor(scrollType) {
     super({
-      type: 'scroll',
+      type: TYPE,
       scrollType
     })
   }

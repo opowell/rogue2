@@ -1,10 +1,12 @@
 import Item from "./Item.js"
 import { getAAn } from "./utils.js"
 
+export const TYPE = 'stick'
+
 class Stick extends Item {
   constructor(stickType) {
     super({
-      type: 'stick',
+      type: TYPE,
       stickType,
       identified: false,
       charges: stickType.getCharges() 

@@ -1,9 +1,12 @@
 import Item from "./Item.js"
+import { getAAn } from "./utils.js"
+
+export const TYPE = 'potion'
 
 class Potion extends Item {
   constructor(potionType) {
     super({
-      type: 'potion',
+      type: TYPE,
       potionType,
     })
   }
@@ -15,7 +18,7 @@ class Potion extends Item {
       return this.quantity + ' potions of ' + this.potionType.name + ' (' + this.potionType.color + ')'
     }
     if (this.quantity === 1) {
-      return 'a ' + this.potionType.color + ' potion'
+      return getAAn(this.potionType.color) + ' ' + this.potionType.color + ' potion'
     }
     return this.quantity + ' ' + this.potionType.color + ' potions'
   }

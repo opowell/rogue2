@@ -1,9 +1,11 @@
 import Item from "./Item.js"
 
+export const TYPE = 'food'
+
 class Food extends Item {
   constructor(foodType) {
     super({
-      type: 'food',
+      type: TYPE,
       foodType,
     })
   }

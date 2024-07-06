@@ -1,10 +1,12 @@
 import Item from "./Item.js"
 import { getAAn } from "./utils.js"
 
+export const TYPE = 'ring'
+
 class Ring extends Item {
   constructor(ringType) {
     super({
-      type: 'ring',
+      type: TYPE,
       ringType,
       identified: false
     })

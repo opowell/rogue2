@@ -1,10 +1,12 @@
 import Item from "./Item.js"
 const { computed } = Vue
 
+export const TYPE = 'armor'
+
 class Armor extends Item {
   constructor(armorType, cursed = false) {
     super({
-      type: 'armor',
+      type: TYPE,
       armorType: armorType.name,
       bonus: 0,
       cursed,
