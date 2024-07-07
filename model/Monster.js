@@ -1,5 +1,6 @@
 import GameObject from './GameObject.js'
 import { isDiagonalMove, randomElement, randomInt, roll, spread, attack, strengthToHitBonus } from './utils.js'
+import { getItem } from './ItemFactory.js'
 
 const { computed, watch } = Vue
 
