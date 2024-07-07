@@ -1,0 +1,14 @@
+- reactivity (discovered, most recent message)
+- sleeping enemies wake when attacked
+- scroll name in quotes
+- armor calculation in fight logic
+- potion of paralysis
+- rattlesnake attack
+- wandering enemies do not sleep
+- greedy prop
+- ice monster - sleep and special attack
+- HUNGRY / WEAK / STARVING label
+- help screen
+- Leprechauns - sleep and special attack
+- Aquator - special attack
+- spawn monster with item - getItem undefined

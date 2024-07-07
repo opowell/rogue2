@@ -28,7 +28,8 @@ const TOP_PANEL_HEIGHT = 1
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 const audio = {
-  itemPickup: new Audio('./view/assets/item-pickup.mp3')
+  itemPickup: new Audio('./view/assets/item-pickup.mp3'),
+  hit: new Audio('./view/assets/hit.mp3')
 }
 
 const SCREENS = {
@@ -152,9 +153,23 @@ export default {
         return []
       }
       return this.scores.slice(this.deathScoresStartIndex, 9)
-    }
+    },
+    playerTookDamageRecently() {
+      if (!this.player) {
+        return false
+      }
+      return this.player.tookDamageRecently
+    },
   },
   watch: {
+    playerTookDamageRecently(val) {
+      if (!val) {
+        return
+      }
+      audio.hit.pause()
+      audio.hit.load()
+      audio.hit.play()      
+    },
     playerPickedUpItem(val) {
       if (!val) {
         return
@@ -200,8 +215,9 @@ export default {
   },
   methods: {
     setFontSize() {
-      let width = window.innerWidth / this.game.width
-      let height = window.innerHeight / (this.game.height + BOTTOM_PANEL_HEIGHT + TOP_PANEL_HEIGHT)
+      const PADDING = 1
+      let width = window.innerWidth / this.game.width + 2*PADDING
+      let height = window.innerHeight / (this.game.height + BOTTOM_PANEL_HEIGHT + TOP_PANEL_HEIGHT + 2*PADDING)
       const ratio = width/height
       if (ratio < fontRatio) {
         width = Math.floor(width)
@@ -309,6 +325,9 @@ export default {
     },
     handleKeydown(event) {
       if (event.altKey || event.ctrlKey || event.metaKey) {
+        return
+      }
+      if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         return
       }
       if (this.showHelp) {
@@ -461,6 +480,7 @@ input {
   height: 100%;
   box-sizing: border-box;
   justify-content: center;
+  padding: 1rem;
 }
 @font-face {
   font-family: "IBMVGA8";

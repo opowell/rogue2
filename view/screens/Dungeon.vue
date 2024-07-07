@@ -168,12 +168,12 @@ export default {
 .dungeon {
   display: flex;
   gap: 2rem;
-  padding: 1rem;
   flex: 1 1 auto;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
   justify-content: center;
+  background-color: black;
 }
 .section-title {
   color: #555;
