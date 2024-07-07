@@ -14,7 +14,7 @@ class Scroll extends Item {
       return 'a scroll of ' + this.scrollType.name
     }
     if (this.quantity === 1) {
-      return 'a scroll titled ' + this.scrollType.hiddenName
+      return 'a scroll titled \'' + this.scrollType.hiddenName + '\''
     }
     return this.quantity + ' scrolls titled ' + this.scrollType.hiddenName
   }

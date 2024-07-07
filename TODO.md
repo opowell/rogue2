@@ -1,6 +1,5 @@
 - reactivity (discovered, most recent message)
 - sleeping enemies wake when attacked
-- scroll name in quotes
 - armor calculation in fight logic
 - potion of paralysis
 - rattlesnake attack
@@ -11,4 +10,4 @@
 - help screen
 - Leprechauns - sleep and special attack
 - Aquator - special attack
-- spawn monster with item - getItem undefined
+- Messages screen.
