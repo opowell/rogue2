@@ -16,7 +16,7 @@ class Scroll extends Item {
     if (this.quantity === 1) {
       return 'a scroll titled \'' + this.scrollType.hiddenName + '\''
     }
-    return this.quantity + ' scrolls titled ' + this.scrollType.hiddenName
+    return this.quantity + ' scrolls titled \'' + this.scrollType.hiddenName + '\''
   }
   matchesForInventory(item) {
     return item.type === 'scroll' && item.scrollType === this.scrollType

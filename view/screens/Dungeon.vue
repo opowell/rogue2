@@ -47,7 +47,7 @@ import Coordinate from '../components/Coordinate.vue'
 import Location from '../components/Location.vue'
 import Message from '../components/Message.vue'
 
-const MIN_LEFT_PANEL_WIDTH = 12
+const MIN_LEFT_PANEL_WIDTH = 20
 
 export default {
   name: 'DungeonScreen',

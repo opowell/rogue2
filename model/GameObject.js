@@ -1,4 +1,4 @@
-import StatefulObject from "./StatefulObject.js"
+import StatefulObject from './StatefulObject.js'
 
 class GameObject extends StatefulObject{
   constructor() {

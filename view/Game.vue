@@ -3,6 +3,7 @@
     <template v-if="!mounted" />
     <template v-else>
       <OptionsScreen v-show="showOptions" />
+      <MessagesScreen v-show="showMessages" />
       <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
       <InventoryScreen v-show="showInventory" :items="inventoryItems" />
       <DiscoveredScreen v-show="showDiscovered" />
@@ -14,6 +15,7 @@
 </template>
 <script>
 import WelcomeScreen from './screens/Welcome.vue'
+import MessagesScreen from './screens/Messages.vue'
 import HelpScreen from './screens/Help.vue'
 import InventoryScreen from './screens/Inventory.vue'
 import DeathScreen from './screens/Death.vue'
@@ -39,7 +41,8 @@ const SCREENS = {
   DEATH: 'death',
   DUNGEON: 'dungeon',
   DISCOVERED: 'discovered',
-  OPTIONS: 'options'
+  OPTIONS: 'options',
+  MESSAGES: 'messages'
 }
 
 export default {
@@ -52,6 +55,7 @@ export default {
     DungeonScreen,
     DiscoveredScreen,
     OptionsScreen,
+    MessagesScreen,
   },
   props: {
     game: { type: Object, required: true },
@@ -80,6 +84,9 @@ export default {
     },
     showDungeon() {
       return this.screen === SCREENS.DUNGEON
+    },
+    showMessages() {
+      return this.screen === SCREENS.MESSAGES
     },
     showWelcome() {
       return this.screen === SCREENS.WELCOME

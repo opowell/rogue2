@@ -79,11 +79,14 @@ class Game extends StatefulObject {
         const room = randomElement(this.rooms.flat().filter(room => room !== this.player.location.room))
         const location = room.getFreeCharacterLocation()
         const enemy = this.spawnMonster(location.x, location.y, this.level)
+        enemy.sleeping = false
         this.wandererCount = 0
       }
     })
     watch(() => this.message.value, (val) => {
-      console.log('set', val)
+      if (!val) {
+        return
+      }
       this.mostRecentMessage = val
     })
   }
