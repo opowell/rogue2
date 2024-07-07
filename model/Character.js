@@ -305,9 +305,14 @@ class Character extends GameObject {
     this.sight()
     this.game.addMessage('you begin to feel much better')
   }
+  seeInvisible() {
+    this.counts.seeInvisible += SEE_DURATION
+    this.counts.blind = 0
+    this.addMessage('you can see invisible! (around ' + SEE_DURATION + ' turns)')
+  }
   blind() {
     this.counts.blind += SEE_DURATION
-    this.game.addMessage('a cloak of darkness falls around you')
+    this.game.addMessage('a cloak of darkness falls around you (around ' + SEE_DURATION + ' turns)')
   }
   haste() {
     this.counts.haste += randomInt(10, 13)

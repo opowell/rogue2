@@ -1,3 +1,4 @@
+import MagicTypes from "./MagicTypes.js"
 import Scroll from "./Scroll.js"
 import { alphabet, randomElement, randomElements, spread } from "./utils.js"
 const SLEEPTIME = 4
@@ -10,16 +11,35 @@ export const TYPES = {
       character.confuseAttack = true
       character.addMessage('your hands begin to glow red')
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
   },
-  MAGIC_MAPPING: {
-    name: 'magic mapping',
-    prob: 5,
+  DETECT_FOOD: {
+    name: 'detect food',
+    prob: 4,
     read: (character, scroll) => {
-      character.addMessage('oh, now this scroll has a map on it')
-      character.game.revealMap()
+      console.log('TODO')
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
+  },
+  ENCHANT_ARMOR: {
+    name: 'enchant armor',
+    prob: 8,
+    read: (character, scroll) => {
+      console.log('TODO')
+      scroll.identify()
+    },
+    magic: MagicTypes.GOOD
+  },
+  ENCHANT_WEAPON: {
+    name: 'enchant weapon',
+    prob: 10,
+    read: (character, scroll) => {
+      console.log('TODO')
+      scroll.identify()
+    },
+    magic: MagicTypes.GOOD
   },
   HOLD_MONSTER: {
     name: 'hold monster',
@@ -28,25 +48,8 @@ export const TYPES = {
       const nearbyEnemies = character.game.getNearbyEnemies(character.location, 2)
       nearbyEnemies.forEach(enemy => enemy.held = true)
       scroll.identify()
-    }
-  },
-  SLEEP: {
-    name: 'sleep',
-    prob: 5,
-    read: (character, scroll) => {
-      const turns = Math.round(spread(SLEEPTIME) + 4)
-      character.sleep(turns)
-      scroll.identify()
-      character.addMessage('you fall asleep for ' + turns + ' turns')
-    }
-  },
-  ENCHANT_ARMOR: {
-    name: 'enchant armor',
-    prob: 8,
-    read: (character, scroll) => {
-      console.log('TODO')
-      scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
   },
   IDENTIFY: {
     name: 'identify',
@@ -54,47 +57,18 @@ export const TYPES = {
     read: (character, scroll) => {
       console.log('TODO')
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
   },
-  SCARE_MONSTER: {
-    name: 'scare monster',
-    prob: 4,
-    read: (character, scroll) => {
-      console.log('TODO')
-      scroll.identify()
-    }
-  },
-  DETECT_FOOD: {
-    name: 'detect food',
-    prob: 4,
-    read: (character, scroll) => {
-      console.log('TODO')
-      scroll.identify()
-    }
-  },
-  TELEPORTATION: {
-    name: 'teleportation',
-    prob: 7,
-    read: (character, scroll) => {
-      console.log('TODO')
-      scroll.identify()
-    }
-  },
-  ENCHANT_WEAPON: {
-    name: 'enchant weapon',
-    prob: 10,
-    read: (character, scroll) => {
-      console.log('TODO')
-      scroll.identify()
-    }
-  },
-  CREATE_MONSTER: {
-    name: 'create monster',
+  MAGIC_MAPPING: {
+    name: 'magic mapping',
     prob: 5,
     read: (character, scroll) => {
-      console.log('TODO')
+      character.addMessage('oh, now this scroll has a map on it')
+      character.game.revealMap()
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
   },
   REMOVE_CURSE: {
     name: 'remove curse',
@@ -102,15 +76,35 @@ export const TYPES = {
     read: (character, scroll) => {
       console.log('TODO')
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
   },
-  AGGRAVATE_MONSTER: {
-    name: 'aggravate monster',
+  SCARE_MONSTER: {
+    name: 'scare monster',
     prob: 4,
     read: (character, scroll) => {
       console.log('TODO')
       scroll.identify()
-    }
+    },
+    magic: MagicTypes.GOOD
+  },
+  TELEPORTATION: {
+    name: 'teleportation',
+    prob: 7,
+    read: (character, scroll) => {
+      console.log('TODO')
+      scroll.identify()
+    },
+    magic: MagicTypes.GOOD
+  },
+  VORPALIZE_WEAPON: {
+    name: 'vorpalize weapon',
+    prob: 1,
+    read: (character, scroll) => {
+      console.log('TODO')
+      scroll.identify()
+    },
+    magic: MagicTypes.GOOD
   },
   BLANK_PAPER: {
     name: 'blank paper',
@@ -120,14 +114,35 @@ export const TYPES = {
       scroll.identify()
     }
   },
-  VORPALIZE_WEAPON: {
-    name: 'vorpalize weapon',
-    prob: 1,
+  AGGRAVATE_MONSTER: {
+    name: 'aggravate monster',
+    prob: 4,
     read: (character, scroll) => {
       console.log('TODO')
       scroll.identify()
-    }
-  }
+    },
+    magic: MagicTypes.BAD
+  },
+  CREATE_MONSTER: {
+    name: 'create monster',
+    prob: 5,
+    read: (character, scroll) => {
+      console.log('TODO')
+      scroll.identify()
+    },
+    magic: MagicTypes.BAD
+  },
+  SLEEP: {
+    name: 'sleep',
+    prob: 5,
+    read: (character, scroll) => {
+      const turns = Math.round(spread(SLEEPTIME) + 4)
+      character.sleep(turns)
+      scroll.identify()
+      character.addMessage('you fall asleep for ' + turns + ' turns')
+    },
+    magic: MagicTypes.BAD
+  },
 }
 
 const alphabetArray = alphabet.split('')

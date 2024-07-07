@@ -34,17 +34,14 @@ const STONE_TYPES = [
 shuffleArray(STONE_TYPES)
 
 export const TYPES = {
-  PROTECTION: {
-    name: 'protection',
-    prob: 9
-  },
-  ADD_STRENGTH: {
-    name: 'add strength',
-    prob: 9
-  },
-  SUSTAIN_STRENGTH: {
-    name: 'sustain strength',
+  MAINTAIN_ARMOR: {
+    name: 'maintain armor',
     prob: 5,
+    magic: MAGIC_TYPES.GOOD
+  },
+  REGENERATION: {
+    name: 'regeneration',
+    prob: 4,
     magic: MAGIC_TYPES.GOOD
   },
   SEARCHING: {
@@ -57,14 +54,28 @@ export const TYPES = {
     prob: 10,
     magic: MAGIC_TYPES.GOOD
   },
+  SLOW_DIGESTION: {
+    name: 'slow digestion',
+    prob: 9,
+    magic: MAGIC_TYPES.GOOD
+  },
+  STEALTH: {
+    name: 'stealth',
+    prob: 7,
+    magic: MAGIC_TYPES.GOOD
+  },
+  SUSTAIN_STRENGTH: {
+    name: 'sustain strength',
+    prob: 5,
+    magic: MAGIC_TYPES.GOOD
+  },
+  ADD_STRENGTH: {
+    name: 'add strength',
+    prob: 9
+  },
   ADORNMENT: {
     name: 'adornment',
     prob: 1
-  },
-  AGGRAVATE_MONSTER: {
-    name: 'aggravate monster',
-    prob: 10,
-    magic: MAGIC_TYPES.BAD
   },
   DEXTERITY: {
     name: 'dexterity',
@@ -74,31 +85,20 @@ export const TYPES = {
     name: 'increase damage',
     prob: 8
   },
-  REGENERATION: {
-    name: 'regeneration',
-    prob: 4,
-    magic: MAGIC_TYPES.GOOD
+  PROTECTION: {
+    name: 'protection',
+    prob: 9
   },
-  SLOW_DIGESTION: {
-    name: 'slow digestion',
-    prob: 9,
-    magic: MAGIC_TYPES.GOOD
+  AGGRAVATE_MONSTER: {
+    name: 'aggravate monster',
+    prob: 10,
+    magic: MAGIC_TYPES.BAD
   },
   TELEPORTATION: {
     name: 'teleportation',
     prob: 5,
     magic: MAGIC_TYPES.BAD
   },
-  STEALTH: {
-    name: 'stealth',
-    prob: 7,
-    magic: MAGIC_TYPES.GOOD
-  },
-  MAINTAIN_ARMOR: {
-    name: 'maintain armor',
-    prob: 5,
-    magic: MAGIC_TYPES.GOOD
-  }
 }
 
 const defKeys = Object.keys(TYPES)

@@ -6,7 +6,7 @@
       <MessagesScreen v-show="showMessages" />
       <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
       <InventoryScreen v-show="showInventory" :items="inventoryItems" />
-      <DiscoveredScreen v-show="showDiscovered" />
+      <DiscoveredScreen v-show="showDiscovered" :game="game" />
       <DungeonScreen v-show="showDungeon" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
       <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
       <HelpScreen v-show="showHelp" />

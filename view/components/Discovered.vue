@@ -8,7 +8,7 @@
           v-for="(item, itemIndex) in section.items"
           :key="index + '-' + itemIndex"
           class="item"
-          :class="{ identified: item.identified }"
+          :class="{ identified: item.identified, 'magic-good': item.magic === MagicTypes.GOOD, 'magic-bad': item.magic === MagicTypes.BAD }"
         >
           {{ item.label }}
         </div>
@@ -17,10 +17,10 @@
   </div>
 </template>
 <script>
-import { DEFINITIONS as Potions } from '../../model/PotionFactory.js'
 import { TYPES as Scrolls } from '../../model/ScrollFactory.js'
 import { TYPES as Rings } from '../../model/RingFactory.js'
 import { TYPES as Sticks } from '../../model/StickFactory.js'
+import MagicTypes from '../../model/MagicTypes.js'
 
 function parseItems(types, header, sections) {
   const keys = Object.keys(types)
@@ -29,7 +29,8 @@ function parseItems(types, header, sections) {
     const type = types[key]
     return {
       label: '- ' + type.name,
-      identified: type.identified
+      identified: type.identified,
+      magic: type.magic
     }
   })
   sections.push({
@@ -40,18 +41,28 @@ function parseItems(types, header, sections) {
 
 export default {
   name: 'DiscoveredComponent',
+  props: {
+    game: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      Potions,
       Scrolls,
       Rings,
-      Sticks
+      Sticks,
+      MagicTypes
     }
   },
   computed: {
+    potions() {
+      return this.game.potionFactory.definitions
+    },
     sections() {
+      console.log('sections')
       const sections = []
-      parseItems(this.Potions, 'Potions', sections)
+      parseItems(this.potions, 'Potions', sections)
       parseItems(this.Scrolls, 'Scrolls', sections)
       parseItems(this.Rings, 'Rings', sections)
       parseItems(this.Sticks, 'Sticks', sections)
@@ -71,18 +82,31 @@ export default {
 .sections {
   display: flex;
   gap: 1rem;
+  justify-content: center;
 }
 .section {
   display: flex;
   flex-direction: column;
 }
 .section-title {
-  color: gray;
+  color: darkgray;
 }
 .item {
   color: gray;
 }
 .identified {
   color: lightgray;
+}
+.magic-good {
+  color: #617661;
+}
+.magic-bad {
+  color: #754848;
+}
+.magic-good.identified {
+  color: lightgreen;
+}
+.magic-bad.identified {
+  color: lightcoral;
 }
 </style>

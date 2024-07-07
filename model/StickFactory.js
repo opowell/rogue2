@@ -68,25 +68,9 @@ const METAL_TYPES = [
 shuffleArray(METAL_TYPES)
 
 export const TYPES = {
-  LIGHT: {
-    name: 'light',
-    prob: 12,
-    magic: MAGIC_TYPES.GOOD,
-    getCharges: () => randomInt(10, 19)
-  },
-  STRIKING: {
-    name: 'striking',
-    prob: 9,
-    magic: MAGIC_TYPES.GOOD
-  },
-  LIGHTNING: {
-    name: 'lightning',
-    prob: 3,
-    magic: MAGIC_TYPES.GOOD
-  },
-  FIRE: {
-    name: 'fire',
-    prob: 3,
+  CANCELLATION: {
+    name: 'cancellation',
+    prob: 5,
     magic: MAGIC_TYPES.GOOD
   },
   COLD: {
@@ -94,9 +78,25 @@ export const TYPES = {
     prob: 3,
     magic: MAGIC_TYPES.GOOD
   },
-  POLYMORPH: {
-    name: 'polymorph',
-    prob: 15,
+  DRAIN_LIFE: {
+    name: 'drain life',
+    prob: 9,
+    magic: MAGIC_TYPES.GOOD
+  },
+  FIRE: {
+    name: 'fire',
+    prob: 3,
+    magic: MAGIC_TYPES.GOOD
+  },
+  LIGHT: {
+    name: 'light',
+    prob: 12,
+    magic: MAGIC_TYPES.GOOD,
+    getCharges: () => randomInt(10, 19)
+  },
+  LIGHTNING: {
+    name: 'lightning',
+    prob: 3,
     magic: MAGIC_TYPES.GOOD
   },
   MAGIC_MISSILE: {
@@ -104,40 +104,40 @@ export const TYPES = {
     prob: 10,
     magic: MAGIC_TYPES.GOOD
   },
-  HASTE_MONSTER: {
-    name: 'haste monster',
-    prob: 9,
-    magic: MAGIC_TYPES.BAD
+  POLYMORPH: {
+    name: 'polymorph',
+    prob: 15,
+    magic: MAGIC_TYPES.GOOD
   },
   SLOW_MONSTER: {
     name: 'slow monster',
     prob: 11,
     magic: MAGIC_TYPES.GOOD
   },
-  DRAIN_LIFE: {
-    name: 'drain life',
+  STRIKING: {
+    name: 'striking',
     prob: 9,
     magic: MAGIC_TYPES.GOOD
-  },
-  NOTHING: {
-    name: 'nothing',
-    prob: 1
   },
   TELEPORT_AWAY: {
     name: 'teleport away',
     prob: 5,
     magic: MAGIC_TYPES.GOOD
   },
+  NOTHING: {
+    name: 'nothing',
+    prob: 1
+  },
+  HASTE_MONSTER: {
+    name: 'haste monster',
+    prob: 9,
+    magic: MAGIC_TYPES.BAD
+  },
   TELEPORT_TO: {
     name: 'teleport to',
     prob: 5,
     magic: MAGIC_TYPES.BAD
   },
-  CANCELLATION: {
-    name: 'cancellation',
-    prob: 5,
-    magic: MAGIC_TYPES.GOOD
-  }
 }
 
 const defKeys = Object.keys(TYPES)

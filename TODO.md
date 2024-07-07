@@ -1,4 +1,4 @@
-- reactivity (discovered, most recent message)
+- reactivity (discovered)
 - armor calculation in fight logic
 - potion of paralysis
 - wandering enemies do not sleep

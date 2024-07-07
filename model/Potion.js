@@ -31,6 +31,7 @@ class Potion extends Item {
     }
   }
   identify() {
+    console.log('identify', this, this.potionType)
     this.potionType.identified = true
   }
 }
