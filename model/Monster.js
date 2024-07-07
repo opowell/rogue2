@@ -124,6 +124,9 @@ class Monster extends GameObject {
       const { didHit, damage } = attack(this, to.character)
       if (didHit) {
         this.game.addMessage('The ' + this.monsterType.name + ' hit you for ' + damage + ' damage.')
+        if (this.monsterType.hit) {
+          this.monsterType.hit(this, to.character)
+        }
       } else {
         this.game.addMessage('The ' + this.monsterType.name + ' missed you.')
       }

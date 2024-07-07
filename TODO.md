@@ -1,7 +1,6 @@
 - reactivity (discovered, most recent message)
 - armor calculation in fight logic
 - potion of paralysis
-- rattlesnake attack
 - wandering enemies do not sleep
 - greedy prop
 - ice monster - sleep and special attack

@@ -449,6 +449,14 @@ class Character extends GameObject {
     }
     return insertIndex
   }
+  weaken() {
+    this.strength.current--
+    this.addMessage('you feel a bite in your leg and now feel weaker')
+  }
+  saveAgainstPoison() {
+    const need = 14 - this.level.value / 2
+    return roll(1, 20) >= need
+  }
   getCurrentVisibleItems() {
     const out = {
       visible: {},

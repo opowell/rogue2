@@ -180,7 +180,12 @@ const DEFINITIONS = {
     exp: 9,
     level: 2,
     armor: 3,
-    damage: '1d6'
+    damage: '1d6',
+    hit: (attacker, defender) => {
+      if (!defender.saveAgainstPoison()) {
+        defender.weaken()
+      }
+    }
   },
   S: {
     label: '&#x0053',
