@@ -81,6 +81,9 @@ class Monster extends GameObject {
       }
     })
   }
+  wakeUp() {
+    this.sleeping = false
+  }
   step() {
     if (this.dead || this.sleeping) {
       return

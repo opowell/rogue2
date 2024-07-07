@@ -133,6 +133,9 @@ export const attack = (attacker, defender, weapon, throwing = false) => {
   if (defender.game.player === defender && defender.game.level === 1) {
     damage = Math.floor((damage + 1) / 2)
   }
+  if (defender.monsterType) {
+    defender.wakeUp()
+  }
   if (didHit) {
     const aAn = getAAn(attacker.monsterType.name)
     defender.takeDamage(damage, 'killed by ' + aAn + ' ' + attacker.monsterType.name)

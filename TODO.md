@@ -1,5 +1,4 @@
 - reactivity (discovered, most recent message)
-- sleeping enemies wake when attacked
 - armor calculation in fight logic
 - potion of paralysis
 - rattlesnake attack
