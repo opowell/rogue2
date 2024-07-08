@@ -60,7 +60,6 @@ export default {
       return this.game.potionFactory.definitions
     },
     sections() {
-      console.log('sections')
       const sections = []
       parseItems(this.potions, 'Potions', sections)
       parseItems(this.Scrolls, 'Scrolls', sections)

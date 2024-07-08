@@ -712,6 +712,7 @@ class Game extends StatefulObject {
     }
   }
   movePlayer(from, to) {
+    to = this.player.getMoveToLocation(to)
     if (to.character) {
       const damage = this.player.getDamageRoll()
       to.character.takeDamage(damage)

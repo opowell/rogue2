@@ -2,7 +2,7 @@ import { TYPES as ARMOR_TYPES, getArmor } from './ArmorFactory.js'
 import { TYPES as FOOD_TYPES, getFood } from './FoodFactory.js'
 import GameObject from './GameObject.js'
 import { spawnArrows, spawnBow, spawnMace } from './WeaponFactory.js'
-import { alphabet, randomInt, roll, spread } from './utils.js'
+import { alphabet, randomElement, randomInt, roll, spread } from './utils.js'
 import { TYPE as FoodType } from './Food.js'
 import { TYPE as RingType } from './Ring.js'
 import { TYPE as StickType } from './Stick.js'
@@ -181,6 +181,16 @@ class Character extends GameObject {
     this.adjacentEnemies = computed(() => {
       return this.game.getNearbyEnemies(this.location, 1)
     })
+    watch(() => this.counts.confuse, (val, oldVal) => {
+      if (val === 0 && oldVal > 0) {
+        this.addMessage('you feel less confused now')
+      }
+    })
+    watch(() => this.counts.hold, (val, oldVal) => {
+      if (val === 0 && oldVal > 0) {
+        this.addMessage('you can move again')
+      }
+    })
     watch(this.room, (val) => {
       if (!val) {
         return
@@ -226,7 +236,7 @@ class Character extends GameObject {
     return roll(this.weapon.damage)
   }
   raiseLevel() {
-    this.xp = this.nextLevelXp
+    this.experience = this.nextLevelXp
   }
   addMessage(m) {
     this.game.addMessage(m)
@@ -393,6 +403,22 @@ class Character extends GameObject {
     this.location.item = item
     this.addMessage('You dropped a ' + item.label)
   }
+
+  getRandomMoveDestination() {
+    return randomElement(
+      this.game.getLocationsNearby(this.location, loc => loc.canCharacterMoveTo)
+    )
+  }
+
+  getMoveToLocation(location) {
+    if (this.counts.hold > 0) {
+      return this.location
+    }
+    if (this.counts.confuse > 0 && Math.random() > 0.2) {
+      return this.getRandomMoveDestination()
+    }
+    return location
+  }
   /**
    * 
    * @param {Location} location 
@@ -401,47 +427,46 @@ class Character extends GameObject {
   moveTo(location) {
     this.location = location
     const item = location.item
-    if (!item) {
-      return false
-    }
-    if (item.type === 'trap') {
-      item.discovered = true
-      this.takeDamage(randomInt(1, 2), 'a trap')
-      this.game.addMessage('You stepped on a trap')
-    } else if (item.type !== 'staircase') {
-      if (item.type === 'gold') {
-        this.gold += item.amount
-        this.game.addMessage('You picked up ' + item.amount + ' pieces of gold.')
-        location.item = null
-        this.pickedUpItem = true
-      }
-      else if (this.numItems > 25) {
-        this.game.addMessage('Your pack is full.')
-      } else {
-        const matchingItem = this.items.find(i => {
-          if (!i.matchesForInventory) {
-            console.log('huh?', i, item)
-            return false
-          }
-          return i.matchesForInventory(item)
-        })
-        let index = 0
-        let itemToDisplay = item
-        if (matchingItem) {
-          itemToDisplay = matchingItem
-          index = this.items.findIndex(item => item === matchingItem)
-          matchingItem.quantity++
-        } else {
-          index = this.addItem(item)
+    if (item) {
+      if (item.type === 'trap') {
+        item.discovered = true
+        this.takeDamage(randomInt(1, 2), 'a trap')
+        this.game.addMessage('You stepped on a trap')
+      } else if (item.type !== 'staircase') {
+        if (item.type === 'gold') {
+          this.gold += item.amount
+          this.game.addMessage('You picked up ' + item.amount + ' pieces of gold.')
+          location.item = null
+          this.pickedUpItem = true
         }
-        const letter = alphabet[index]
-        this.game.addMessage('You now have ' + (itemToDisplay.label || ('a ' + item.type)) + ' (' + letter + ')')
-        location.item = null
-        this.pickedUpItem = true
+        else if (this.numItems > 25) {
+          this.game.addMessage('Your pack is full.')
+        } else {
+          const matchingItem = this.items.find(i => {
+            if (!i.matchesForInventory) {
+              console.log('huh?', i, item)
+              return false
+            }
+            return i.matchesForInventory(item)
+          })
+          let index = 0
+          let itemToDisplay = item
+          if (matchingItem) {
+            itemToDisplay = matchingItem
+            index = this.items.findIndex(item => item === matchingItem)
+            matchingItem.quantity++
+          } else {
+            index = this.addItem(item)
+          }
+          const letter = alphabet[index]
+          this.game.addMessage('You now have ' + (itemToDisplay.label || ('a ' + item.type)) + ' (' + letter + ')')
+          location.item = null
+          this.pickedUpItem = true
+        }
       }
     }
     this.takeTurn()
-    return true
+    return this.pickedUpItem
   }
   addItem(item) {
     const itemTypeIndex = INVENTORY_ORDER.indexOf(item.type)
