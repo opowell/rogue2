@@ -236,7 +236,7 @@ class Character extends GameObject {
     return roll(this.weapon.damage)
   }
   raiseLevel() {
-    this.experience = this.nextLevelXp
+    this.experience = this.nextLevelXp.value
   }
   addMessage(m) {
     this.game.addMessage(m)

@@ -19,7 +19,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 20,
     level: 5,
-    armor: 2,
+    armor: 9,
     damage: '0d0/0d0'
   },
   B: {
@@ -28,7 +28,7 @@ const DEFINITIONS = {
     fly: true,
     exp: 1,
     level: 1,
-    armor: 3,
+    armor: 8,
     damage: '1d2',
     getMoveDestination: (monster) => randomMove(monster, 0.5)
   },
@@ -38,7 +38,7 @@ const DEFINITIONS = {
     carry: 15,
     exp: 25,
     level: 4,
-    armor: 4,
+    armor: 7,
     damage: '1d6/1d6'
   },
   D: {
@@ -47,7 +47,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 6800,
     level: 10,
-    armor: -1,
+    armor: 12,
     damage: '1d8/1d8/3d10'
   },
   E: {
@@ -56,7 +56,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 2,
     level: 1,
-    armor: 7,
+    armor: 4,
     damage: '1d2'
   },
   F: {
@@ -66,7 +66,7 @@ const DEFINITIONS = {
     held: true,
     exp: 80,
     level: 8,
-    armor: 3,
+    armor: 8,
     damage: 'custom'
   },
   G: {
@@ -78,7 +78,7 @@ const DEFINITIONS = {
     regen: true,
     exp: 2000,
     level: 13,
-    armor: 2,
+    armor: 9,
     damage: '4d3/3d5/4d3'
   },
   H: {
@@ -87,7 +87,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 3,
     level: 1,
-    armor: 5,
+    armor: 6,
     damage: '1d8'
   },
   I: {
@@ -95,7 +95,7 @@ const DEFINITIONS = {
     name: 'ice monster',
     exp: 15,
     level: 1,
-    armor: 9,
+    armor: 2,
     damage: '1d2'
   },
   J: {
@@ -104,7 +104,7 @@ const DEFINITIONS = {
     carry: 70,
     exp: 4000,
     level: 15,
-    armor: 6,
+    armor: 5,
     damage: '2d12/2d4'
   },
   K: {
@@ -114,7 +114,7 @@ const DEFINITIONS = {
     fly: true,
     exp: 1,
     level: 1,
-    armor: 7,
+    armor: 4,
     damage: '1d4'
   },
   L: {
@@ -123,7 +123,7 @@ const DEFINITIONS = {
     greedy: true,
     exp: 10,
     level: 3,
-    armor: 8,
+    armor: 3,
     damage: '1d2'
   },
   M: {
@@ -132,7 +132,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 200,
     level: 8,
-    armor: 2,
+    armor: 9,
     damage: '3d4/3d4/2d5'
   },
   N: {
@@ -141,7 +141,7 @@ const DEFINITIONS = {
     carry: 100,
     exp: 37,
     level: 3,
-    armor: 9,
+    armor: 2,
     damage: '0d0'
   },
   O: {
@@ -150,7 +150,7 @@ const DEFINITIONS = {
     greedy: true,
     exp: 5,
     level: 1,
-    armor: 6,
+    armor: 5,
     damage: '1d8'
   },
   P: {
@@ -159,7 +159,7 @@ const DEFINITIONS = {
     invisible: true,
     exp: 120,
     level: 8,
-    armor: 3,
+    armor: 8,
     damage: '4d4',
     getMoveDestination: (monster) => randomMove(monster, 0.2)
   },
@@ -170,7 +170,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 32,
     level: 3,
-    armor: 2,
+    armor: 9,
     damage: '1d2/1d2/1d4'
   },
   R: {
@@ -179,7 +179,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 9,
     level: 2,
-    armor: 3,
+    armor: 8,
     damage: '1d6',
     hit: (attacker, defender) => {
       if (!defender.saveAgainstPoison()) {
@@ -193,7 +193,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 2,
     level: 2,
-    armor: 5,
+    armor: 6,
     damage: '1d3'
   },
   T: {
@@ -204,7 +204,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 120,
     level: 6,
-    armor: 4,
+    armor: 7,
     damage: '1d8/1d8/2d6'
   },
   U: {
@@ -213,7 +213,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 190,
     level: 7,
-    armor: -2,
+    armor: 13,
     damage: '1d3/1d3/1d3/4d6'
   },
   V: {
@@ -224,7 +224,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 350,
     level: 8,
-    armor: 1,
+    armor: 10,
     damage: '1d10'
   },
   W: {
@@ -232,7 +232,7 @@ const DEFINITIONS = {
     name: 'wraith',
     exp: 55,
     level: 5,
-    armor: 4,
+    armor: 7,
     damage: '1d6'
   },
   X: {
@@ -241,7 +241,7 @@ const DEFINITIONS = {
     carry: 30,
     exp: 100,
     level: 7,
-    armor: 7,
+    armor: 4,
     damage: '3d4'
   },
   Y: {
@@ -249,7 +249,7 @@ const DEFINITIONS = {
     name: 'yeti',
     exp: 50,
     level: 4,
-    armor: 6,
+    armor: 5,
     damage: '1d6/1d6'
   },
   Z: {
@@ -258,7 +258,7 @@ const DEFINITIONS = {
     mean: true,
     exp: 6,
     level: 2,
-    armor: 8,
+    armor: 3,
     damage: '1d8'
   },
 }

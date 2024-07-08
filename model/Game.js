@@ -713,7 +713,11 @@ class Game extends StatefulObject {
   }
   movePlayer(from, to) {
     to = this.player.getMoveToLocation(to)
-    if (to.character) {
+    if (!canMoveTo(to)) return
+    if (isDiagonalMove(from, to) && this.hasWallBetween(from, to)) {
+      return
+    }
+    if (from !== to && to.character) {
       const damage = this.player.getDamageRoll()
       to.character.takeDamage(damage)
       this.addMessage('You hit the ' + to.character.monsterType.name)
@@ -722,10 +726,6 @@ class Game extends StatefulObject {
         this.player.experience += to.character.monsterType.exp
       }
       this.step()
-      return
-    }
-    if (!canMoveTo(to)) return
-    if (isDiagonalMove(from, to) && this.hasWallBetween(from, to)) {
       return
     }
     let x = from.x

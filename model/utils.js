@@ -69,8 +69,8 @@ const IMMOBILE_HIT_BONUS = 4
 
 const swing = (attackerLevel, defArmor, weaponPlus) => {
   const res = randomInt(19)
-  const need = 20 - attackerLevel - defArmor
-  console.log(res, weaponPlus, '20', attackerLevel, defArmor, res, need)
+  const need = 9 - attackerLevel + defArmor
+  console.log(res, weaponPlus, need)
   return res + weaponPlus >= need
 }
 
