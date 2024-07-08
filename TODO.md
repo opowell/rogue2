@@ -1,7 +1,4 @@
-- reactivity (discovered)
 - armor calculation in fight logic
-- potion of paralysis
-- wandering enemies do not sleep
 - greedy prop
 - ice monster - sleep and special attack
 - HUNGRY / WEAK / STARVING label
