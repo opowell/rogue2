@@ -38,7 +38,8 @@ class Monster extends GameObject {
       meleeHitBonus: 0,
       tookDamageRecently: false,
       held: monsterType.held || false,
-      sleeping: true
+      sleeping: true,
+      hadHastyTurn: false
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem(this.game)
@@ -88,11 +89,25 @@ class Monster extends GameObject {
     if (this.dead || this.sleeping) {
       return
     }
+    if (!this.hadHastedTurn && this.counts.haste > 0) {
+      this.hadHastedTurn = true
+    } else {
+      this.hadHastedTurn = false
+    }
+    const keys = Object.keys(this.counts)
+    keys.forEach(key => {
+      if (this.counts[key] > 0) {
+        this.counts[key]--
+      }
+    })
     const to = this.getMoveDestination()
     if (!to) {
       console.log('huh?', to, this)
     }
     this.moveTo(to)
+    if (this.game.player.hadHastedTurn && this.hadHastedTurn) {
+      this.step()
+    }
   }
   getMoveDestination(useFromType = true) {
     if (useFromType && this.monsterType.getMoveDestination) {

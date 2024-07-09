@@ -30,5 +30,8 @@ class Scroll extends Item {
   clone() {
     return new Scroll({ ...this.state })
   }
+  get magicType() {
+    return this.scrollType.magic
+  }
 }
 export default Scroll

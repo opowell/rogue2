@@ -34,5 +34,8 @@ class Potion extends Item {
     console.log('identify', this, this.potionType)
     this.potionType.identified = true
   }
+  get magicType() {
+    return this.potionType.magic
+  }
 }
 export default Potion

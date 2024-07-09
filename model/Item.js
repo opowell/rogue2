@@ -1,7 +1,7 @@
 import StatefulObject from "./StatefulObject.js"
 const { watch } = Vue
 
-class Item extends StatefulObject{
+class Item extends StatefulObject {
   constructor(object) {
     super({
       location: null,

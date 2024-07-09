@@ -149,7 +149,9 @@ class Game extends StatefulObject {
     this.addMessage('Welcome, ' + this.playerName + ', to the Dungeons of Doom!')
   }
   detectMagic() {
-    console.log('TODO')
+    this.locations.forEach(row => row.forEach(loc => {
+      loc.identifyItem()
+    }))
   }
   clearCurrentMessage() {
     this.messages.splice(0, 1)
@@ -713,7 +715,6 @@ class Game extends StatefulObject {
   }
   movePlayer(from, to) {
     to = this.player.getMoveToLocation(to)
-    if (!canMoveTo(to)) return
     if (isDiagonalMove(from, to) && this.hasWallBetween(from, to)) {
       return
     }
@@ -728,6 +729,7 @@ class Game extends StatefulObject {
       this.step()
       return
     }
+    if (!canMoveTo(to)) return
     let x = from.x
     let y = from.y
     for (let i = Math.max(x - 1, 0); i < Math.min(x + 2, this.width); i++) {
@@ -786,6 +788,9 @@ class Game extends StatefulObject {
   step() {
     this.player.takeTurn()
     this.characters.forEach(character => {
+      if (this.player.hadHastedTurn && character.counts.haste < 1) {
+        return
+      }
       character.step()
     })
     this.wandererCount++

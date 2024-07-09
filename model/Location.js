@@ -1,6 +1,6 @@
 import StatefulObject from "./StatefulObject.js"
 
-const { computed } = Vue
+const { computed, watch } = Vue
 class Location extends StatefulObject{
   constructor(x, y) {
     super({
@@ -13,7 +13,8 @@ class Location extends StatefulObject{
       room: null,
       show: false, // whether or not to show location on map
       showContent: false, // whether or not to show content = item or character
-      marked: false
+      marked: false,
+      identifiedMagic: null
     })
     this.isFloor = computed(() => {
       return this.type === 'floor'
@@ -51,6 +52,12 @@ class Location extends StatefulObject{
       if (!!this.item) return false
       return true
     })
+    watch(() => this.showContent, val => {
+      if (!val) {
+        return
+      }
+      this.identifiedMagic = null
+    })
   }
   reset() {
     this.objects = []
@@ -61,9 +68,13 @@ class Location extends StatefulObject{
     this.show = false
     this.showContent = false
     this.marked = false
+    this.identifiedMagic = null
   }
   removeItem() {
     this.item = null
+  }
+  identifyItem() {
+    this.identifiedMagic = this.item?.magicType
   }
 }
 export default Location

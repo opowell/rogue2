@@ -1,6 +1,7 @@
 import Ring from "./Ring.js"
 import { randomElement, shuffleArray } from "./utils.js"
 import MAGIC_TYPES from './MagicTypes.js'
+import MagicTypes from "./MagicTypes.js"
 
 const STONE_TYPES = [
   "agate",
@@ -71,7 +72,8 @@ export const TYPES = {
   },
   ADD_STRENGTH: {
     name: 'add strength',
-    prob: 9
+    prob: 9,
+    addModifier: true
   },
   ADORNMENT: {
     name: 'adornment',
@@ -79,15 +81,17 @@ export const TYPES = {
   },
   DEXTERITY: {
     name: 'dexterity',
-    prob: 8
+    prob: 7
   },
   INCREASE_DAMAGE: {
     name: 'increase damage',
-    prob: 8
+    prob: 8,
+    addModifier: true
   },
   PROTECTION: {
     name: 'protection',
-    prob: 9
+    prob: 9,
+    addModifier: true
   },
   AGGRAVATE_MONSTER: {
     name: 'aggravate monster',
@@ -101,6 +105,15 @@ export const TYPES = {
   },
 }
 
+function addModifier(ring) {
+  ring.modifier = randomInt(2)
+  ring.magic = MagicTypes.GOOD
+  if (ring.modifier === 0) {
+    ring.modifier = -1
+    ring.cursed = true
+    ring.magic = MagicTypes.BAD
+  }
+}
 const defKeys = Object.keys(TYPES)
 defKeys.forEach((key, index) => {
   TYPES[key].stone = STONE_TYPES[index]
@@ -109,5 +122,9 @@ defKeys.forEach((key, index) => {
 
 export const getRing = () => {
   const ringType = randomElement(TYPES, type => type.prob)
-  return new Ring(ringType)
+  const ring = new Ring(ringType)
+  if (ringType.addModifier) {
+    addModifier(ring)
+  }
+  return ring
 }

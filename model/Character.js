@@ -68,6 +68,7 @@ class Character extends GameObject {
         confuse: 0,
         sleep: 0,
       },
+      hadHastedTurn: false,
       experience: 0,
       gold: 0,
       weapon: null,
@@ -79,7 +80,8 @@ class Character extends GameObject {
       tookDamageRecently: false,
       confuseAttack: false,
       foodLeft: FOOD_TIME,
-      pickedUpItem: false
+      pickedUpItem: false,
+      level: 1
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -120,7 +122,7 @@ class Character extends GameObject {
     this.canSee = computed(() => {
       return this.counts.blind === 0
     })
-    this.level = computed(() => {
+    this.calculatedLevel = computed(() => {
       const xp = this.experience
       if (xp < 10) {
         return 1
@@ -218,16 +220,6 @@ class Character extends GameObject {
         this.counts.sleep += randomInt(4, 11)
       }
     })
-    watch(this.level, (newVal, oldVal) => {
-      const modifier = newVal > oldVal ? 1 : -1
-      const diff = Math.abs(newVal - oldVal)
-      const change = modifier*roll(diff, 10)
-      this.hits.current += change
-      this.hits.maximum += change
-      if (newVal > oldVal) {
-        this.game.addMessage('Welcome to level ' + newVal)
-      }
-    })
     watch(() => this.location?.x + '-' + this.location?.y, () => {
       this.location.marked = true
     })
@@ -262,6 +254,22 @@ class Character extends GameObject {
     })
   }
   takeTurn() {
+    if (!this.hadHastedTurn && this.counts.haste > 0) {
+      this.hadHastedTurn = true
+    } else {
+      this.hadHastedTurn = false
+    }
+    const newVal = this.calculatedLevel
+    const diff = newVal - this.level
+    if (diff !== 0) {
+      const change = Math.sign(diff)*roll(Math.abs(diff), 10)
+      this.hits.current += change
+      this.hits.maximum += change
+      if (newVal > oldVal) {
+        this.game.addMessage('Welcome to level ' + newVal)
+      }
+      this.level = newVal
+    }
     const keys = Object.keys(this.counts)
     keys.forEach(key => {
       if (this.counts[key] > 0) {
@@ -296,24 +304,16 @@ class Character extends GameObject {
   }
   restoreStrength() {
     this.strength.current = this.strength.maximum
+    this.game.addMessage('hey, this tastes great.  It makes you feel warm all over (restore strength)')
   }
-  heal() {
-    this.hits.current += roll(this.level, 4)
+  heal(healAmount, improveAmount, message) {
+    this.hits.current += roll(this.level, healAmount)
     if (this.hits.current > this.hits.maximum) {
-      this.hits.maximum++
+      this.hits.maximum = this.hits.maximum + improveAmount
       this.hits.current = this.hits.maximum
     }
     this.sight()
-    this.game.addMessage('you begin to feel better')
-  }
-  healExtra() {
-    this.hits.current += roll(this.level, 8)
-    if (this.hits.current > this.hits.maximum) {
-      this.hits.maximum = this.hits.maximum + 2
-      this.hits.current = this.hits.maximum
-    }
-    this.sight()
-    this.game.addMessage('you begin to feel much better')
+    this.game.addMessage(message)
   }
   seeInvisible() {
     this.counts.seeInvisible += SEE_DURATION
@@ -324,11 +324,11 @@ class Character extends GameObject {
     this.counts.blind += SEE_DURATION
     this.game.addMessage('a cloak of darkness falls around you (around ' + SEE_DURATION + ' turns)')
   }
-  haste() {
-    this.counts.haste += randomInt(10, 13)
+  haste(x) {
+    this.counts.haste += x
   }
-  poison() {
-    this.strength.current -= randomInt(1, 3)
+  poison(x) {
+    this.strength.current -= x
     this.game.addMessage('you feel very sick.')
   }
   sight() {

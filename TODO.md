@@ -6,3 +6,4 @@
 - Leprechauns - sleep and special attack
 - Aquator - special attack
 - Messages screen.
+- merge Monster and Character models.

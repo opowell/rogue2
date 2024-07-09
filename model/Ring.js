@@ -17,5 +17,8 @@ class Ring extends Item {
     }
     return getAAn(this.ringType.stone) + ' ' + this.ringType.stone + ' ring'
   }
+  get magicType() {
+    return this.magic || this.ringType.magic
+  }
 }
 export default Ring

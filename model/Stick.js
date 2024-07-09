@@ -22,5 +22,8 @@ class Stick extends Item {
     }
     return getAAn(this.stickType.materialType) + ' ' + this.stickType.materialType + ' ' + this.stickType.material
   }
+  get magicType() {
+    return this.stickType.magic
+  }
 }
 export default Stick

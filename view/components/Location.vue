@@ -7,6 +7,7 @@
   />
 </template>
 <script>
+import MagicTypes from '../../model/MagicTypes.js';
 import { COLORS, CONTENT } from '../constants.js'
 
 export default {
@@ -48,6 +49,13 @@ export default {
     },
     content() {
       const location = this.location
+      if (location.identifiedMagic) {
+        if (location.identifiedMagic === MagicTypes.GOOD) {
+          return '$'
+        } else {
+          return '+'
+        }
+      }
       if (!location.show) {
         if (location.marked) {
           return '&#8231;'
@@ -143,6 +151,9 @@ export default {
     },
     color() {
       const location = this.location
+      if (location.identifiedMagic) {
+        return '#aaaaaa'
+      }
       if (location.show) {
         if (location.showContent) {
           if (location.character) {

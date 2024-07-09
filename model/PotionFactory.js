@@ -36,8 +36,12 @@ const DEFINITIONS = {
     name: 'detect magic',
     prob: 6,
     action: (character, potion) => {
-      character.game.detectMagic()
-      character.addMessage('magic detected!')
+      const foundMagic = character.game.detectMagic()
+      if (foundMagic) {
+        character.addMessage('You sense the presence of magic.')
+      } else {
+        character.addMessage('you have a strange feeling for a moment, then it passes.')
+      }
       potion.identify()
     },
     magic: MagicTypes.GOOD
@@ -56,7 +60,7 @@ const DEFINITIONS = {
     name: 'extra healing',
     prob: 5,
     action: (character, potion) => {
-      character.healExtra()
+      character.heal(8, 2, 'you begin to feel much better')
       potion.identify()
     },
     magic: MagicTypes.GOOD
@@ -74,7 +78,7 @@ const DEFINITIONS = {
     name: 'haste self',
     prob: 4,
     action: (character, potion) => {
-      character.haste()
+      character.haste(randomInt(10, 13))
       potion.identify()
     },
     magic: MagicTypes.GOOD
@@ -83,7 +87,7 @@ const DEFINITIONS = {
     name: 'healing',
     prob: 15,
     action: (character, potion) => {
-      character.heal()
+      character.heal(4, 1, 'you begin to feel better')
       potion.identify()
     },
     magic: MagicTypes.GOOD
@@ -152,7 +156,7 @@ const DEFINITIONS = {
     name: 'poison',
     prob: 8,
     action: (character, potion) => {
-      character.poison()
+      character.poison(randomInt(1, 3))
       potion.identify()
     },
     magic: MagicTypes.BAD
