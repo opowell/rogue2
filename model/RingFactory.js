@@ -1,5 +1,5 @@
 import Ring from "./Ring.js"
-import { randomElement, shuffleArray } from "./utils.js"
+import { randomElement, randomInt, shuffleArray } from "./utils.js"
 import MAGIC_TYPES from './MagicTypes.js'
 import MagicTypes from "./MagicTypes.js"
 
