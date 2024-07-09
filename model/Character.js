@@ -265,7 +265,7 @@ class Character extends GameObject {
       const change = Math.sign(diff)*roll(Math.abs(diff), 10)
       this.hits.current += change
       this.hits.maximum += change
-      if (newVal > oldVal) {
+      if (diff > 0) {
         this.game.addMessage('Welcome to level ' + newVal)
       }
       this.level = newVal
@@ -324,8 +324,9 @@ class Character extends GameObject {
     this.counts.blind += SEE_DURATION
     this.game.addMessage('a cloak of darkness falls around you (around ' + SEE_DURATION + ' turns)')
   }
-  haste(x) {
+  haste(x, messageAmount) {
     this.counts.haste += x
+    this.addMessage('you feel yourself moving much faster (' + messageAmount + ' turns)')
   }
   poison(x) {
     this.strength.current -= x

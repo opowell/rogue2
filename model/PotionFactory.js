@@ -78,7 +78,7 @@ const DEFINITIONS = {
     name: 'haste self',
     prob: 4,
     action: (character, potion) => {
-      character.haste(randomInt(10, 13))
+      character.haste(randomInt(10, 13), '10-13')
       potion.identify()
     },
     magic: MagicTypes.GOOD
