@@ -12,7 +12,7 @@ export const potionFactory = new PotionFactory()
 const TYPES = {
   POTION: {
     factory: potionFactory.getPotion,
-    prob: 2700
+    prob: 27
   },
   SCROLL: {
     factory: getScroll,
