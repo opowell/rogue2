@@ -10,3 +10,15 @@ This is a browser re-make of Rogue: Dungeons of Doom.
 2. Serve via a web server.
 - JAS
 - node/express
+
+## Technical details
+- no-build Javascript+HTML+CSS.
+- Vue 3.
+- Regular HTML elements, no Canvas.
+
+![](devtools.png)
+
+![](html.png)
+
+## Feature roadmap
+See <a href="/TODO.md">TODO.md</a>
