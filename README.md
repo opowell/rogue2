@@ -1,5 +1,5 @@
 # Rogue
-This is a browser re-make of Rogue: Dungeons of Doom.
+This is a "no-build-step" browser re-make of Rogue: Dungeons of Doom.
 
 ![](welcome.png)
 
