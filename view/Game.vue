@@ -110,7 +110,7 @@ export default {
           type: item.type
         }
       })
-      if (this.inventoryHighlightType) {
+      if (this.inventoryHighlightFunction) {
         items.forEach(item => item.fade = !this.inventoryHighlightFunction(item))
       }
       return items
@@ -251,7 +251,7 @@ export default {
       }
       this.takingAction = true
       this.takeActionFunction = index => this.game.dropItem(index)
-      this.game.messages.push('Drop: enter a letter, or Esc to cancel')
+      this.game.messages.push('Drop: enter a letter, * for inventory, or Esc to cancel')
     },
     quaffPrompt() {
       this.takingAction = true
@@ -282,7 +282,7 @@ export default {
       this.takingAction = true
       this.inventoryHighlightFunction = item => item.type === 'weapon'
       this.takeActionFunction = index => this.game.player.wield(this.game.player.items[index])
-      this.game.messages.push('Wield: enter a letter, or Esc to cancel')
+      this.game.messages.push('Wield: enter a letter, * for inventory, or Esc to cancel')
     },
     wearingArmorPrompt() {
       if (this.game.player.armor) {
@@ -292,7 +292,7 @@ export default {
       this.takingAction = true
       this.inventoryHighlightFunction = item => item.type === 'armor'
       this.takeActionFunction = index => this.game.player.wearArmor(this.game.player.items[index])
-      this.game.messages.push('Wear armor: enter a letter, or Esc to cancel')
+      this.game.messages.push('Wear armor: enter a letter, * for inventory, or Esc to cancel')
     },
     handleTakingActionKeyDown(event) {
       if (this.showInventory) {
