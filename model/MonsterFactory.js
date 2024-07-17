@@ -3,7 +3,7 @@ import { randomElement, randomInt } from "./utils.js"
 
 const randomMove = (monster, probRandom) => {
   if (Math.random() < probRandom) {
-    const locations = monster.game.getLocationsNearby(monster.location, location => location.canCharacterMoveTo)
+    const locations = monster.game.getLocationsNearby(monster.location, location => location.canCharacterMoveTo && monster.game.canCharacterMoveTo(monster.location, location))
     return randomElement(locations)
   } else {
     return monster.getMoveDestination(false)
