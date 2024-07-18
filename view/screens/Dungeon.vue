@@ -34,6 +34,7 @@
           <div class="section-bottom-row-label">{{ item.label }}:</div>
           <div class="section-bottom-row-value" v-html="item.value" />
         </div>
+        <div class="nutrition-label" v-if="nutritionLabel">{{ nutritionLabel }}</div>
       </div>
     </div>
     <div v-if="showSidePanels" class="column1">
@@ -95,6 +96,9 @@ export default {
     player() {
       return this.game?.player
     },
+    nutritionLabel() {
+      return this.player.nutritionStatus.label
+    },
     characterItems() {
       const player = this.player
       if (!player) return []
@@ -126,7 +130,7 @@ export default {
         // },
         {
           label: 'Food',
-          value: player.foodLeft
+          value: (player.foodLeftGuessIsApproximate ? '~' : '') + player.foodLeftGuess
         },
         {
           label: 'Armor',
@@ -215,5 +219,9 @@ export default {
 }
 .message {
   flex: 0 0 auto;
+}
+.nutrition-label {
+  background-color: darkgray;
+  color: black;
 }
 </style>

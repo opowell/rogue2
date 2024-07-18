@@ -1,7 +1,6 @@
 - armor calculation in fight logic, "a_class", 11 - visible armor level
 - greedy prop
 - ice monster - sleep and special attack
-- HUNGRY / WEAK / STARVING label
 - help screen
 - Leprechauns - sleep and special attack
 - Aquator - special attack

@@ -24,7 +24,8 @@ const INVENTORY_ORDER = [
 
 const SEE_DURATION = spread(300)
 const STOMACH_SIZE = 2000
-const FOOD_TIME = spread(1300)
+const FOOD_TIME_EXACT = 1300
+const FOOD_TIME = spread(FOOD_TIME_EXACT)
 const HUNGRY_TIME = 150
 const STARVING_TIME = 850
 const NUTRITION_STATUS = {
@@ -34,13 +35,16 @@ const NUTRITION_STATUS = {
   HUNGRY: {
     order: 1,
     message: 'you are starting to get hungry',
+    label: 'HUNGRY'
   },
   WEAK: {
     order: 2,
-    message: 'you are starting to feel weak'
+    message: 'you are starting to feel weak',
+    label: 'WEAK'
   },
   STARVING: {
-    order: 3
+    order: 3,
+    label: 'STARVING'
   }
 }
 export const TYPE = 'character'
@@ -80,8 +84,10 @@ class Character extends GameObject {
       tookDamageRecently: false,
       confuseAttack: false,
       foodLeft: FOOD_TIME,
+      foodLeftGuess: FOOD_TIME_EXACT,
+      foodLeftGuessIsApproximate: true,
       pickedUpItem: false,
-      level: 1
+      level: 1,
     })
 
     const ration = getFood(FOOD_TYPES.RATION)
@@ -207,6 +213,16 @@ class Character extends GameObject {
       if (newVal.order < oldVal.order) {
         return
       }
+      if (newVal === NUTRITION_STATUS.HUNGRY) {
+        this.foodLeftGuess = HUNGRY_TIME
+        this.foodLeftGuessIsApproximate = false
+      } else if (newVal === NUTRITION_STATUS.WEAK) {
+        this.foodLeftGuess = HUNGRY_TIME
+        this.foodLeftGuessIsApproximate = false
+      } else if (newVal === NUTRITION_STATUS.STARVING) {
+        this.foodLeftGuess = STARVING_TIME
+        this.foodLeftGuessIsApproximate = false
+      }
       if (newVal.message) {
         this.addMessage(newVal.message)
       }
@@ -286,6 +302,7 @@ class Character extends GameObject {
     this.resting = true
     this.tookDamageRecently = false
     this.foodLeft--
+    this.foodLeftGuess--
     nextTick(() => {
       this.pickedUpItem = false
     })
@@ -389,11 +406,15 @@ class Character extends GameObject {
     if (this.foodLeft < 0) {
       this.foodLeft = 0
     }
+    this.foodLeftGuessIsApproximate = true
+    this.foodLeftGuess += FOOD_TIME_EXACT
     if (this.foodLeft > STOMACH_SIZE - 20) {
-      this.counts.sleep += randomInt(2, 6)
       this.addMessage('You feel bloated and fall asleep')
+      this.counts.sleep += randomInt(2, 6)
+      this.foodLeftGuessIsApproximate = false
+      this.foodLeftGuess = 2000
     }
-    this.foodLeft += FOOD_TIME - 200 + randomInt(400)
+    this.foodLeft += FOOD_TIME + randomInt(-200, 200)
     if (this.foodLeft > STOMACH_SIZE) {
       this.foodLeft = STOMACH_SIZE
     }
@@ -466,7 +487,6 @@ class Character extends GameObject {
         }
       }
     }
-    this.takeTurn()
     return this.pickedUpItem
   }
   addItem(item) {

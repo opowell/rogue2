@@ -66,8 +66,11 @@ class Game extends StatefulObject {
       return this.messages[0]
     })
     this.playerPickedUpItem = computed(() => this.player.pickedUpItem)
-    watch(() => this.player.counts.sleep, val => {
-      if (val < 1) {
+    watch(() => this.player.counts.sleep, (newVal, oldVal) => {
+      if (newVal < 1) {
+        if (oldVal > 0) {
+          this.addMessage('you can move again')
+        }
         return
       }
       this.step()
