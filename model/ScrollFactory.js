@@ -25,9 +25,12 @@ export const TYPES = {
   },
   ENCHANT_ARMOR: {
     name: 'enchant armor',
-    prob: 8,
+    prob: 800,
     read: (character, scroll) => {
-      console.log('TODO')
+      if (character.armor) {
+        character.armor.enchant()
+        character.addMessage('your armor glows faintly for a moment')
+      }
       scroll.identify()
     },
     magic: MagicTypes.GOOD
