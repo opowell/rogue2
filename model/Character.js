@@ -405,6 +405,7 @@ class Character extends GameObject {
     item.quantity--
     if (this.foodLeft < 0) {
       this.foodLeft = 0
+      this.foodLeftGuess = 0
     }
     this.foodLeftGuessIsApproximate = true
     this.foodLeftGuess += FOOD_TIME_EXACT
