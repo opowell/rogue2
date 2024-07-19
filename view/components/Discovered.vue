@@ -25,14 +25,16 @@ import MagicTypes from '../../model/MagicTypes.js'
 function parseItems(types, header, sections) {
   const keys = Object.keys(types)
   const identified = keys.filter(key => types[key].identified)
-  const sectionItems = keys.map(key => {
+  let sectionItems = keys.map(key => {
     const type = types[key]
     return {
-      label: '- ' + type.name,
+      label: type.prob + '% ' + type.name,
       identified: type.identified,
-      magic: type.magic
+      magic: type.magic,
+      prob: type.prob
     }
   })
+  sectionItems = sectionItems.sort((a, b) => b.prob - a.prob)
   sections.push({
     title: header + ' ' + identified.length + '/' + keys.length,
     items: sectionItems

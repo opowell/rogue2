@@ -25,7 +25,7 @@ export const TYPES = {
   },
   ENCHANT_ARMOR: {
     name: 'enchant armor',
-    prob: 800,
+    prob: 8,
     read: (character, scroll) => {
       if (character.armor) {
         character.armor.enchant()
