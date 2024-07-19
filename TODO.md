@@ -1,4 +1,3 @@
-- armor calculation in fight logic, "a_class", 11 - visible armor level
 - greedy prop
 - ice monster - sleep and special attack
 - help screen

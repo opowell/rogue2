@@ -65,17 +65,14 @@ export default {
     return {
       screen: SCREENS.WELCOME,
       audio,
-      dropping: false,
-      quaffing: false,
-      wearingArmor: false,
       locationWidth: 0,
       locationHeight: 0,
       scores: [],
       mounted: false,
-      reading: false,
-      eating: false,
       takingAction: false,
-      deathScoreIndex: null
+      deathScoreIndex: null,
+      inventoryHighlightFunction: null,
+      takeActionFunction: null
     }
   },
   computed: {
@@ -113,8 +110,8 @@ export default {
           type: item.type
         }
       })
-      if (this.quaffing) {
-        items.forEach(item => item.fade = item.type !== 'potion')
+      if (this.inventoryHighlightFunction) {
+        items.forEach(item => item.fade = !this.inventoryHighlightFunction(item))
       }
       return items
     },
@@ -252,34 +249,50 @@ export default {
       if (!this.game.player.canDrop) {
         return
       }
-      this.dropping = true
       this.takingAction = true
-      this.game.messages.push('Drop: enter a letter, or Esc to cancel')
+      this.takeActionFunction = index => this.game.dropItem(index)
+      this.game.messages.push('Drop: enter a letter, * for inventory, or Esc to cancel')
     },
     quaffPrompt() {
-      this.quaffing = true
       this.takingAction = true
+      this.inventoryHighlightFunction = item => item.type === 'potion'
+      this.takeActionFunction = index => this.game.quaffItem(index)
       this.game.messages.push('Quaff: enter a letter, * for inventory, or Esc to cancel')
     },
     readPrompt() {
-      this.reading = true
       this.takingAction = true
+      this.inventoryHighlightFunction = item => item.type === 'scroll'
+      this.takeActionFunction = index => {
+        const scroll = this.game.player.items[index]
+        if (scroll.type !== 'scroll') {
+          this.game.addMessage('You cannot read that')
+          return
+        }
+        this.game.readScroll(scroll, index)
+      }
       this.game.messages.push('Read: enter a letter, * for inventory, or Esc to cancel')
     },
     eatPrompt() {
-      this.eating = true
       this.takingAction = true
+      this.inventoryHighlightFunction = item => item.type === 'food'
+      this.takeActionFunction = index => this.game.player.eat(this.game.player.items[index])
       this.game.messages.push('Eat: enter a letter, * for inventory, or Esc to cancel')
     },
     wieldPrompt() {
-      this.wielding = true
       this.takingAction = true
-      this.game.messages.push('Wield: enter a letter, or Esc to cancel')
+      this.inventoryHighlightFunction = item => item.type === 'weapon'
+      this.takeActionFunction = index => this.game.player.wield(this.game.player.items[index])
+      this.game.messages.push('Wield: enter a letter, * for inventory, or Esc to cancel')
     },
     wearingArmorPrompt() {
-      this.wearingArmor = true
+      if (this.game.player.armor) {
+        this.game.messages.push('you are already wearing some ' + this.game.player.armor.label + '. You\'ll have to take it off first')
+        return
+      }
       this.takingAction = true
-      this.game.messages.push('Wear armor: enter a letter, or Esc to cancel')
+      this.inventoryHighlightFunction = item => item.type === 'armor'
+      this.takeActionFunction = index => this.game.player.wearArmor(this.game.player.items[index])
+      this.game.messages.push('Wear armor: enter a letter, * for inventory, or Esc to cancel')
     },
     handleTakingActionKeyDown(event) {
       if (this.showInventory) {
@@ -291,41 +304,14 @@ export default {
       }
       if (event.key === 'Escape' && !this.showInventory) {
         this.game.clearCurrentMessage()
-        this.quaffing = false
-        this.wearingArmor = false
-        this.reading = false
-        this.dropping = false
-        this.wielding = false
-        this.eating = false
         this.takingAction = false
+        this.inventoryHighlightFunction = null
+        this.takeActionFunction = null
         return
       }
       const index = alphabet.indexOf(event.key)
-      if (index > -1 && index < this.game.player.items.length) {
-        if (this.quaffing) {
-          this.game.quaffItem(index)
-          this.quaffing = false
-        } else if (this.wearingArmor) {
-          this.game.player.wearArmor(this.game.player.items[index])
-          this.wearingArmor = false
-        } else if (this.reading) {
-          const scroll = this.game.player.items[index]
-          if (scroll.type !== 'scroll') {
-            this.game.addMessage('You cannot read that')
-            return
-          }
-          this.game.readScroll(scroll, index)
-          this.reading = false
-        } else if (this.dropping) {
-          this.game.dropItem(index)
-          this.dropping = false
-        } else if (this.wielding) {
-          this.game.player.wield(this.game.player.items[index])
-          this.wielding = false
-        } else if (this.eating) {
-          this.game.player.eat(this.game.player.items[index])
-          this.eating = false
-        }
+      if (index > -1 && index < this.game.player.items.length && this.takeActionFunction) {
+        this.takeActionFunction(index)
         this.takingAction = false
         this.game.clearCurrentMessage()
       }

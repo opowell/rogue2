@@ -716,9 +716,12 @@ class Game extends StatefulObject {
       }
     }
   }
+  canCharacterMoveTo(from, to) {
+    return !isDiagonalMove(from, to) || !this.hasWallBetween(from, to)
+  }
   movePlayer(from, to) {
     to = this.player.getMoveToLocation(to)
-    if (isDiagonalMove(from, to) && this.hasWallBetween(from, to)) {
+    if (!this.canCharacterMoveTo(from, to)) {
       return
     }
     if (from !== to && to.character) {
