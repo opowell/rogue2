@@ -5,7 +5,7 @@ import Character from './Character.js'
 import StatefulObject from './StatefulObject.js'
 import { DIRECTIONS } from './Directions.js'
 import { isDiagonalMove, randomElement, randomInt } from './utils.js'
-import { getItem, potionFactory } from './ItemFactory.js'
+import { getItem, potionFactory, scrollFactory } from './ItemFactory.js'
 import { getLevelMonster } from './MonsterFactory.js'
 import { getTrap } from './TrapFactory.js'
 import Amulet from './Amulet.js'
@@ -53,7 +53,8 @@ class Game extends StatefulObject {
       levelsWithoutFood: 0,
       wandererCount: 0,
       mostRecentMessage: null,
-      potionFactory
+      potionFactory,
+      scrollFactory
     })
     this.player = new Character(this)
     this.createLocations()

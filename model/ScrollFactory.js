@@ -30,6 +30,8 @@ export const TYPES = {
       if (character.armor) {
         character.armor.enchant()
         character.addMessage('your armor glows faintly for a moment')
+      } else {
+        character.addMessage('you feel a strange sense of loss')
       }
       scroll.identify()
     },
@@ -39,7 +41,12 @@ export const TYPES = {
     name: 'enchant weapon',
     prob: 10,
     read: (character, scroll) => {
-      console.log('TODO')
+      if (character.weapon) {
+        character.weapon.enchant()
+        character.addMessage('your ' + character.weapon.weaponType + ' glows blue for a moment')
+      } else {
+        character.addMessage('you feel a strange sense of loss')
+      }
       scroll.identify()
     },
     magic: MagicTypes.GOOD
@@ -148,15 +155,19 @@ export const TYPES = {
   },
 }
 
-const alphabetArray = alphabet.split('')
-const defKeys = Object.keys(TYPES)
-defKeys.forEach((key) => {
-  const type = TYPES[key]
-  type.identified = false
-  type.hiddenName = randomElements(alphabetArray, 10).join('')
-})
-
-export const getScroll = () => {
-  const scrollType = randomElement(TYPES, type => type.prob)
-  return new Scroll(scrollType)
+export default class ScrollFactory {
+  constructor() {
+    const alphabetArray = alphabet.split('')
+    const defKeys = Object.keys(TYPES)
+    defKeys.forEach((key) => {
+      const type = TYPES[key]
+      type.identified = false
+      type.hiddenName = randomElements(alphabetArray, 10).join('')
+    })
+    this.types = TYPES
+  }
+  getScroll = () => {
+    const scrollType = randomElement(TYPES, type => type.prob)
+    return new Scroll(scrollType)
+  }
 }

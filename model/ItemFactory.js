@@ -1,5 +1,5 @@
 import PotionFactory from "./PotionFactory.js"
-import { getScroll } from "./ScrollFactory.js"
+import ScrollFactory from "./ScrollFactory.js"
 import { getWeapon } from "./WeaponFactory.js"
 import { getArmor } from "./ArmorFactory.js"
 import { getRing } from "./RingFactory.js"
@@ -8,14 +8,14 @@ import { randomElement } from "./utils.js"
 import { getFood } from "./FoodFactory.js"
 
 export const potionFactory = new PotionFactory()
-
+export const scrollFactory = new ScrollFactory()
 const TYPES = {
   POTION: {
     factory: potionFactory.getPotion,
     prob: 27
   },
   SCROLL: {
-    factory: getScroll,
+    factory: scrollFactory.getScroll,
     prob: 30
   },
   FOOD: {

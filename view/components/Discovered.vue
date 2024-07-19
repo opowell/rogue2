@@ -59,10 +59,13 @@ export default {
     potions() {
       return this.game.potionFactory.definitions
     },
+    scrolls() {
+      return this.game.scrollFactory.types
+    },
     sections() {
       const sections = []
       parseItems(this.potions, 'Potions', sections)
-      parseItems(this.Scrolls, 'Scrolls', sections)
+      parseItems(this.scrolls, 'Scrolls', sections)
       parseItems(this.Rings, 'Rings', sections)
       parseItems(this.Sticks, 'Sticks', sections)
       return sections

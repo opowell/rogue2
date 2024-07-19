@@ -5,3 +5,5 @@
 - Aquator - special attack
 - Messages screen.
 - merge Monster and Character models.
+- remove some doors/hallways/rooms.
+- monsters can navigate to rooms(?).
