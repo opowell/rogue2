@@ -2,6 +2,7 @@
 - ice monster - sleep and special attack
 - Leprechauns - sleep and special attack
 - Aquator - special attack
+- Nymph - special attack.
 - Messages screen.
 - merge Monster and Character models.
 - remove some doors/hallways/rooms.
@@ -12,3 +13,16 @@
 - add arrow key movement.
 - sticks.
 - rings.
+- scrolls:
+  - remove curse.
+  - identify.
+  - teleportation.
+  - confuse monster.
+  - reading does not take a turn.
+- traps.
+- searching.
+- Wear armor -> message about armor type.
+- Potions:
+  - paralysis.
+  - blindness.
+- "i" -> show inventory, clear highlighting if any previously.
