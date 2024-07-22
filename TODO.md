@@ -1,9 +1,14 @@
 - greedy prop
 - ice monster - sleep and special attack
-- help screen
 - Leprechauns - sleep and special attack
 - Aquator - special attack
 - Messages screen.
 - merge Monster and Character models.
 - remove some doors/hallways/rooms.
 - monsters can navigate to rooms(?).
+- Help Screen:
+  - cannot close.
+  - add "D".
+- add arrow key movement.
+- sticks.
+- rings.
