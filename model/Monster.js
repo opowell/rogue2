@@ -39,7 +39,8 @@ class Monster extends GameObject {
       tookDamageRecently: false,
       held: monsterType.held || false,
       sleeping: true,
-      hadHastyTurn: false
+      hadHastyTurn: false,
+      greedy: monsterType.greedy
     })
     if (monsterType.carry > 0 && randomInt(100) < monsterType.carry) {
       const item = getItem(this.game)
@@ -61,19 +62,19 @@ class Monster extends GameObject {
       const str = this.strength.current
       let add = 6
       if (str < 8)
-	      return str - 7
+        return str - 7
       if (str < 31)
-	      add--
+        add--
       if (str < 22)
-	      add--
+        add--
       if (str < 20)
-	      add--
+        add--
       if (str < 18)
-	      add--
+        add--
       if (str < 17)
-	      add--
+        add--
       if (str < 16)
-	      add--
+        add--
       return add
     })
     watch(this.dead, (newVal) => {
@@ -86,7 +87,7 @@ class Monster extends GameObject {
     this.sleeping = false
   }
   step() {
-    if (this.dead || this.sleeping) {
+    if (this.dead) {
       return
     }
     if (!this.hadHastedTurn && this.counts.haste > 0) {
@@ -100,6 +101,9 @@ class Monster extends GameObject {
         this.counts[key]--
       }
     })
+    if (this.sleeping) {
+      return
+    }
     const to = this.getMoveDestination()
     if (!to) {
       console.log('huh?', to, this)
@@ -113,10 +117,13 @@ class Monster extends GameObject {
     if (useFromType && this.monsterType.getMoveDestination) {
       return this.monsterType.getMoveDestination(this)
     }
-    const playerLoc = this.game.player.location
+    let target = this.game.player.location
+    if (this.greedy && this.game.playerRoomGoldLocation) {
+      target = this.game.playerRoomGoldLocation
+    }
     const curLoc = this.location
-    const dx = Math.sign(playerLoc.x - curLoc.x)
-    const dy = Math.sign(playerLoc.y - curLoc.y)
+    const dx = Math.sign(target.x - curLoc.x)
+    const dy = Math.sign(target.y - curLoc.y)
     const from = this.location
     let to = this.game.getLocation(curLoc.x + dx, curLoc.y + dy)
     if (isDiagonalMove(from, to) && this.game.hasWallBetween(from, to)) {
