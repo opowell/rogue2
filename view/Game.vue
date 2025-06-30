@@ -4,10 +4,12 @@
     <template v-else>
       <OptionsScreen v-show="showOptions" />
       <MessagesScreen v-show="showMessages" />
-      <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores" :scores-start-index="deathScoresStartIndex" />
+      <DeathScreen v-show="showDeath" ref="deathScreen" :message="deathMessage" @restart="restart" :scores="deathScores"
+        :scores-start-index="deathScoresStartIndex" />
       <InventoryScreen v-show="showInventory" :items="inventoryItems" />
       <DiscoveredScreen v-show="showDiscovered" :game="game" />
-      <DungeonScreen v-show="showDungeon" :game="game" :show-coordinates="showCoordinates" :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
+      <DungeonScreen v-show="showDungeon" :game="game" :show-coordinates="showCoordinates"
+        :inventory-items="inventoryItems" :location-width="locationWidth" :location-height="locationHeight" />
       <WelcomeScreen v-show="showWelcome" @start-game="startGame" :scores="welcomeScores" ref="welcome" />
       <HelpScreen v-show="showHelp" />
     </template>
@@ -44,6 +46,8 @@ const SCREENS = {
   OPTIONS: 'options',
   MESSAGES: 'messages'
 }
+
+const SCORES_STORAGE_KEY = 'rogue-scores'
 
 export default {
   name: 'GameView',
@@ -172,7 +176,7 @@ export default {
       }
       audio.hit.pause()
       audio.hit.load()
-      audio.hit.play()      
+      audio.hit.play()
     },
     playerPickedUpItem(val) {
       if (!val) {
@@ -188,7 +192,7 @@ export default {
         this.$nextTick(() => {
           this.$refs.deathScreen.focus()
         })
-        this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
+        this.scores = (JSON.parse(window.localStorage.getItem(SCORES_STORAGE_KEY)) || []).filter(score => !!score.gold)
         const newScore = {
           name: this.game.playerName,
           gold: this.game.player.gold,
@@ -198,7 +202,7 @@ export default {
         this.scores.push(newScore)
         this.scores = this.scores.sort((a, b) => b.gold - a.gold)
         this.deathScoreIndex = this.scores.findIndex(score => score === newScore)
-        window.localStorage.setItem('scores', JSON.stringify(this.scores))
+        window.localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(this.scores))
       }
     },
     showWelcome(val) {
@@ -213,16 +217,16 @@ export default {
       this.setFontSize()
     })
     resizeObserver.observe(this.$refs.screen)
-    this.scores = JSON.parse(window.localStorage.getItem('scores')) || []
+    this.scores = (JSON.parse(window.localStorage.getItem(SCORES_STORAGE_KEY)) || []).filter(score => !!score.gold)
     this.scores = this.scores.sort((a, b) => b.gold - a.gold)
     this.mounted = true
   },
   methods: {
     setFontSize() {
       const PADDING = 1
-      let width = window.innerWidth / this.game.width + 2*PADDING
-      let height = window.innerHeight / (this.game.height + BOTTOM_PANEL_HEIGHT + TOP_PANEL_HEIGHT + 2*PADDING)
-      const ratio = width/height
+      let width = window.innerWidth / this.game.width + 2 * PADDING
+      let height = window.innerHeight / (this.game.height + BOTTOM_PANEL_HEIGHT + TOP_PANEL_HEIGHT + 2 * PADDING)
+      const ratio = width / height
       if (ratio < fontRatio) {
         width = Math.floor(width)
         height = width / fontRatio
@@ -457,6 +461,7 @@ export default {
   width: v-bind(locationWidth);
   height: v-bind(locationHeight);
 }
+
 input {
   font-size: v-bind(locationHeight);
 }
@@ -475,6 +480,7 @@ input {
   justify-content: center;
   padding: 1rem;
 }
+
 @font-face {
   font-family: "IBMVGA8";
   /* src: url("WebPlus_IBM_VGA_9x16.woff") format('woff'); */
